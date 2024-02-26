@@ -1,6 +1,5 @@
 set -e
 
-# 사전 정의 (Definition)
 OUTPUT_PATH="./docs"
 TARGET_NAME="blog"
 HOSTING_BASE_PATH="swift-docc-blog"
