@@ -1,4 +1,4 @@
-# WWDC 파헤치기
+# WWDC
 
 ## Overview
 
@@ -7,3 +7,5 @@
 
 - <doc:WWDC23>
 - <doc:WWDC22>
+- <doc:WWDC10>
+
