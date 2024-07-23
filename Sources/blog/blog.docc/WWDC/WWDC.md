@@ -2,10 +2,14 @@
 
 ## Overview
 
-WWDC에서 소개된 iOS 및 macOS 개발에 대한 필수적인 내용들 위주로 정리하는 공간입니다. 원문의 출처는 [WWDC NOTES](https://wwdcnotes.com)에 있으며 방대한 양이지만 하나씩 공부하면서 진행할 예정입니다.
+WWDC에서 소개된 iOS 및 macOS 개발에 대한 필수적인 내용들 위주로 정리하는 공간입니다. iPhone이 도입된 2007년 WWDC 이전은 제외합니다. 
+
+일부 자료는 이미 애플 개발자 페이지에서 사라져 아카이브된 자료나 영상을 참고하여 정리하였습니다.
 
 ## Topics
 
 - <doc:WWDC23>
 - <doc:WWDC22>
-- <doc:WWDC10>
+- <doc:WWDC-11>
+- <doc:WWDC-10>
+- <doc:WWDC-07>
