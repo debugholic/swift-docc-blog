@@ -7,7 +7,7 @@
 
 최고의 앱이라도 가끔 충돌(crash)이 발생합니다. 더 나은 앱이 될지, 고객을 잃을 것인지의 차이는 앱 충돌을 진단하고 수정하는 데에 있습니다. 충돌을 찾아 해결하고 일반적인 함정을 피하는 데 필요한 기술을 알아보세요.
 
-## 충돌 보고서(Chash report)란?
+### 충돌 보고서(Chash report)란?
 
 * 애플리케이션이 충돌하면 iOS는 충돌 보고서(crash report)를 작성합니다.
 * 이 보고서에는 애플리케이션 디버깅에 도움이 되는 진단 정보가 포함되어 있습니다.
@@ -156,7 +156,7 @@ Binary Images:
 0x3022e000 - 0x3026cfff libVDSP.dylibarmv7  <cc8d6be7a5021266e26ebd05e9579852> /System/Library/Frameworks/Accelerate.framework/Frameworks/vecLib.framework/libvDSP.dylib
 ```
 
-## 충돌 보고서의 종류
+### 충돌 보고서의 종류
 
 * 아이폰 OS 정책: iOS에는 모든 앱이 따라야 하는 몇 가지 정책이 있습니다. 그렇지 않으면 앱이 종료됩니다.
     - 감시 시간 초과(Watchdog timeout) - 앱이 지정된 시간 내에 실행/재개/일시 중지/종료에 실패할 때 발생합니다.
@@ -165,7 +165,7 @@ Binary Images:
 
 * 버그로 인한 앱 충돌
 
-#### 감시 시간 초과(Watchdog timeout) 충돌 보고서
+##### 감시 시간 초과(Watchdog timeout) 충돌 보고서
 
 예외(Exception) 섹션을 주목해보면:
 
@@ -184,7 +184,7 @@ CPU elapsed application CPU time (seconds): 0.000, 0% CPU
 * 예외가 발생한 스레드인 스레드 `0`은 메인 스레드입니다.
 * `애플리케이션 정보(Application Specific Information)`는 당시 애플리케이션이 무엇을 하려고 했는지 알려줍니다.
 
-#### 사용자 강제 종료(User force-quit) 충돌 보고서
+##### 사용자 강제 종료(User force-quit) 충돌 보고서
 
 예외(Exception) 섹션을 주목해보면:
 
@@ -195,7 +195,7 @@ Highlighted Thread: 0
 ```
 * 사용자 강제 종료 예외는 `0xdeadfa11` 예외 코드를 갖습니다.
 
-#### 낮은 메모리(Low Memory) 충돌 보고서
+##### 낮은 메모리(Low Memory) 충돌 보고서
 
 이 경우는 충돌 발생 시 장치의 메모리 상황에 대한 자세한 정보를 알려주어야 하기 때문에 다른 충돌 유형과 다르게 보입니다:
 
@@ -297,7 +297,7 @@ MobileStorageMou <23bab46f41cc216fbf66efbaa1786618>     123
 > * 재구성 가능한 객체를 메모리에서 해제합니다.
 > * 캐시를 해제합니다.
 
-## 충돌 보고서 얻기 
+### 충돌 보고서 얻기 
 
 * 앱 개발자가 디버그 빌드를 테스트하는 경우, Xcode의 Organizer에서 충돌 로그를 찾을 수 있습니다.
 * 디버그 앱을 일부 사용자에게 배포하는 경우, 해당 사용자가 기기를 자신의 컴퓨터와 동기화하는 작업이 필요하며 로그는 다음 경로에 있습니다.
@@ -306,11 +306,13 @@ MobileStorageMou <23bab46f41cc216fbf66efbaa1786618>     123
     - 윈도우 비스타 + 7: `C:\Users\<USERNAME>\AppData\Roaming\Apple Computer\Logs\CrashReporter\MobileDevice\<DEVICE_NAME>`
     - 라이브 앱은 iTunes Connect에서 충돌 보고서를 다운로드할 수 있습니다. (현재는 Xcode의 Organizer를 통해 자동으로 수행됩니다.)
 
-## 충돌 보고서 기호화(symbolication)
+### 충돌 보고서 기호화(symbolication)
 
-**기호화란?**
+* 기호화란?
 
--- 스레드 역추적 내 주소 값을 기호(symbol) 이름으로 변환하여 로그를 더 잘 이해하는 데 도움이 되며, 충돌을 일으킨 코드 줄로 이동할 수도 있습니다.
+    - 스레드 역추적 내 주소 값을 기호(symbol) 이름으로 변환하여 로그를 더 잘 이해하는 데 도움이 되며, 충돌을 일으킨 코드 줄로 이동할 수도 있습니다.
+
+&nbsp;
 
 기호화하지 않은 충돌 보고서:
 
@@ -349,13 +351,11 @@ Thread 0:
                                                 # 함수 이름                                       # 파일 이름      # 줄 번호
 ```
 
-&nbsp;
-
 충돌 로그는 XCode에서 기호화할 수 있습니다:
 * Xcode에서 충돌 로그를 드래그하면 기호화를 수행합니다.
 * 이를 수행하려면 해당 버전의 앱에 대한 앱 바이너리 및 .dSYM에 대한 액세스가 필요합니다.
 
-## 일반적인 충돌
+### 일반적인 충돌
 
 * 이미 메모리 해제된 객체에 대한 해제(Over released object)
 * `Null` 포인터 역참조(dereference)

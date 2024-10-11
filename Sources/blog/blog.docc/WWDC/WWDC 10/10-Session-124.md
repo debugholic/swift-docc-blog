@@ -7,7 +7,7 @@
 
 Foundation 프레임워크는 iPhone OS 및 Mac OS 개발의 근간을 제공하는 프레임워크이며, 훌륭한 Mac, iPhone 및 iPad 소프트웨어를 구축하려면 Foundation 프레임워크에 대한 이해는 필수적입니다. Foundation 프레임워크의 광범위한 기능에 대해 알아보고 컬렉션(collections), 문자열(strings), 보존(archiving), 알림(notifications), 설정(preferences), 번들(bundles) 등과 같은 기능을 사용하는 방법에 대해서 알아봅니다.
 
-## Foundation이란?
+### Foundation이란?
 * Foundation은 빌딩 블록 클래스를 제공합니다.
     - 모든 어플리케이션에서 사용되는 기본 유형
     - 더 높은 단계의 소프트웨어로 조립(assembled) 
@@ -16,17 +16,17 @@ Foundation 프레임워크는 iPhone OS 및 Mac OS 개발의 근간을 제공하
     - 복잡한 OS 레벨의 작업을 포장(wraps up)해서 실제로 어떻게 동작하는지 대신 해결해야할 문제 영역에만 초점을 맞출 수 있습니다.
 
     
-## Foundation은 어디 있을까?
+### Foundation은 어디 있을까?
 * Foundation은 앱에 사용되는 프레임워크 중 하나
 * Foundation 자체는 CFNetwork나 CoreFoundation과 같은 다른 프레임워크에 의존 
 * Foundation은 UIKit 및 AppKit과 같은 다른 프레임워크에서 사용 
 
 
-## 빌딩 블록(Building blocks)
+### 빌딩 블록(Building blocks)
 
 @Image(source: 10-Session-124-7.png, alt: nil)
 
-#### 컬렉션(Collections)
+##### 컬렉션(Collections)
 * 오브젝트를 보관하는 공간
 * 가장 일반적으로 사용하는 기능:
     - 반복(iterating)
@@ -182,7 +182,7 @@ NSIndexSet *toRemove = [files indexesOfObjectsPassingTest:^(id obj, NSUInteger i
 
 &nbsp;
 
-#### 문자열(Strings)
+##### 문자열(Strings)
 
 * `NSString`은 시스템 상의 대부분의 텍스트에 대한 객체 컨테이너
     - 유니코드 문자의 배열(array of characters)
@@ -289,7 +289,7 @@ const char *fileName = [outString fileSystemRepresentation];
 
 &nbsp;
 
-#### 날짜와 시간(Dates and times)
+##### 날짜와 시간(Dates and times)
 
 * 복잡한 날짜 및 시간 계산을 캡슐화
 * 사용자가 설정한 날짜와 시간을 자동으로 처리
@@ -403,7 +403,7 @@ NSDate *date = [formatter dateFromString:@"10/06/2010 9:30"];
 
 &nbsp;
 
-#### 유지 및 보관(Persistence and archiving)
+##### 유지 및 보관(Persistence and archiving)
 
 나중에 찾아 쓸 수 있도록 데이터를 저장:
 * 프로퍼티 리스트(Property lists)
@@ -600,7 +600,7 @@ NSLog(@"Nemesis is: %@", r3.nemesis.name);
 
 &nbsp;
 
-#### 파일 및 URL
+##### 파일 및 URL
 
 * `NSURL`은 파일 및 리소스를 참조하는 데 선호되는 방법 
 * 파일 시스템에서는 `NSFileManager`를 통해 URL을 사용 
@@ -621,7 +621,7 @@ NSURL *aapl = [NSURL URLWithString:@"http://www.apple.com"];
 
 &nbsp;
 
-#### 번들(Bundle)
+##### 번들(Bundle)
 * 코드 그룹 및 리소스
 * 다양한 플랫폼 및 아키텍처에 대한 코드 포함
 * 현지화된(localized) 리소스 불러오기 간소화
@@ -658,7 +658,7 @@ NSURL *url = [bundle URLForResource:@"localizedImage"
 
 &nbsp;
 
-#### 오퍼레이션 큐(Operation queues)
+##### 오퍼레이션 큐(Operation queues)
 * 작업을 나타내는 객채 지향적인 방식
 * 병행(concurrent) 애플리케이션 디자인 단순화
 
