@@ -9,23 +9,23 @@
     @TitleHeading("Session 408")
 }
 
-#### Crusty를 소개합니다(Meet Crusty)
+#### 크러스티를 소개합니다(Meet Crusty)
 ---
 @Image(source: 15-Session-408-1.png, alt: nil)
 
-Crusty는 디버거를 신용하지 않고, IDE도 사용하지 않는 구식 프로그래머입니다.
+크러스티는 디버거를 신용하지 않고, IDE도 사용하지 않는 구식 프로그래머입니다.
 
-어느 날, Crusty와 개발에 대해서 이야기를 나누던 중, 그가 이런 말을 합니다.
+어느 날, 크러스티와 개발에 대해서 이야기를 나누던 중, 그가 이런 말을 합니다.
     
-    나는 객재치향은 안해!
+    나는 객재지향은 안해!
 
 객체지향 프로그래밍은 1970년대 이후부터 쭉 있었고, 최신 유행의 프로그래밍 유행이 전혀 아닙니다.
 
-나는 그의 구식 칠판으로 걸어가서 그에게 말했습니다.
+저는 그의 구식 칠판으로 걸어가서 그에게 말했습니다.
     
     객체지향은 멋진 방법입니다. 클래스를 통해서 무엇을 할 수 있는지 보세요.
 
-### 클래스는 훌륭합니다(Classes Are Awesome)
+#### 클래스는 훌륭합니다(Classes Are Awesome)
 ---
 * 캡슐화(Encapsulation)
 
@@ -77,7 +77,7 @@ Crusty는 코웃음을 치며 말했습니다.
     
 맞는 말입니다. Swift에서 우리가 명명한 모든 자료형(Types)은 일급 객체이고 따라서 이 모든 이점을 얻을 수 있습니다.
     
-나는 이전으로 돌아가서, 객체지향으로 개발할 때 어떤 주요 기능이 이 모든 것을 가능하게 하는지 곱씹어 보았습니다.
+저는 이전으로 돌아가서, 객체지향으로 개발할 때 어떤 주요 기능이 이 모든 것을 가능하게 하는지 곱씹어 보았습니다.
 
 #### 상속
 ---
@@ -103,11 +103,9 @@ Crusty는 코웃음을 치며 말했습니다.
     
     클래스의 힘 앞에 무릎 꿇어야 할 겁니다.
 
-###### 
-
-    잠시만 기다려.
-    
 그가 대답했습니다.
+
+    잠시만 기다려.    
     
     우선, 나는 구조체를 통해서 이미 커스터마이징를 하거든! 그리고, 클래스 좋지.
     근데 비용에 대해서 얘기해볼까? 나는 클래스에 세 가지 불만이 있어!
@@ -128,7 +126,7 @@ B는 처음에 받은 정상적인 데이터를 기대했는데, 데이터를 �
     
 문제는 B가 데이터를 얻기 전에는 이런 일이 발생했는지 알 수 없다는 것입니다.
 
-Crusty는 이 문제가 어떻게 흘러갈지 설명합니다.
+크러스티는 이 문제가 어떻게 흘러갈지 설명합니다.
      
     개발자는 코드 내의 버그를 뭉개버리기 위해서 미친듯이 모든 것을 복사하기 시작할거야.
     하지만, 복사본이 많아질수록 코드가 느려지겠지.
@@ -296,7 +294,7 @@ class Number: Ordered {
 
 * 재정의 필요한 대상에 대한 명확함 (Makes clear what to implement)
 
-프로토콜은 이 모든 장점을 가지고 있어, Swift는 최초의 프로토콜 지향 프로그래밍 언어로 만들어졌습니다.
+프로토콜은 이 모든 장점을 가지고 있었고, 그래서 Swift는 최초의 프로토콜 지향 프로그래밍 언어로 만들어졌습니다.
 
 물론 Swift는 객체 지향 프로그래밍에 적합합니다.
 
@@ -320,7 +318,7 @@ class Number : Ordered {
 }
 ```
 
-사실은 꽤 좋은 의미인데, `precedes`가 구현된 채 하는 정적인 검사에서 동적인 런타임 검사로 변경한다는 의미이기 때문입니다.
+사실 이건 꽤 좋은 의미인데, `precedes`가 구현된 채로의 정적인 검사에서, 동적인 런타임 검사로 전환한다는 의미이기 때문입니다.
 
 ```
 protocol Ordered {
@@ -384,7 +382,8 @@ protocol Ordered {
 struct Number : Ordered {
     var value: Double = 0
     func precedes(other: Number) -> Bool {
-        // 프로토콜에는 '(Ordered) -> Bool' 타입의 'precedes' 함수가 필요합니다. 후보가 일치하지 않는 타입 '(Number) -> Bool'을 가집니다.
+        // 프로토콜에는 '(Ordered) -> Bool' 타입의 'precedes' 함수가 필요합니다.
+        // 후보가 일치하지 않는 타입 '(Number) -> Bool'을 가집니다.
         return self.value < other.value
     }
 }
@@ -409,12 +408,13 @@ struct Number : Ordered {
 
 이것은 `Ordered` 배열이 클래스일 때 작동했던 이진 검색입니다.
 
-`Ordered` 배열이란 이질적인(heterogeneous) `Ordered` 유형을 처리하겠다는 말이죠. 배열 내에는 `Number`와 `Label`이 섞여 있을 겁니다.
+`Ordered` 배열이란 이질적인(heterogeneous) `Ordered` 타입을 처리하겠다는 말이죠. 배열 내에는 `Number`와 `Label`이 섞여 있을 겁니다.
 
 그동안 `Ordered`에 대해 수정이 있었고, 자체 요구사항도 추가했으니, 컴파일러는 아마 이것을 동질하게(homogeneous) 만들도록 강제할 것입니다.
 
 ```
-// 프로토콜 'Ordered'는 일반 제약 조건으로만 사용할 수 있습니다. Self 또는 연관된 유형 요구 사항이 있기 때문입니다.
+// 프로토콜 'Ordered'는 일반 제약 조건으로만 사용할 수 있습니다.
+// Self 또는 연관된 타입 요구 사항이 있기 때문입니다.
 func binarySearch(sortedKeys: [Ordered], forKey k: Ordered) -> Int {
     var lo = 0
     var hi = sortedKeys.count
@@ -446,359 +446,425 @@ func binarySearch<T : Ordered>(sortedKeys: [T], forKey k: T) -> Int {
 
 하지만 생각해 보면 원래의 시그니처는 사실 거짓말이었습니다.
 
-트랩을 만드는 것 말고는 이질적인 경우를 제대로 처리한 적이 없었으니까요.
+트랩을 만드는 것 말고는 이질적인 유형을 제대로 처리한 적이 없었으니까요.
 
-프로토콜에 자체 요구 사항을 추가하면 프로토콜은 클래스와 기능이 훨씬 덜 겹치는 매우 다른 세계로 이동합니다.
+프로토콜에 자체 요구 사항을 추가하면 프로토콜은 클래스와 매우 다른 종류의 것이 됩니다.
 
 | **Without Self Requirement** | **With Self Requirement** |
 |:-- | :-- |
 | *타입으로 사용 가능* | *제네릭으로만 사용 가능* |
 | *`func sort(inout a: [Ordered])`* | *`func sort<T : Ordered>(inout a: [T])`* |
 | *이질적(heterogeneous)* | *동질적(homogeneous)* |
-| 각 모델들이 다른 모든 유형의 모델을 처리해야 함 | 모델 유형 간의 상호 작용에서 자유로움 |
+| 각 모델들이 다른 모든 타입의 모델을 처리해야 함 | 모델 타입 간의 상호 작용에서 자유로움 |
 | 동적 디스패치 | 정적 디스패치 |
 | 낮은 최적화 | 높은 최적화 | 
 
-#### Crusty에게 도전(A Challenge for Crusty)
+#### 크러스티에게 내준 과제(A Challenge for Crusty)
 ---
-okay, so I understood how the static aspect of protocols worked.
-프로토콜의 정적 측면이 어떻게 작동하는지 이해했습니다.
+프로토콜의 정적인 측면이 어떻게 작동하는지는 알겠습니다.
 
-but I wasn't sure whether to believe crusty that protocols could really replace classes.
-하지만 프로토콜이 정말 클래스를 대체할 수 있다는 크러스티의 말을 믿을 수 있을지 확신이 서지 않았어요.
+하지만 프로토콜이 정말 클래스를 대체할 수 있다는 크러스티의 말에는 확신이 서지 않았죠.
 
-and so I set him a challenge to build something for which we normally use oop but using protocols.
-그래서 저는 크러스티에게 우리가 보통 OOP를 사용하지만 프로토콜을 사용하는 무언가를 만들어보라는 과제를 내줬어요.
+그래서 저는 크러스티에게 우리가 보통 객체지향을 사용하지만 프로토콜로 대체할 수 있는 무언가를 만들어보라는 과제를 내줬어요.
 
-I had in mind a little diagramming app where you could drag and drop shapes and on a drawing surface and then interact with them.
 저는 도형을 드래그 앤 드롭해서 도형과 상호작용할 수 있는 작은 다이어그램 앱을 염두에 두고 있었어요.
 
-and so I asked crusty to build the document and display model.
 그래서 크러스티에게 문서와 디스플레이 모델을 만들어 달라고 부탁했죠.
 
-and here's what he came up with.
 그리고 그가 생각해낸 것은 다음과 같습니다.
 
-first he built some drawing Primitives.
-먼저 그는 드로잉 프리미티브를 만들었습니다.
+먼저 그는 드로잉 프리미티브(primitive)를 만들었습니다.
 
-now as you might imagine Crusty doesn't really do goys he's more of a text man.
-여러분도 알다시피 크러스티는 그림을 그리는 게 아니라 텍스트에 더 능숙합니다.
+```
+struct Renderer {
+    func moveTo(p: CGPoint) { print("moveTo(\(p.x), \(p.y))") }
+    func lineTo(p: CGPoint) { print("lineTo(\(p.x), \(p.y))") }
+    func arcAt(center: CGPoint, radius: CGFloat, startAngle: CGFloat, endAngle: CGFloat) {
+        print("arcAt(\(center), radius: \(radius)," + " startAngle: \(startAngle), endAngle: \(endAngle))")
+    }
+}
+```
 
-so his Primitives just print out the drawing commands you issue. right?
-그래서 그의 프리미티브는 사용자가 입력한 드로잉 명령을 출력하는 거죠?
+그리고 그는 모든 그리기 요소에 공통 인터페이스를 제공하는 `drawable` 프로토콜을 만들었죠. 
 
-I grudgingly admitted that this was probably enough to prove his point.
-저는 마지못해 이 정도면 그의 주장을 증명하기에 충분하다고 인정했습니다.
+```
+protocol Drawable {
+    func draw(renderer: Renderer)
+}
+```
 
-and then he created a drawable protocol to provide a common interface for all of our drawing elements. 
-그리고 모든 그리기 요소에 공통 인터페이스를 제공하는 그리기 가능한 프로토콜을 만들었죠. 
+그 다음으로 `Polygon`을 만들기 시작했습니다.
 
-okay this is pretty straightforward.
-이건 꽤 간단하네요.
+```
+struct Polygon : Drawable {
+    func draw(renderer: Renderer) {
+        renderer.moveTo(corners.last!)
+        for p in corners {
+            renderer.lineTo(p)
+        }
+    }
+    var corners: [CGPoint] = []
+}
+```
 
-and then he started building shapes like polygon.
-그리고는 다각형과 같은 도형을 만들기 시작했습니다.
+`Polygon`에서 가장 먼저 눈에 띄는 것은 다른 값 유형(value type)으로 만들어진 값 타입이라는 점입니다. 그저 점의 배열이 있는 구조체인거죠.
 
-now the first thing to notice here about polygon is it's a value type built out of other value types.
-이제 폴리곤에 대해 가장 먼저 눈에 띄는 것은 다른 값 유형으로 구성된 값 유형이라는 점입니다.
+다각형을 그리려면 마지막 모서리로 이동한 다음 모든 모서리를 순환하며 선을 그리면 됩니다.
 
-it's just a struct that contains an array of points.
-점의 배열을 포함하는 구조체일 뿐입니다.
+이번에는 `Circle`을 봅시다.
 
-and to draw a polygon we move to the last corner and then we cycle through all the corners drawing lines.
-다각형을 그리려면 마지막 모서리로 이동한 다음 모든 모서리를 순환하며 선을 그립니다.
+```
+struct Circle : Drawable {
+    func draw(renderer: Renderer) {
+        renderer.arcAt(center, radius: radius, startAngle: 0.0, endAngle: twoPi)
+    }
+    var center: CGPoint
+    var radius: CGFloat
+}
+```
 
-okay and here's a circle.
-자, 여기 원이 있습니다.
+`Circle` 역시 다른 값 유형으로 만들어진 값 타입으로, `center`와 `radius`을 포함하는 구조체입니다.
 
-again circle is a value type built out of other value types it's just a structure that contains a center point and a radius.
-다시 원은 다른 값 유형으로 구성된 값 유형으로 중심점과 반지름을 포함하는 구조체입니다.
+원을 그리기 위해서는 0에서 2π 라디안까지 이어지는 호를 만듭니다.
 
-now to draw a circle we make an arc that sweeps all the way from 0 to 2 pi radians.
-이제 원을 그리기 위해 0에서 2π 라디안까지 스윕하는 호를 만듭니다.
+이제 원과 다각형이 있으니, 다이어그램을 만들 수 있습니다.
 
-so now we can build a diagram out of circles and polygons.
-이제 원과 다각형으로 다이어그램을 만들 수 있습니다.
+크러스티가 말했습니다.
 
-okay said crusty “let's take her for a spin.”
-좋아, 크러스티가 “한 번 해보자”고 했어요.
+    한 번 달려볼까
 
-so he did this is a diagram.
-그래서 그가 만든 것이 다이어그램입니다.
+그리고 `Diagram`을 만들었습니다.
 
-a diagram is just a drawable it's another value type.
-다이어그램은 그리기만 가능한 또 다른 값 유형입니다.
+```
+struct Diagram : Drawable {
+    func draw(renderer: Renderer) {
+        for f in elements {
+            f.draw(renderer)
+        }
+    }
+    var elements: [Drawable] = []
+}
+```
 
-why is it a value type because all drawables are value types and so an array of drawables is also a value type.
-왜 다이어그램이 값 타입일까요? 모든 드로어블은 값 타입이므로 드로어블의 배열도 값 타입이기 때문이죠.
+`Diagram`은 `Drawable`이고, 또 다른 값 유형입니다.
 
-let's go back to that.
-다시 돌아가 봅시다.
+지금까지의 모든 `Drawable`은 값 타입이고, `Drawable`의 배열도 값 유형이기 때문입니다.
 
-wow okay, there.
-와우, 알겠습니다.
+`Diagram`을 그리려면 모든 `elements`를 반복해서 하나씩 `draw`하면 됩니다.
 
-an array of drawable is also a value type and therefore that's since that's the only thing in my diagram the diagram is also a value type.
-드로어블의 배열도 값 유형이므로 내 다이어그램에 있는 유일한 것이기 때문에 다이어그램도 값 유형입니다.
+테스트해 봅시다.
 
-so to draw it we just Loop through all of the elements and draw each one.
-따라서 그리려면 모든 요소를 반복해서 하나씩 그리면 됩니다.
+Crusty는 중심과 반지름이 특정한 `circle`을 만들었습니다.
 
-okay now let's take her for a spin.
-이제 한 번 실행해 봅시다.
+그런 다음 `triangle`을 추가하고 마지막으로 `diagram`을 만들어 그리라고 지시했습니다.
 
-so we're going to test it.
-테스트해 보겠습니다.
+```
+var circle = Circle(center: CGPoint(x: 187.5, y: 333.5), radius: 93.75)
 
-so crusty created a circle with curiously specific Center and radius.
-그래서 크러스티는 신기하게도 중심과 반지름이 특정한 원을 만들었습니다.
+var triangle = Polygon(corners: [ 
+    CGPoint(x: 187.5, y: 427.25),
+    CGPoint(x: 268.69, y: 286.625),
+    CGPoint(x: 106.31, y: 286.625) 
+])
 
-and then with uncanny spock-like Precision he added a triangle and finally he built a diagram around them and told it to draw.
-그런 다음 스팍처럼 정밀하게 삼각형을 추가하고 마지막으로 그 주위에 다이어그램을 만들어 그리라고 지시했습니다.
+var diagram = Diagram(elements: [circle, triangle])
 
-“voila.”
-“짜잔!”
+diagram.draw(Renderer())
+```
 
-said crusty triumphantly as you can plainly see this is an equilateral triangle with a circle inscribed inside a circle.
-원 안에 원이 새겨진 정삼각형이라는 것을 분명히 알 수 있듯이 크러스티는 승리의 환호성을 지르며 말했습니다.
+    짜잔!
 
-well maybe I'm just not as good at doing trigonometry in my head as crusty is but no crusty I said I can't plainly see that and I'd find this demo a whole lot more compelling if I was doing something actually useful for our app like you know drawing to the screen.
-글쎄요, 제가 머릿속으로 삼각형을 그리는 데는 크러스티만큼 능숙하지 못하지만, 화면에 그림을 그리는 것처럼 실제로 우리 앱에 유용한 작업을 한다면 이 데모가 훨씬 더 설득력이 있을 것 같다고 크러스티는 말했습니다.
+크러스티는 승리의 환호성을 지르며 말했습니다.
 
-after I got over my annoyance I decided to rewrite his renderer to use core graphics.
-짜증을 극복한 후 저는 핵심 그래픽을 사용하도록 렌더러를 다시 작성하기로 결정했습니다.
+    원 안에 있는 정삼각형이 분명히 보이지?
 
-and I told him I was going to do this he said “hang on just a minute there monkey boy”.
-제가 이렇게 하겠다고 말했더니 잠깐만 기다려 보라고 하더군요.
+저는 크러스티만큼 머릿속으로 삼각형을 그리는데 능숙하지 않나 봅니다.
 
-“if you do that how am I going to test my code.”
-그렇게 하면 내 코드를 어떻게 테스트하냐고요.
+    아니요, 크러스티, 내 눈에는 안보여요.
+    화면에 그림을 그리는 것처럼 실제로 효과적인 작업이라면 이 데모가 훨씬 더 매력적으로 느껴졌을 텐데요.
 
-and then he laid out a pretty compelling case for the use of plain text in testing if something changes in what we're doing we'll immediately see it in the output.
-그리고는 테스트에 일반 텍스트를 사용하면 작업 중 무언가가 변경되면 출력에서 즉시 확인할 수 있다는 꽤 설득력 있는 사례를 제시했습니다.
+짜증을 가라앉히고, 저는 `Core Graphics`를 사용해 그의 `Renderer`를 다시 작성하기로 결정했습니다.
 
-instead he suggested we do a little protocol oriented programming.
+제가 이렇게 하겠다고 말했더니
+
+    잠깐 기다려 봐, 애송이.
+    그렇게 해버리면 내가 어떻게 내 코드를 테스트할 수 있겠어?
+
+이어서 테스트 중 무언가가 변경될 때에는 즉시 결과를 확인할 수 있는 꽤 그럴싸한 사례를 제시했습니다. 
+
 대신 프로토콜 지향 프로그래밍을 해보자고 제안했습니다.
 
-so he copied his render and made the copy into a protocol.
-그래서 렌더링을 복사해서 프로토콜로 만들었습니다.
+그래서 `Renderer`를 프로토콜로 만들었습니다.
 
-uh yeah and then you have to delete the bodies okay there it is and then he renamed the original renderer and made it conform.
-네, 그리고 본문 부분을 삭제한 다음 원래 렌더러의 이름을 바꾸고 그에 맞게 만들었습니다.
+```
+protocol Renderer {
+    func moveTo(p: CGPoint)
+    func lineTo(p: CGPoint)
+    func arcAt(center: CGPoint, radius: CGFloat, startAngle: CGFloat, endAngle: CGFloat)
+}
+```
 
-now all of this refactoring was making me impatient like I really want to see this stuff on the screen.
-이제 이 모든 리팩터링 작업은 저를 조급하게 만들었고 화면에 이걸 빨리 보고 싶었습니다.
+그리고 구현 부분을 사제한 다음 원래 `Renderer`의 이름을 바꾸고 적절하게 만들었습니다.
 
-I wanted to rush on and Implement a renderer for core Graphics.
-서둘러서 핵심 그래픽을 위한 렌더러를 구현하고 싶었습니다.
+```
+struct TestRenderer : Renderer {
+    func moveTo(p: CGPoint) { print("moveTo(\(p.x), \(p.y))") }
+    func lineTo(p: CGPoint) { print("lineTo(\(p.x), \(p.y))") }
+    func arcAt(center: CGPoint, radius: CGFloat, startAngle: CGFloat, endAngle: CGFloat) {
+        print("arcAt(\(center), radius: \(radius)," + " startAngle: \(startAngle), endAngle: \(endAngle))")
+    }
+}
+```
 
-but I had to wait until crusty tested his code again.
-하지만 크러스티가 코드를 다시 테스트할 때까지 기다려야 했습니다.
+이 모든 리팩터링 작업은 저를 조급하게 만들었고 화면에 이걸 빨리 보고 싶었습니만, Crusty가 코드를 다시 테스트할 때까지 기다려야 했습니다.
 
-and when he was finally satisfied he said to me.
-그리고 마침내 만족스러워졌을 때 그는 저에게 말했습니다.
+이윽고 마침내 만족스러워졌을 때 그가 말했습니다.
 
-“okay what are you going to put in your renderer.”
-렌더러에 뭘 넣을 건데?
+    Renderer에 뭘 넣을 건데?
 
-I said “well, CGcontext.”
-저는 CGcontext라고 답했죠.
+저는 대답했죠.
 
-CGcontext has basically everything a renderer needs. right?
-CGcontext에는 기본적으로 렌더러에 필요한 모든 것이 있습니다. 
+    CGContext요.
 
-in fact within the limits of its plain C interface?
-사실 일반 C 인터페이스의 한계 내에서 말이죠.
+`CGContext`에는 기본적으로 렌더러에 필요한 모든 것이 있습니다. C 인터페이스 범위 내라면 그 자체로 렌더러라고 볼 수 있죠.
+그가 말했습니다.
 
-it basically is a renderer.
-기본적으로 렌더러입니다.
+    훌륭하군.
+    그 키보드 줘봐.
 
-“great”
-“훌륭하다”
+그리고 키보드를 낚아채더니 너무 빨리 뭔가를 해버려서 거의 볼 수도 없었어요.
 
-said crusty
-크러스티가 말했다
+```
+extension CGContext : Renderer {
+    func moveTo(p: CGPoint) { }
+    func lineTo(p: CGPoint) { }
+    func arcAt(center: CGPoint, radius: CGFloat, startAngle: CGFloat, endAngle: CGFloat) { }
+}
+```
 
-“give me that keyboard”
-“그 키보드 내놔”
+    잠깐만요, 방금 모든 CGContext를 렌더러로 만든 거예요?
 
-and he snatched something away from me and he did something so quickly I barely saw it.
-그리고는 제게서 무언가를 낚아채더니 너무 빨리 뭔가를 해버려서 거의 볼 수가 없었어요.
+그는 아직 아무 것도 하지 않았지만, 새로운 타입을 추가할 필요조차 없었습니다.
+    
+    뭘 기다리고 있어? 중괄호 안이나 채워.
 
-wait a second I said, “did you just make every CGcontext into a renderer?”
-잠깐만요, 제가 “방금 모든 CG컨텍스트를 렌더러로 만든 거예요?”라고 물었더니
+그래서 저는 필요한 `Core Graphics` 한 스쿱을 플레이그라운드(Playground)에 부어 넣었습니다.
 
-he had “I mean it didn't do anything yet but this was kind of amazing I didn't even have to add a new type”
-그는 “아직 아무 것도 하지 않았는데 새 유형을 추가할 필요도 없을 정도로 놀라웠어요”라고 말했죠.
+```
+extension CGContext : Renderer {
+    func moveTo(p: CGPoint) {
+        CGContextMoveToPoint(self, position.x, position.y)
+    }
+    func lineTo(p: CGPoint) {
+        CGContextAddLineToPoint(self, position.x, position.y)
+    }
+    func arcAt(center: CGPoint, radius: CGFloat, startAngle: CGFloat, endAngle: CGFloat) {
+        let arc = CGPathCreateMutable()
+        CGPathAddArc(arc, nil, c.x, c.y, radius, startAngle, endAngle, true)
+        CGContextAddPath(self, arc)
+    }
+}
+```
 
-what are you waiting for said crusty “fill in those braces.”
-그 중괄호를 채우라고 했죠.
+#### 테스트 가능성을 위한 프로토콜 및 제네릭(Protocols and Generics for Testability)
+---
+크러스티가 `TestRenderer`에 무엇을 했는지 잠시 되돌아보고 싶습니다. 꽤 훌륭하거든요.
 
-so I poured in the necessary coreographic scoop and threw it all into a playground and there.
-그래서 필요한 코어그래픽 스쿱을 부어서 놀이터에 던져 넣었습니다.
+```
+struct TestRenderer : Renderer {
+    func moveTo(p: CGPoint) { print("moveTo(\(p.x), \(p.y))") }
+    func lineTo(p: CGPoint) { print("lineTo(\(p.x), \(p.y))") }
+    func arcAt(center: CGPoint, radius: CGFloat, startAngle: CGFloat, endAngle: CGFloat) {
+        print("arcAt(\(center), radius: \(radius)," + " startAngle: \(startAngle), endAngle: \(endAngle))")
+    }
+}
+```
 
-it is now you can download this playground uh which demonstrates everything I'm talking about here in the talk after we're done.
-이제 이 플레이그라운드를 다운로드하면 강연이 끝난 후 제가 여기서 이야기한 모든 것을 보여줄 수 있습니다.
-
-um but back to our example just to mess with me crusty then did this.
-하지만 다시 예시로 돌아가서 저를 괴롭히기 위해 크러스티가 이렇게 했어요.
-
-now it took me a second to realize why drawing wasn't going into an infinite recursion at this point.
-이제 왜 이 시점에서 그리기가 무한 재귀로 가지 않았는지 깨닫는 데 1초가 걸렸습니다.
-
-and if you want to know more about that you should go go to this session on Friday.
-이에 대해 더 자세히 알고 싶으시면 금요일에 이 세션에 참석하세요.
- 
-but it also didn't change the display at all.
-하지만 디스플레이가 전혀 바뀌지 않았습니다.
-
-eventually crusty decided to show me what was happening in his plain text output.
-결국 크러스티는 일반 텍스트 출력에서 무슨 일이 일어나고 있는지 보여주기로 결정했습니다.
-
-so it turns out that it was just repeating the same drawing commands twice.
-알고 보니 같은 그리기 명령을 두 번 반복하는 것이었습니다.
-
-so being more of a graphics oriented guy I really wanted to see the results.
-그래픽에 더 관심이 많은 저는 결과를 보고 싶었습니다.
-
-so I built a little scaling adapter and w it around the diagram and this is the result and you can see this in the playground so I'm not going to go into the scaling adapter here.
-그래서 작은 스케일링 어댑터를 만들어서 다이어그램 주위에 배치했고 이것이 그 결과입니다. 놀이터에서 보실 수 있으므로 여기서는 스케일링 어댑터에 대해 설명하지 않겠습니다.
-
-but that's kind of a demonstration that with protocols we can do all the same kinds of things that we're used to doing with classes adapters usual design patterns.
-하지만 프로토콜을 사용하면 일반적인 디자인 패턴인 클래스 어댑터로 익숙한 것과 동일한 종류의 작업을 모두 수행할 수 있다는 것을 보여주는 일종의 데모입니다.
-
-okay now I'd like to just reflect for a second on what crusty did with test renderer though.
-이제 크러스티가 테스트 렌더러로 무엇을 했는지 잠시 되돌아보고 싶습니다.
-
-because it's actually kind of brilliant.
-사실 꽤 훌륭하거든요.
-
-see by decoupling the document model from a specific renderer.
-문서 모델을 특정 렌더러에서 분리해서 보시죠.
-
-he's able to plug in an instrumented component that reveals everything that we do that our code does in detail.
 그는 코드가 수행하는 모든 작업을 자세히 보여주는 계측 컴포넌트를 연결할 수 있었습니다.
 
-and we've since applied this approach throughout our code.
 이후 코드 전체에 이 접근 방식을 적용했습니다.
 
-we find that the more we decouple things with protocols the more testable everything gets.
-프로토콜로 더 많은 것을 분리할수록 모든 것을 테스트할 수 있다는 것을 알게 되었습니다.
+프로토콜로 더 많은 것을 분리할 수록 모든 것을 테스트할 수 있다는 것을 알게 되었습니다.
 
-this kind of testing is really similar to what you get with mocks but it's so much better.
-이런 종류의 테스트는 모의 테스트와 정말 비슷하지만 훨씬 더 낫습니다.
+이런 부류의 테스트는 모의 테스트(mocks)와 비슷하지만 훨씬 더 낫습니다.
 
-see mocks are inherently fragile. right.
-모의 테스트는 본질적으로 취약하죠. 맞아요.
+모의 테스트는 본질적으로 취약하죠.
 
-you have to couple your testing code to the implementation details of the code under test.
-테스트 코드를 테스트 대상 코드의 구현 세부 사항과 연결해야 하죠.
+테스트 코드를 테스트 대상의 구현 사이에 연결해야 합니다.
 
-and because of that fragility, they don't play well with Swift's strong static type system.
-그리고 그 취약성 때문에 Swift의 강력한 정적 유형 시스템과 잘 어울리지 않습니다.
+그리고 그 취약성 때문에 Swift의 강한 정적 타입 시스템과 잘 어울리지 않습니다.
 
-see protocols give us a principled interface that we can use that's enforced by the language but still gives us the hooks to plug in all of the instrumentation we need.
-프로토콜은 언어에 의해 강제되는 원칙적인 인터페이스를 제공하면서도 필요한 모든 계측을 연결할 수 있는 후크를 제공합니다.
+프로토콜은 언어에 의해 강제되는 원칙적인 인터페이스를 제공하면서도, 필요한 모든 계측에 대한 연결 고리를 제공합니다.
 
-okay, back to our example because now we seriously need to talk about bubbles.
-이제 버블에 대해 진지하게 이야기해야 하므로 예제로 돌아가 보겠습니다.
+이제 비눗방울에 대한 얘기를 하러 예제로 돌아가 보겠습니다.
 
-okay, we wanted this diagramming app to be popular with the kids and the kids love bubbles of course.
-좋아, 우리는 이 다이어그램 앱이 아이들에게 인기가 있기를 원했고 아이들은 당연히 비눗방울을 좋아합니다.
+우리는 이 다이어그램 앱이 아이들에게 인기가 있기를 원했고 아이들은 당연히 비눗방울을 좋아합니다.
 
-so in a diagram, a bubble is just a an inner circle offset around the center of the Outer Circle uh that you use to represent a highlight.
-따라서 다이어그램에서 거품은 바깥쪽 원의 중심을 중심으로 오프셋된 안쪽 원으로 하이라이트를 나타내는 데 사용합니다.
+다이어그램에서 비눗방울은 바깥쪽 원과 하이라이트를 나타내는 안쪽 원으로 나타냅니다.
 
-so you have two circles. just like that.
-그러니까 두 개의 원이 있는 거죠. 이렇게요.
+이 코드를 문맥에 넣었을 때 Crusty는 끓어오르기 시작했고, 모든 코드 반복은 그를 지루하게 만들었습니다.
 
-and when I put this code in context though crusty started getting really agitated all the code repetition was making him ornery.
-이 코드를 문맥에 넣었을 때 크러스티가 흥분하기 시작했지만 모든 코드 반복이 그를 지루하게 만들었습니다.
+```
+struct Bubble : Drawable {
+    func draw(r: Renderer) {
+        r.arcAt(center, radius: radius, startAngle: 0, endAngle: twoPi)
+        r.arcAt(highlightCenter, radius: highlightRadius,
+        startAngle: 0, endAngle: twoPi)
+    }
+}
 
-and if crusty ain't happy ain't nobody happy.
-크러스티가 행복하지 않으면 아무도 행복하지 않아요
+struct Circle : Drawable {
+    func draw(r: Renderer) {
+        r.arcAt(center, radius: radius, startAngle: 0.0, endAngle: twoPi)
+    }
+}
+```
+    
+    봐봐, 전부 다 완전한 원이야.
+    난 이걸 그냥 이렇게 적고 싶어.
 
-“look, they're all complete circles.”
-“봐요, 모두 완전한 원이에요.”
+```
+protocol Renderer {
+    func moveTo(p: CGPoint)
+    func lineTo(p: CGPoint)
+    func arcAt(center: CGPoint, radius: CGFloat, startAngle: CGFloat, endAngle: CGFloat)
+}
 
-he shouted 
-그는 외쳤습니다. 
+struct Bubble : Drawable {
+    func draw(r: Renderer) {
+        r.circleAt(center, radius: radius)
+        r.circleAt(highlightCenter, radius: highlightRadius)
+    }
+}
 
-“I just want to write this.”
-“난 그냥 이걸 쓰고 싶어요.”
+struct Circle : Drawable {
+    func draw(r: Renderer) {
+        r.circleAt(center, radius: radius)
+    }
+}
+```
 
-I said.
 제가 말했죠.
 
-“calm down crusty calm down.”
-“크러스티 진정해 진정해”
+    크러스티, 진정하세요.
+    프로토콜에 요구 사항 하나만 추가하면 되는 거죠?
+    그럼 당연히 모델을 업데이트해서 TestRenderer와 CGContext에 구현하면 되잖아요.
 
-“we can do that all we need to do is add another requirement to the protocol, right?”
-“프로토콜에 요구 사항 하나만 추가하면 되는 거죠?”
+```
+protocol Renderer {
+    func moveTo(p: CGPoint)
+    func lineTo(p: CGPoint)
+    func circleAt(center: CGPoint, radius: CGFloat)
+    func arcAt(center: CGPoint, radius: CGFloat, startAngle: CGFloat, endAngle: CGFloat)
+}
 
-“then of course we update our models to supply it there's test renderer and then the CGContext”
-“그럼 당연히 모델을 업데이트해서 테스트 렌더러와 CGContext를 제공하면 되죠.”
+extension TestRenderer : Renderer {
+    func arcAt(center: CGPoint, radius: CGFloat, startAngle: CGFloat, endAngle: CGFloat)
+        arcAt(center, radius: radius, startAngle: 0, endAngle: twoPi)
+    }
+}
 
-now at this point Crusty's got his boot off and he's beating it on the desk.
-이제 크러스티는 부츠를 벗고 책상을 두드리고 있습니다.
+extension CGContext : Renderer {
+    func arcAt(center: CGPoint, radius: CGFloat, startAngle: CGFloat, endAngle: CGFloat)
+        arcAt(center, radius: radius, startAngle: 0, endAngle: twoPi)
+    }
+}
+```
 
-because here we were again repeating code.
-여기서 다시 코드를 반복하고 있었기 때문입니다.
+이제 Crusty는 부츠를 벗고 책상을 두드리고 있습니다.
 
-he snatched the keyboard back for me muttering something about having to do everything his own self.
-혼자서 다 해야 한다고 중얼거리며 키보드를 뺏어갔어요.
+여기서도 코드를 다시 반복하고 있었기 때문입니다.
 
-and he proceeded to school me using a new feature in Swift.
+    나 혼자 다 해야 되네.
+
+그는 중얼거리며 키보드를 뺏어갔어요.
+
 그리고는 스위프트의 새로운 기능을 사용해 저를 가르치기 시작했죠.
 
-this is a protocol extension.
 프로토콜 확장입니다.
 
-this says all models of renderer have this implementation of circle at.
-렌더러의 모든 모델에 이 서클 구현이 있다고 말합니다.
+#### 프로토콜 확장 (Protocol Extension)
+---
 
-now we have an implementation, that is shared among all of the models of renderer.
-이제 모든 렌더러 모델에서 공유되는 구현이 생겼습니다.
+```
+protocol Renderer {
+    func moveTo(p: CGPoint)
+    func lineTo(p: CGPoint)
+    func circleAt(center: CGPoint, radius: CGFloat)
+    func arcAt(center: CGPoint, radius: CGFloat, startAngle: CGFloat, endAngle: CGFloat)
+}
 
-so notice that we still have this circle at requirement up there.
-따라서 저 위에 여전히 이 원이 요구사항에 있다는 것을 알 수 있습니다.
+extension Renderer {
+    func circleAt(center: CGPoint, radius: CGFloat) {
+        arcAt(center, radius: radius, startAngle: 0, endAngle: twoPi)
+    }
+}
+```
 
-you might ask what does it mean to have a requirement that's also fulfilled immediately in an extension.
-확장에서도 즉시 충족되는 요구사항이 있다는 것이 무슨 의미인지 물어보실 수도 있습니다.
+이 코드의 의미는 `Renderer`의 모든 모델에 이 `circleAt` 구현이 있다는 말입니다.
 
-good question.
-좋은 질문입니다.
+이제 모든 `Renderer` 모델에서 공유되는 구현이 생겼고, 여전히 `circleAt` 요구사항이 있는 것이 보입니다.
 
-the the answer is that a protocol requirement creates a customization point.
-정답은 프로토콜 요구사항이 사용자 정의 지점을 생성한다는 것입니다.
+`extension`에서 바로 작성할 수 있는 요구사항이 있다는 것이 어떤 의미인지 물어보실 수 있습니다.
 
-to see how this plays out let's collapse this method body and add another method to the extension one that isn't backed by a requirement.
-이 메서드 본문을 축소하고 요구 사항에 의해 뒷받침되지 않는 다른 메서드를 확장에 추가하여 어떻게 작동하는지 확인해 보겠습니다.
+좋은 질문입니다. 그것은 프로토콜의 요구사항이 사용자 정의 지점을 생성한다는 것입니다.
 
-okay, and now we can extend Crusty's test renderer to implement both of these methods.
-이제 Crusty의 테스트 렌더러를 확장하여 이 두 가지 메서드를 모두 구현할 수 있습니다.
+요구 사항이 아닌 다른 메서드를 확장에 추가하여 어떻게 작동하는지 확인해 보겠습니다.
 
-and then we'll just call them.
-그리고 그냥 호출하면 됩니다.
 
-okay, now what happens here is totally unsurprising we're directly calling the implementations in test renderer and the protocol isn't even even involved. right?
-이제 테스트 렌더러에서 구현을 직접 호출하고 프로토콜은 관여하지도 않으니 전혀 놀랍지 않죠?
+```
+protocol Renderer {
+    func moveTo(p: CGPoint)
+    func lineTo(p: CGPoint)
+    func circleAt(center: CGPoint, radius: CGFloat)
+    func arcAt(center: CGPoint, radius: CGFloat, startAngle: CGFloat, endAngle: CGFloat)
+}
 
-we'd get the same result if we remove that conformance.
-그 적합성을 제거해도 같은 결과를 얻을 수 있습니다.
+extension Renderer {
+    func circleAt(center: CGPoint, radius: CGFloat) { ... }
+    func rectangleAt(edges: CGRect) { ... }
+}
+```
 
-but now let's change the context, so Swift only knows it has a renderer, not a test renderer.
-하지만 이제 컨텍스트를 변경하여 Swift는 테스트 렌더러가 아니라 렌더러가 있다는 것만 알 수 있도록 해보겠습니다.
+이제 Crusty의 `TestRenderer`를 확장시켜 이 두 가지 메서드를 모두 구현할 수 있습니다. 그냥 호출하면 됩니다.
 
-and here's what happens.
-그리고 이런 일이 일어납니다.
+```
+extension TestRenderer : Renderer {
+    func circleAt(center: CGPoint, radius: CGFloat) { ... }
+    func rectangleAt(edges: CGRect) { ... }
+}
 
-so because Circle at is a requirement our model gets the privilege of customizing it and the customization gets called that one.
-Circle at은 요구 사항이므로 우리 모델은 이를 커스터마이징할 수 있는 권한을 얻고 커스터마이징은 해당 요구 사항으로 호출됩니다.
+let r = TestRenderer()
+r.circleAt(origin, radius: 1);
+r.rectangleAt(edges);
+```
+전혀 놀랍지도 않죠. 이제 TestRenderer의 구현을 직접 호출하고 프로토콜은 관여하지도 않습니다. 
+
+`Renderer` 규정 조건을 제거해도 같은 결과를 얻을 수 있습니다.
+
+```
+extension TestRenderer {
+    func circleAt(center: CGPoint, radius: CGFloat) { ... }
+    func rectangleAt(edges: CGRect) { ... }
+}
+
+let r = TestRenderer()
+r.circleAt(origin, radius: 1);
+r.rectangleAt(edges);
+```
+
+하지만 이제 문맥을 변경하여 Swift가 `TestRenderer`가 아니라 `Renderer`만 있다는 것만 알 수 있도록 해보겠습니다.
+
+```
+let r: Renderer = TestRenderer()
+r.circleAt(origin, radius: 1);
+r.rectangleAt(edges);
+```
+
+`circleAt`은 요구 사항이므로 우리 모델은 이를 커스터마이징하고 불러옵니다.
 
 but rectangle at isn't a requirement so the implementation in test renderer it only Shadows the one in the protocol and in this context where you only know you have a renderer and not a test renderer the protocol implementation is called.
-하지만 직사각형은 요구사항이 아니므로 테스트 렌더러의 구현은 프로토콜에 있는 것을 그림자 처리할 뿐이고 테스트 렌더러가 아닌 렌더러만 있는 이 컨텍스트에서는 프로토콜 구현이 호출됩니다.
+하지만 `rectangleAt`은 요구 사항이 아니므로 TestRenderer 구현은 프로토콜에 있는 것의 그림자 처리할 뿐이고 테스트 렌더러가 아닌 렌더러만 있는 이 컨텍스트에서는 프로토콜 구현이 호출됩니다.
 
 which is kind of weird. right?
 좀 이상하죠?
