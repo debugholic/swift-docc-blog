@@ -318,7 +318,7 @@ class Number : Ordered {
 }
 ```
 
-사실 이건 꽤 좋은 의미인데, `precedes`가 구현된 채로의 정적인 검사에서, 동적인 런타임 검사로 전환한다는 의미이기 때문입니다.
+사실 이건 꽤 좋은 의미인데, `precedes`가 구현된 채로의 정적인 검사에서, 동적인 런타임 검사로 변경한다는 의미이기 때문입니다.
 
 ```
 protocol Ordered {
@@ -826,7 +826,9 @@ extension Renderer {
 }
 ```
 
-이제 Crusty의 `TestRenderer`를 확장시켜 이 두 가지 메서드를 모두 구현할 수 있습니다. 그냥 호출하면 됩니다.
+이제 Crusty의 `TestRenderer`를 확장시켜 이 두 가지 메서드를 모두 구현할 수 있습니다.
+
+그냥 호출하면 됩니다. 전혀 놀랍지도 않죠.
 
 ```
 extension TestRenderer : Renderer {
@@ -838,9 +840,10 @@ let r = TestRenderer()
 r.circleAt(origin, radius: 1);
 r.rectangleAt(edges);
 ```
-전혀 놀랍지도 않죠. 이제 TestRenderer의 구현을 직접 호출하고 프로토콜은 관여하지도 않습니다. 
 
-`Renderer` 규정 조건을 제거해도 같은 결과를 얻을 수 있습니다.
+이제 TestRenderer의 구현을 직접 호출하고 프로토콜은 관여하지도 않습니다. 
+
+`Renderer` 준수(Conformance)를 제거해도 같은 결과를 얻을 수 있습니다.
 
 ```
 extension TestRenderer {
@@ -863,95 +866,128 @@ r.rectangleAt(edges);
 
 `circleAt`은 요구 사항이므로 우리 모델은 이를 커스터마이징하고 불러옵니다.
 
-but rectangle at isn't a requirement so the implementation in test renderer it only Shadows the one in the protocol and in this context where you only know you have a renderer and not a test renderer the protocol implementation is called.
-하지만 `rectangleAt`은 요구 사항이 아니므로 TestRenderer 구현은 프로토콜에 있는 것의 그림자 처리할 뿐이고 테스트 렌더러가 아닌 렌더러만 있는 이 컨텍스트에서는 프로토콜 구현이 호출됩니다.
+모든 API가 커스터마이징 포인트가 되야 하는 건 아니죠.
 
-which is kind of weird. right?
-좀 이상하죠?
+가끔은 모델이 요구사항을 가리지 않는 것도 해결책일 수 있습니다.
 
-so does this mean that rectangle at should have been in requirement?
-그렇다면 직사각형 at이 요구사항에 있어야 한다는 뜻일까요?
+####더 많은 프로토콜 확장 트릭(More Protocol Extension Tricks)
+---
+이 새로운 기능은 우연히도 Swift 표준 라이브러리 작업에 혁신을 가져왔습니다.
 
-okay, so this new feature incidentally it's revolutionized our work on the Swift standard Library.
-좋아요, 이 새로운 기능은 우연히도 Swift 표준 라이브러리 작업에 혁신을 가져왔습니다.
+가끔 프로토콜 확장을 통해 할 수 있는 일들이 마법처럼 느껴질 때가 있죠.
 
-maybe in this case, it should because some renderers are highly likely to have a more efficient way to draw a rectangles say aligned with the coordinate system.
-이 경우에는 일부 렌더러가 좌표계에 정렬된 직사각형을 그리는 더 효율적인 방법을 가지고 있을 가능성이 높기 때문에 그래야 할 수도 있습니다.
+우리가 이 기능을 적용하고 업데이트하면서 즐거웠던 만큼 여러분도 이 최신 라이브러리로 즐겁게 작업해 주셨으면 좋겠어요.
 
-but should everything in your protocol extension also be backed by a requirement? not necessarily.
-하지만 프로토콜 확장에 있는 모든 것이 요구 사항으로 뒷받침되어야 할까요? 반드시 그렇지는 않습니다.
+잠시 이야기를 잠시 접어두고 표준 라이브러리에서 프로토콜 확장으로 한 일들 중 일부를 소개하고, 몇 가지 트릭을 소개해 드리겠습니다.
 
-I mean some apis are just not intended as customization points.
-일부 API는 커스터마이징 포인트가 아니기 때문입니다.
-
-so sometimes the right fix is to just not Shadow the requirement in the model. not Shadow the method in the model.
-따라서 때로는 모델에서 메서드를 섀도하는 것이 아니라. 요구 사항을 섀도하지 않는 것이 올바른 해결책일 수 있습니다. 
-
-sometimes what we can do with protocol extensions. it just feels like magic.
-가끔 프로토콜 확장을 통해 할 수 있는 일들이 마법처럼 느껴지죠.
-
-I I really hope that you'll enjoy working with the latest Library as much as we've enjoyed applying this to it and updating it.
-우리가 이 기능을 적용하고 업데이트하면서 즐거웠던 만큼 여러분도 최신 라이브러리로 즐겁게 작업해 주셨으면 좋겠어요.
-
-and I want to put our story aside for a second so I can show you some of the things that we did in the standard library with protocol
-그리고 잠시 이야기를 잠시 접어두고 표준 라이브러리에서 프로토콜 확장으로 한 일들 중 몇 가지를 보여드리고 싶습니다.
-
-extensions and a few other tricks besides.
-확장 및 기타 몇 가지 트릭을 소개해드리겠습니다.
-
-so first there's a new index of method.
 먼저 새로운 메서드 인덱스가 있습니다.
 
-so this just walks through the indices of a collection until it finds an element that's equal to what we're looking for and it returns that index.
-이것은 우리가 찾고 있는 것과 동일한 요소를 찾을 때까지 컬렉션의 인덱스를 살펴본 다음 그 인덱스를 반환합니다.
+```
+extension CollectionType {
+    public func indexOf(element: Generator.Element) -> Index? {
+        for i in self.indices {
+            if self[i] == element {
+                return i
+            }
+        }
+        return nil
+    }
+}
+```
 
-and if it doesn't find one it returns nil simple enough, right?
-찾지 못하면 nil을 반환하는 간단한 방식이죠?
+이것은 우리가 찾고 있는 것과 동일한 요소를 찾을 때까지 컬렉션의 인덱스를 조회한 다음, 그 인덱스를 반환하는 코드입니다.
 
-but if we write it this way we have a problem.
+찾지 못하면 `nil`을 반환하는 간단한 방식이죠.
+
 하지만 이런 식으로 작성하면 문제가 생깁니다.
 
-see the elements of an arbitrary collection can't be compared with equal equal.
-임의의 컬렉션의 요소는 동일한 요소와 비교할 수 없다는 것을 알 수 있습니다.
+컬렉션의 요소들을 == 연산자로 비교할 수 없다고 나오죠.
 
-so to fix that we can constrain the extension.
-그래서 이를 해결하기 위해 확장자를 제한할 수 있습니다.
+```
+extension CollectionType {
+    public func indexOf(element: Generator.Element) -> Index? {
+        for i in self.indices {
+            // 두 개의 Generator.Element 피연산자에 이진 연산자 '=='를 적용할 수 없습니다.
+            if self[i] == element {
+                return i
+            }
+        }
+        return nil
+    }
+}
+```
 
-this is another aspect of this new feature.
+이를 해결하기 위해 확장자를 제한할 수 있습니다.
+
 이것이 이 새로운 기능의 또 다른 측면입니다.
 
-so by saying this extension applies when the the element type of the collection is equatable, we've given Swift the information it needs to allow that equality comparison.
-따라서 이 확장은 컬렉션의 요소 유형이 같을 때 적용된다고 말함으로써, 우리는 스위프트에 동등성 비교를 허용하는 데 필요한 정보를 제공한 것입니다.
+```
+extension CollectionType where Generator.Element : Equatable {
+    public func indexOf(element: Generator.Element) -> Index? {
+        for i in self.indices {
+            if self[i] == element {
+                return i
+            }
+        }
+        return nil
+    }
+}
+```
 
-and now that we've seen a simple example of a constrainted extension, let's revisit our binary search.
+이 확장은 컬렉션의 요소 유형이 `equatable`일 때 적용된다고 말함으로써, 우리는 Swift에 동등성 비교를 허용하는 데 필요한 정보를 제공한 것입니다.
+
 이제 제약된 확장의 간단한 예제를 살펴봤으니 이진 검색을 다시 살펴봅시다.
 
-and let's use it on an array of int.
-int 배열에 사용해 보겠습니다.
+```
+protocol Ordered {
+    func precedes(other: Self) -> Bool
+}
 
-okay, int doesn't conform to ordered .
-좋아, int가 ordered를 따르지 않습니다.
+func binarySearch<T : Ordered>(sortedKeys: [T], forKey k: T) -> Int { ... }
 
-well that's a simple fix, right?
+```
+
+`Int` 배열에 사용해 보겠습니다.
+
+```
+// 'binarySearch'를 호출할 수 없습니다. '([Int], forKey: Int)' 타입의 인자 목록으로 호출할 수 없습니다.
+let position = binarySearch([2, 3, 5, 7], forKey: 5)
+```
+
+`Int`가 `Ordered`를 따르지 않네요.
+
+```
+extension Int : Ordered {
+    func precedes(other: Int) -> Bool { return self < other }
+}
+
+let position = binarySearch([2, 3, 5, 7], forKey: 5)
+```
+
 간단한 수정이죠?
 
-we just add conformance.
-순서를 추가하기만 하면 됩니다.
+준수(Conformance)를 추가하기만 하면 됩니다.
 
-okay, now what about strings.
-이제 문자열은 어떨까요?
+이제 `String`은 어떨까요?
 
-well, of course this doesn't work for Strings so we do it again.
-물론 이것은 문자열에서는 작동하지 않으므로 다시 해봅시다.
+당연히 `String`에서는 작동하지 않죠. 
 
-now before crusty starts banging on his desk we really want to factor this stuff out, right?
-이제 크러스티가 책상을 두드리기 전에 이걸 고려해야겠지?
+```
+// 'binarySearch'를 호출할 수 없습니다. '([String], forKey: String)' 타입의 인자 목록으로 호출할 수 없습니다.
+let position = binarySearch(["2", "3", "5", "7"], forKey: "5")
+```
 
-the less than operator is present in the comparable protocol.
-비교 가능한 프로토콜에는 연산자보다 작은 연산자가 존재합니다.
+다시 해봅시다.
 
-so we could do this with an extension to comparable like this.
-그래서 비교 가능한 프로토콜을 이렇게 확장할 수 있습니다.
+```
+extension String : Ordered {
+    func precedes(other: Int) -> Bool { return self < other }
+}
+```
+
+이제 크러스티가 책상을 두들기기 전에 `comparable` 프로토콜에는 연산자보다 작은 연산자가 존재합니다.
+
+그래서 `comparable` 프로토콜을 이렇게 확장할 수 있습니다.
 
 now we're providing the proceeds for those performances.
 이제 우리는 그 공연에 대한 수익금을 제공하고 있습니다.
