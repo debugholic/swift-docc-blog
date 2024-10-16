@@ -31,41 +31,29 @@
 
     - 연관된 데이터와 활동을 그룹화 시킬 수 있습니다.
 
-&nbsp;
-
 * 접근 제어(Access Control)
 
     - 코드 외부와 내부를 분리하기 위한 벽을 세워, 불변성을 유지할 수 있습니다.
-
-&nbsp;
 
 * 추상화(Abstraction)
 
     - 관련성 있는 아이디어를 표현하는 의사소통 채널로 클래스를 사용할 수 있습니다.
 
-&nbsp;
-
 * 이름 공간(Namespace)
 
     - 소프트웨어 성장에 따른 충돌을 예방할 수 있도록 하는 공간을 제공합니다.
     
-&nbsp;
-
 * 놀라운 표현 구문(Expressive Syntax)
 
     - 메소드 호출과 속성 그리고 이들을 같이 엮도록 작성할 수 있습니다.
 
     - 서브스크립트를 만들 수 있고, 심지어 연산 프로퍼티도 만들 수 있습니다."
 
-&nbsp;
-
 * 확장성(Extensibility)
 
     - 클래스는 확장 가능성이 열려있습니다.
 
     - 클래스 작성자가 필요한 무언가를 빼먹었다면, 나중에 그것을 추가할 수 있습니다.
-
-&nbsp;
 
 무엇보다 중요한 점은 클래스는 우리에게 복잡함을 관리하도록 한다는 것입니다.
     
@@ -77,27 +65,21 @@ Crusty는 코웃음을 치며 말했습니다.
     
 맞는 말입니다. Swift에서 우리가 명명한 모든 자료형(Types)은 일급 객체이고 따라서 이 모든 이점을 얻을 수 있습니다.
     
-저는 이전으로 돌아가서, 객체지향으로 개발할 때 어떤 주요 기능이 이 모든 것을 가능하게 하는지 곱씹어 보았습니다.
+저는 이전으로 돌아가서, 객체지향으로 개발할 때 어떤 주요 기능이 이 모든 것을 가능하게 하는지 되새겨 보았습니다.
 
 #### 상속
 ---
-상속과 같은 클래스로만 할 수 있는 기능에서 비롯된 것이어야 합니다.
+역시 상속과 같은 클래스로만 할 수 있는 것에서 비롯되어야 합니다.
 
 그리고 이러한 구조가 갖는 코드 공유와 사용자 정의 측면의 이점을 구체적으로 생각했습니다. 
-
-&nbsp;
 
 * 코드 공유
 
     - 슈퍼클래스에서 메소드를 정의하면, 상속을 받는 것만으로 모든 작업을 수행할 수 있습니다.
     
-&nbsp;
-
 * 사용자 정의
 
-    - 슈퍼클래스에서 재정의(override)할 수 있는 지점으로 연산을 나누고, 중첩하여 확장이 가능합니다.
-
-&nbsp;
+    - 슈퍼클래스에서 오버라이딩 할 수 있는 지점으로 연산을 나누고, 중첩하여 확장이 가능합니다.
 
 이제 나는 그를 이겼음을 확신했습니다.  
     
@@ -114,7 +96,7 @@ Crusty는 코웃음을 치며 말했습니다.
 
 #### 암시적인 공유(Implicit Sharing)
 ---
-    먼저, 자동으로 공유 당하기.
+    먼저, 자동으로 되는 공유.
 
 @Image(source: 15-Session-408-3.png, alt: nil)
 
@@ -159,19 +141,13 @@ Swift에서 열거와 수정은 각각 따로 동작합니다.
 
     - 여러 속성을 추상화한 데이터 모델이 필요하다면?
 
-&nbsp;
-
 * 상속 한번에 걸리는 높은 부하
     
     - 하나의 슈퍼클래스에 관련된 모든 것이 들어가게 딥니다.
 
-&nbsp;
-
 * 소급적용이 없는 모델링
 
     - 나중에 조금씩 확장하는 것이 아니라, 클래스를 정의하는 순간에 슈퍼클래스를 정해야 합니다.
-
-&nbsp;
 
 * 슈퍼클래스의 저장 속성
 
@@ -181,16 +157,12 @@ Swift에서 열거와 수정은 각각 따로 동작합니다.
 
     - 불변성을 깨지 않고 슈퍼 클래스와 상호 작용하는 방법도 이해해야 합니다.
 
-&nbsp;
-
 * 메소드 사용처 예측하기 
     
     - 클래스 작성자는 메소드가 해야 할 것을 알고 있는 것처럼 코드를 작성해야 합니다. 
     
-    - final을 사용하지 않고, 메소드를 재정의 할 기회를 열어두면서 말이죠.
+    - final을 사용하지 않고, 메소드를 오버라이딩 할 기회를 열어두면서 말이죠.
 
-
-&nbsp;
 
 Cocoa 프로그래머에게 이런 것들은 별로 새롭지 않습니다.
 
@@ -221,7 +193,9 @@ func binarySearch(sortedKeys: [Ordered], forKey k: Ordered) -> Int {
 }
 ```
 
-위와 같은 코드에서 Swift는 `precedes` 메서드의 바디를 먼저 작성하기를 요구하고, 우리는 아직 `Ordered` 인스턴스에 대해 아무것도 모릅니다.
+위와 같은 코드에서 Swift는 `precedes` 메서드의 바디를 먼저 작성하기를 요구합니다.
+
+하지만 우리는 아직 `Ordered` 인스턴스에 대해 아무것도 모릅니다.
 
 그저 트랩을 만드는 것 외에는 방법이 없죠.
 
@@ -233,13 +207,11 @@ class Ordered {
 }
 ```
 
-이 방식은 우리가 타입 시스템과 싸우고 있다는 첫 신호입니다.
+이 방식은 우리가 타입 시스템과 싸우고 있다는 신호입니다.
 
-각 하위 클래스가 메서드를 구현하도록 제쳐두고, 그저 하위 클래스가 해야할 문제로 여기죠.
+우리는 각 하위 클래스가 메서드를 구현하도록 제쳐두고, 그저 하위 클래스가 해야할 문제로 여기죠.
 
-여기 `Double` 값을 가진 서브 클래스가 `Number`가 있고 비교를 위해 `precedes`를 재정의합니다.
-
-메서드 시그니처(signature) `other`에는 `value` 프로퍼티가 있을지 알 수 없습니다. 
+여기 `Double` 값을 가진 서브 클래스 `Number`가 있고 `precedes`를 오버라이딩 했습니다.
 
 ```
 class Number: Ordered {
@@ -250,6 +222,8 @@ class Number: Ordered {
     }
 }
 ```
+
+이때, 메서드 시그니처(signature) `other`에는 `value` 프로퍼티가 있을지 알 수 없습니다. 
 
 실제로는 `text` 프로퍼티를 가진 `Label`일 수도 있죠.
 
@@ -268,11 +242,9 @@ class Number: Ordered {
 }
 ```
 
-만약에 `other`가 `Label`로 밝혀졌다고 가정해봅시다. 이제 우리는 트랩으로 가겠네요?
+만약에 `other`가 `Label`로 밝혀졌다고 가정해봅시다. 다시 트랩으로 가겠죠?
 
 슈퍼클래스에서 `precedes`메서드를 작성할 때와 비슷한 코드 스멜(code smell)이 발생했어요.
-
-타입 세이프티에 대하여 고정적으로 생긴 구멍(static type safety hole)입니다.
 
 이는 클래스에서는 `self`의 타입과 `other`의 타입 사이의 중요한 타입 관계(type relationship)를 표현하지 못하기 때문입니다.
 
@@ -292,13 +264,9 @@ class Number: Ordered {
 
 * 초기화 부담을 강요하지 않음 (Doesn’t impose initialization burdens on models)
 
-* 재정의 필요한 대상에 대한 명확함 (Makes clear what to implement)
+* 구현이 필요한 대상에 대한 명확함 (Makes clear what to implement)
 
-프로토콜은 이 모든 장점을 가지고 있었고, 그래서 Swift는 최초의 프로토콜 지향 프로그래밍 언어로 만들어졌습니다.
-
-물론 Swift는 객체 지향 프로그래밍에 적합합니다.
-
-하지만 for 루프와 문자열 리터럴이 작동하는 방식, 표준 라이브러리의 제네릭에 대한 강조에 이르기까지 Swift는 프로토콜 지향적입니다.
+프로토콜은 이 모든 장점을 가지고 있고, 그래서 Swift는 최초의 프로토콜 지향 프로그래밍 언어로 만들어졌습니다. 물론 Swift는 객체 지향 프로그래밍에도 적합합니다.
 
 마지막 예제를 보겠습니다.
 
@@ -318,7 +286,7 @@ class Number : Ordered {
 }
 ```
 
-사실 이건 꽤 좋은 의미인데, `precedes`가 구현된 채로의 정적인 검사에서, 동적인 런타임 검사로 전환한다는 의미이기 때문입니다.
+사실 이건 꽤 좋은 의미인데, `precedes`가 구현된 상태에서의 정적인 검사에서, 동적인 런타임 검사로 전환한다는 의미이기 때문입니다.
 
 ```
 protocol Ordered {
@@ -333,7 +301,7 @@ class Number : Ordered {
 }
 ```
 
-다음으로, 우리가 아무 것도 재정의하지 않는다고 불평합니다.
+다음으로, 우리가 아무 것도 오버라이딩하지 않는다고 불평합니다.
 
 ```
 protocol Ordered {
@@ -349,9 +317,9 @@ class Number : Ordered {
 }
 ```
 
-물론이죠. 더 이상 베이스 클래스가 없으니까요. 슈퍼클래스도 없고 재정의도 없으니까요.
+물론이죠. 더 이상 베이스 클래스가 없으니까요. 슈퍼클래스도 없고 오버라이딩도 없으니까요.
 
-숫자처럼 동작하길 원해서 `Number`를 처음부터 클래스로 만들지 않을 수도 있겠죠.
+숫자처럼 동작하길 원하면 `Number`를 처음부터 클래스로 만들지 않을 수도 있겠죠.
 
 ```
 protocol Ordered {
@@ -366,7 +334,7 @@ struct Number : Ordered {
 }
 ```
 
-이제 프로토콜이 이 예제의 첫 번째 버전에서 클래스가 했던 것과 똑같은 역할을 하고 있습니다.
+이제 프로토콜이 예제의 첫번째 버전에서 클래스가 했던 것과 똑같은 역할을 하고 있습니다.
 
 확실히 조금 더 나아졌습니다. 치명적인 오류가 더 이상 발생하지 않으니까요.
 
@@ -389,7 +357,7 @@ struct Number : Ordered {
 }
 ```
 
-이 문제를 해결하려면 프로토콜 시그니처에서 `Ordered`를 `Self`로 바꿔야 합니다. 이를 자체 요구 사항(Self requirement)이라고 합니다.
+이 문제를 해결하려면 프로토콜 시그니처에서 `Ordered`를 `Self`로 바꿔야 합니다. 이를 자체 요구사항(Self requirement)이라고 합니다.
 
 ```
 protocol Ordered {
@@ -406,15 +374,9 @@ struct Number : Ordered {
 
 다시 유효한 코드가 생겼습니다. 이 프로토콜을 어떻게 사용하는지 살펴보겠습니다.
 
-이것은 `Ordered` 배열이 클래스일 때 작동했던 이진 검색입니다.
-
-`Ordered` 배열이란 이질적인(heterogeneous) `Ordered` 타입을 처리하겠다는 말이죠. 배열 내에는 `Number`와 `Label`이 섞여 있을 겁니다.
-
-그동안 `Ordered`에 대해 수정이 있었고, 자체 요구사항도 추가했으니, 컴파일러는 아마 이것을 동질하게(homogeneous) 만들도록 강제할 것입니다.
-
 ```
 // 프로토콜 'Ordered'는 일반 제약 조건으로만 사용할 수 있습니다.
-// Self 또는 연관된 타입 요구 사항이 있기 때문입니다.
+// Self 또는 연관된 타입 요구사항이 있기 때문입니다.
 func binarySearch(sortedKeys: [Ordered], forKey k: Ordered) -> Int {
     var lo = 0
     var hi = sortedKeys.count
@@ -426,6 +388,12 @@ func binarySearch(sortedKeys: [Ordered], forKey k: Ordered) -> Int {
     return lo
 }
 ```
+
+이것은 `Ordered` 배열이 클래스일 때 작동했던 이진 검색입니다.
+
+`Ordered` 배열이란 이질적인(heterogeneous) `Ordered` 타입을 처리하겠다는 말이죠. 배열 내에는 `Number`와 `Label`이 섞여 있을 겁니다.
+
+그동안 `Ordered`에 대해 수정이 있었고, 자체 요구사항도 추가했으니, 컴파일러는 아마 이것을 동질하게(homogeneous) 만들도록 강제할 것입니다.
 
 이것을 정렬된 단일 타입 'T'의 동질한 배열로 작업한다고 말합니다.
 
@@ -442,13 +410,13 @@ func binarySearch<T : Ordered>(sortedKeys: [T], forKey k: T) -> Int {
 }
 ```
 
-배열을 강제로 균질하게 만드는 것이 너무 제한적이거나 기능과 유연성을 잃는 것 같다고 생각할 수 있습니다.
+배열을 강제로 동질하게 만드는 것이 너무 제한적이거나, 기능과 유연성을 잃는 것 같다고 생각할 수 있습니다.
 
-하지만 생각해 보면 원래의 시그니처는 사실 거짓말이었습니다.
+하지만 생각해 보면 사실 원래의 시그니처는 거짓이었습니다.
 
 트랩을 만드는 것 말고는 이질적인 유형을 제대로 처리한 적이 없었으니까요.
 
-프로토콜에 자체 요구 사항을 추가하면 프로토콜은 클래스와 매우 다른 종류의 것이 됩니다.
+프로토콜에 자체 요구사항을 추가하면 프로토콜은 클래스와 매우 다른 종류의 것이 됩니다.
 
 | **Without Self Requirement** | **With Self Requirement** |
 |:-- | :-- |
@@ -459,9 +427,9 @@ func binarySearch<T : Ordered>(sortedKeys: [T], forKey k: T) -> Int {
 | 동적 디스패치 | 정적 디스패치 |
 | 낮은 최적화 | 높은 최적화 | 
 
-#### 크러스티에게 내준 과제(A Challenge for Crusty)
+#### 크러스티의 과제(A Challenge for Crusty)
 ---
-프로토콜의 정적인 측면이 어떻게 작동하는지는 알겠습니다.
+프로토콜의 정적인 부분이 어떻게 작동하는지는 알겠습니다.
 
 하지만 프로토콜이 정말 클래스를 대체할 수 있다는 크러스티의 말에는 확신이 서지 않았죠.
 
@@ -469,9 +437,9 @@ func binarySearch<T : Ordered>(sortedKeys: [T], forKey k: T) -> Int {
 
 저는 도형을 드래그 앤 드롭해서 도형과 상호작용할 수 있는 작은 다이어그램 앱을 염두에 두고 있었어요.
 
-그래서 크러스티에게 문서와 디스플레이 모델을 만들어 달라고 부탁했죠.
+그래서 크러스티에게 디스플레이 모델을 만들어 달라고 부탁했죠.
 
-그리고 그가 생각해낸 것은 다음과 같습니다.
+그가 생각해낸 것은 다음과 같습니다.
 
 먼저 그는 드로잉 프리미티브(primitive)를 만들었습니다.
 
@@ -485,7 +453,7 @@ struct Renderer {
 }
 ```
 
-그리고 그는 모든 그리기 요소에 공통 인터페이스를 제공하는 `drawable` 프로토콜을 만들었죠. 
+그리고 모든 그리기 요소에 공통 인터페이스를 제공하는 `drawable` 프로토콜을 만들었죠. 
 
 ```
 protocol Drawable {
@@ -507,7 +475,7 @@ struct Polygon : Drawable {
 }
 ```
 
-`Polygon`에서 가장 먼저 눈에 띄는 것은 다른 값 유형(value type)으로 만들어진 값 타입이라는 점입니다. 그저 점의 배열이 있는 구조체인거죠.
+`Polygon`에서 가장 먼저 눈에 띄는 것은 값 타입으로 구성된 값 타입이라는 점입니다. 그저 점의 배열이 있는 구조체인거죠.
 
 다각형을 그리려면 마지막 모서리로 이동한 다음 모든 모서리를 순환하며 선을 그리면 됩니다.
 
@@ -523,7 +491,7 @@ struct Circle : Drawable {
 }
 ```
 
-`Circle` 역시 다른 값 유형으로 만들어진 값 타입으로, `center`와 `radius`을 포함하는 구조체입니다.
+`Circle` 역시 값 타입으로 만들어진 값 타입으로, `center`와 `radius`을 포함하는 구조체입니다.
 
 원을 그리기 위해서는 0에서 2π 라디안까지 이어지는 호를 만듭니다.
 
@@ -546,15 +514,15 @@ struct Diagram : Drawable {
 }
 ```
 
-`Diagram`은 `Drawable`이고, 또 다른 값 유형입니다.
+`Diagram`은 `Drawable`이고, 또 다른 값 타입입니다.
 
-지금까지의 모든 `Drawable`은 값 타입이고, `Drawable`의 배열도 값 유형이기 때문입니다.
+지금까지의 모든 `Drawable`은 값 타입이고, `Drawable`의 배열도 값 타입이기 때문입니다.
 
 `Diagram`을 그리려면 모든 `elements`를 반복해서 하나씩 `draw`하면 됩니다.
 
 테스트해 봅시다.
 
-Crusty는 중심과 반지름이 특정한 `circle`을 만들었습니다.
+크러스티는 중심과 반지름이 특정한 `circle`을 만들었습니다.
 
 그런 다음 `triangle`을 추가하고 마지막으로 `diagram`을 만들어 그리라고 지시했습니다.
 
@@ -576,25 +544,21 @@ diagram.draw(Renderer())
 
 크러스티는 승리의 환호성을 지르며 말했습니다.
 
-    원 안에 있는 정삼각형이 분명히 보이지?
+    원 안에 있는 정삼각형이 잘 보이지?
 
 저는 크러스티만큼 머릿속으로 삼각형을 그리는데 능숙하지 않나 봅니다.
 
     아니요, 크러스티, 내 눈에는 안보여요.
-    화면에 그림을 그리는 것처럼 실제로 효과적인 작업이라면 이 데모가 훨씬 더 매력적으로 느껴졌을 텐데요.
+    화면에 그림을 그리는 것처럼 실제로 효과가 있는 작업이라면 이 데모가 훨씬 더 매력적으로 느껴졌을 텐데요.
 
-짜증을 가라앉히고, 저는 `Core Graphics`를 사용해 그의 `Renderer`를 다시 작성하기로 결정했습니다.
-
-제가 이렇게 하겠다고 말했더니
+짜증을 가라앉히고, 저는 `CorGraphics`를 사용해 그의 `Renderer`를 다시 작성하기로 결정했습니다.
 
     잠깐 기다려 봐, 애송이.
     그렇게 해버리면 내가 어떻게 내 코드를 테스트할 수 있겠어?
 
-이어서 테스트 중 무언가가 변경될 때에는 즉시 결과를 확인할 수 있는 꽤 그럴싸한 사례를 제시했습니다. 
+그는 테스트 중 무언가가 변경될 때 즉시 결과를 확인할 수 있는 그럴싸한 사례가 있다며, 프로토콜 지향 프로그래밍을 해보자고 제안했습니다.
 
-대신 프로토콜 지향 프로그래밍을 해보자고 제안했습니다.
-
-그래서 `Renderer`를 프로토콜로 만들었습니다.
+그리고 `Renderer`를 프로토콜로 만들었습니다.
 
 ```
 protocol Renderer {
@@ -604,7 +568,7 @@ protocol Renderer {
 }
 ```
 
-그리고 구현 부분을 사제한 다음 원래 `Renderer`의 이름을 바꾸고 적절하게 만들었습니다.
+구현 부분을 작성한 다음, 원래 `Renderer`의 이름을 바꾸고 적절하게 만들었습니다.
 
 ```
 struct TestRenderer : Renderer {
@@ -616,7 +580,7 @@ struct TestRenderer : Renderer {
 }
 ```
 
-이 모든 리팩터링 작업은 저를 조급하게 만들었고 화면에 이걸 빨리 보고 싶었습니만, Crusty가 코드를 다시 테스트할 때까지 기다려야 했습니다.
+이 모든 리팩터링 작업은 저를 조급하게 만들었고 화면에서 이걸 빨리 보고 싶었습니만, 크러스티가 코드를 다시 테스트할 때까지 기다려야 했습니다.
 
 이윽고 마침내 만족스러워졌을 때 그가 말했습니다.
 
@@ -627,10 +591,10 @@ struct TestRenderer : Renderer {
     CGContext요.
 
 `CGContext`에는 기본적으로 렌더러에 필요한 모든 것이 있습니다. C 인터페이스 범위 내라면 그 자체로 렌더러라고 볼 수 있죠.
+
 그가 말했습니다.
 
-    훌륭하군.
-    그 키보드 줘봐.
+    훌륭하군. 키보드 줘봐.
 
 그리고 키보드를 낚아채더니 너무 빨리 뭔가를 해버려서 거의 볼 수도 없었어요.
 
@@ -642,13 +606,13 @@ extension CGContext : Renderer {
 }
 ```
 
-    잠깐만요, 방금 모든 CGContext를 렌더러로 만든 거예요?
+    잠깐만요, 방금 모든 CGContext를 Renderer로 만든 거예요?
 
-그는 아직 아무 것도 하지 않았지만, 새로운 타입을 추가할 필요조차 없었습니다.
+그는 아직 뭘 하지 않았지만, 벌써 새로운 타입을 추가할 필요조차 없었습니다.
     
     뭘 기다리고 있어? 중괄호 안이나 채워.
 
-그래서 저는 필요한 `Core Graphics` 한 스쿱을 플레이그라운드(Playground)에 부어 넣었습니다.
+그래서 저는 필요한 `CoreGraphics` 한 스쿱을 플레이그라운드(Playground)에 부어 넣었습니다.
 
 ```
 extension CGContext : Renderer {
@@ -680,29 +644,27 @@ struct TestRenderer : Renderer {
 }
 ```
 
-그는 코드가 수행하는 모든 작업을 자세히 보여주는 계측 컴포넌트를 연결할 수 있었습니다.
+그는 코드가 수행하는 모든 작업을 자세히 보여주는 측정 컴포넌트를 연결할 수 있었습니다.
 
-이후 코드 전체에 이 접근 방식을 적용했습니다.
+그리고 코드 전체에 이 접근 방식을 적용했습니다.
 
-프로토콜로 더 많은 것을 분리할 수록 모든 것을 테스트할 수 있다는 것을 알게 되었습니다.
+이것으로 인해 프로토콜로 더 많은 것을 분리할 수록 모든 것을 테스트할 수 있다는 것을 알게 되었습니다.
 
-이런 부류의 테스트는 모의 테스트(mocks)와 비슷하지만 훨씬 더 낫습니다.
-
-모의 테스트는 본질적으로 취약하죠.
+이런 부류의 테스트는 모의 테스트(mocks)와 비슷하지만 훨씬 더 낫습니다. 모의 테스트는 본질적으로 취약하죠.
 
 테스트 코드를 테스트 대상의 구현 사이에 연결해야 합니다.
 
-그리고 그 취약성 때문에 Swift의 강한 정적 타입 시스템과 잘 어울리지 않습니다.
+그리고 그 취약성 때문에 Swift의 강한 정적안 타입 시스템과 잘 어울리지 않습니다.
 
-프로토콜은 언어에 의해 강제되는 원칙적인 인터페이스를 제공하면서도, 필요한 모든 계측에 대한 연결 고리를 제공합니다.
+프로토콜은 강제적인 인터페이스를 제공하면서도, 필요한 모든 측정에 대한 연결 고리를 제공합니다.
 
 이제 비눗방울에 대한 얘기를 하러 예제로 돌아가 보겠습니다.
 
-우리는 이 다이어그램 앱이 아이들에게 인기가 있기를 원했고 아이들은 당연히 비눗방울을 좋아합니다.
+우리는 이 다이어그램 앱이 아이들에게 인기가 있기를 원했고, 당연하게도 아이들은 비눗방울을 좋아합니다.
 
 다이어그램에서 비눗방울은 바깥쪽 원과 하이라이트를 나타내는 안쪽 원으로 나타냅니다.
 
-이 코드를 문맥에 넣었을 때 Crusty는 끓어오르기 시작했고, 모든 코드 반복은 그를 지루하게 만들었습니다.
+이 코드를 문맥에 넣었을 때 크러스티는 끓어오르기 시작했고, 모든 코드 반복은 그를 지루하게 만들었습니다.
 
 ```
 struct Bubble : Drawable {
@@ -721,15 +683,9 @@ struct Circle : Drawable {
 ```
     
     봐봐, 전부 다 완전한 원이야.
-    난 이걸 그냥 이렇게 적고 싶어.
+    난 이걸 그냥 이런식으로 적고 싶어.
 
 ```
-protocol Renderer {
-    func moveTo(p: CGPoint)
-    func lineTo(p: CGPoint)
-    func arcAt(center: CGPoint, radius: CGFloat, startAngle: CGFloat, endAngle: CGFloat)
-}
-
 struct Bubble : Drawable {
     func draw(r: Renderer) {
         r.circleAt(center, radius: radius)
@@ -747,7 +703,7 @@ struct Circle : Drawable {
 제가 말했죠.
 
     크러스티, 진정하세요.
-    프로토콜에 요구 사항 하나만 추가하면 되는 거죠?
+    프로토콜에 요구사항 하나만 추가하면 되는 거죠?
     그럼 당연히 모델을 업데이트해서 TestRenderer와 CGContext에 구현하면 되잖아요.
 
 ```
@@ -771,19 +727,15 @@ extension CGContext : Renderer {
 }
 ```
 
-이제 Crusty는 부츠를 벗고 책상을 두드리고 있습니다.
-
-여기서도 코드를 다시 반복하고 있었기 때문입니다.
+이제 크러스티는 부츠를 벗고 책상을 두드리고 있습니다. 여기서도 코드를 다시 반복하고 있었기 때문입니다.
 
     나 혼자 다 해야 되네.
 
 그는 중얼거리며 키보드를 뺏어갔어요.
 
-그리고는 스위프트의 새로운 기능을 사용해 저를 가르치기 시작했죠.
+그리고는 Swift의 새로운 기능을 사용해 저를 가르치기 시작했죠.
 
-프로토콜 확장입니다.
-
-#### 프로토콜 확장 (Protocol Extension)
+#### 프로토콜 확장(Protocol Extension)
 ---
 
 ```
@@ -801,16 +753,15 @@ extension Renderer {
 }
 ```
 
-이 코드의 의미는 `Renderer`의 모든 모델에 이 `circleAt` 구현이 있다는 말입니다.
+이 코드의 의미는 `Renderer`의 모든 모델에 `circleAt`에 대한 구현이 있다는 말입니다.
 
-이제 모든 `Renderer` 모델에서 공유되는 구현이 생겼고, 여전히 `circleAt` 요구사항이 있는 것이 보입니다.
+모든 `Renderer` 모델에는 공유되는 구현이 생겼고, 여전히 프로토콜에는 `circleAt` 요구사항이 있는 것이 보입니다.
 
-`extension`에서 바로 작성할 수 있는 요구사항이 있다는 것이 어떤 의미인지 물어보실 수 있습니다.
+`extension`에서 작성된 요구사항이 있다는 것의 의미를 물어보실 수 있습니다.
 
-좋은 질문입니다. 그것은 프로토콜의 요구사항이 사용자 정의 지점을 생성한다는 것입니다.
+좋은 질문입니다. 그것은 프로토콜의 요구사항이 사용자 정의 지점을 생성한다는 의미입니다.
 
-요구 사항이 아닌 다른 메서드를 확장에 추가하여 어떻게 작동하는지 확인해 보겠습니다.
-
+요구사항에 없는 다른 메서드를 `extension`에 추가하여 어떻게 작동하는지 확인해 보겠습니다.
 
 ```
 protocol Renderer {
@@ -826,7 +777,7 @@ extension Renderer {
 }
 ```
 
-이제 Crusty의 `TestRenderer`를 확장시켜 이 두 가지 메서드를 모두 구현할 수 있습니다. 그냥 호출하면 됩니다.
+이제 크러스티의 `TestRenderer`를 확장시켜 이 두 가지 메서드를 모두 구현할 수 있습니다.
 
 ```
 extension TestRenderer : Renderer {
@@ -838,9 +789,12 @@ let r = TestRenderer()
 r.circleAt(origin, radius: 1);
 r.rectangleAt(edges);
 ```
-전혀 놀랍지도 않죠. 이제 TestRenderer의 구현을 직접 호출하고 프로토콜은 관여하지도 않습니다. 
 
-`Renderer` 규정 조건을 제거해도 같은 결과를 얻을 수 있습니다.
+그냥 호출하면 됩니다. 전혀 놀랍지도 않죠.
+
+`TestRenderer`의 구현이 직접 호출되고, 프로토콜은 관여하지도 않습니다. 
+
+`Renderer` 적합성(conformance)을 제거해도 같은 결과를 얻을 수 있습니다.
 
 ```
 extension TestRenderer {
@@ -853,7 +807,7 @@ r.circleAt(origin, radius: 1);
 r.rectangleAt(edges);
 ```
 
-하지만 이제 문맥을 변경하여 Swift가 `TestRenderer`가 아니라 `Renderer`만 있다는 것만 알 수 있도록 해보겠습니다.
+하지만 이제 Swift가 모델이 `Renderer` 타입인 것만 알고 있다고 바꿔 보겠습니다.
 
 ```
 let r: Renderer = TestRenderer()
@@ -861,28 +815,21 @@ r.circleAt(origin, radius: 1);
 r.rectangleAt(edges);
 ```
 
-`circleAt`은 요구 사항이므로 우리 모델은 이를 커스터마이징하고 불러옵니다.
+`circleAt`은 요구사항이므로 우리가 만든 모델은 사용자 정의 권한을 갖고 커스터마이징한 `circleAt`을 호출합니다.
 
-but rectangle at isn't a requirement so the implementation in test renderer it only Shadows the one in the protocol and in this context where you only know you have a renderer and not a test renderer the protocol implementation is called.
-하지만 `rectangleAt`은 요구 사항이 아니므로 TestRenderer 구현은 프로토콜에 있는 것의 그림자 처리할 뿐이고 테스트 렌더러가 아닌 렌더러만 있는 이 컨텍스트에서는 프로토콜 구현이 호출됩니다.
+하지만 `rectangleAt`은 요구사항이 아니므로, `TestRenderer`에서의 구현은 프로토콜에 있는 것의 그림자일 뿐입니다.
 
-which is kind of weird. right?
-좀 이상하죠?
+따라서 이 문맥에서는 프로토콜의 구현이 호출됩니다. 좀 이상하죠?
 
-so does this mean that rectangle at should have been in requirement?
-그렇다면 직사각형 at이 요구사항에 있어야 한다는 뜻일까요?
+`rectangleAt`이 요구사항에 있어야 한다는 뜻일까요?
 
-okay, so this new feature incidentally it's revolutionized our work on the Swift standard Library.
-좋아요, 이 새로운 기능은 우연히도 Swift 표준 라이브러리 작업에 혁신을 가져왔습니다.
+좋아요. 이 새로운 기능은 우연히도 Swift 표준 라이브러리 작업에 혁신을 가져왔습니다.
 
-maybe in this case, it should because some renderers are highly likely to have a more efficient way to draw a rectangles say aligned with the coordinate system.
-이 경우에는 일부 렌더러가 좌표계에 정렬된 직사각형을 그리는 더 효율적인 방법을 가지고 있을 가능성이 높기 때문에 그래야 할 수도 있습니다.
+더 효율적인 방법으로 직사각형을 그리는 렌더러에게는 사용자 정의가 필요할 수도 있습니다.
 
-but should everything in your protocol extension also be backed by a requirement? not necessarily.
-하지만 프로토콜 확장에 있는 모든 것이 요구 사항으로 뒷받침되어야 할까요? 반드시 그렇지는 않습니다.
+하지만 프로토콜 확장에 있는 모든 것이 요구사항으로 뒷받침되어야 할까요? 반드시 그렇지는 않습니다.
 
-I mean some apis are just not intended as customization points.
-일부 API는 커스터마이징 포인트가 아니기 때문입니다.
+일부 API는 사용자 정의 지점이 아니기 때문이죠.
 
 so sometimes the right fix is to just not Shadow the requirement in the model. not Shadow the method in the model.
 따라서 때로는 모델에서 메서드를 섀도하는 것이 아니라. 요구 사항을 섀도하지 않는 것이 올바른 해결책일 수 있습니다. 
