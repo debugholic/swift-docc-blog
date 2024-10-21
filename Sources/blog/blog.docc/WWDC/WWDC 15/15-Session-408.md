@@ -946,32 +946,71 @@ extension String : Ordered {
 }
 ```
 
-크러스티가 책상을 두들기기 전에 얼른 처리해야겠죠?
+크러스티가 다시 책상을 두들기기 전에 뭔가를 해야겠네요. 
 
-`comparable` 프로토콜에는 더 작은 연산자가 존재합니다.
+`Comparable` 프로토콜에는 '`<`연산자가 존재합니다.
 
-그래서 `comparable` 프로토콜을 이렇게 확장할 수 있습니다.
+그래서 `Comparable` 프로토콜을 이렇게 확장할 수 있습니다.
 
-now we're providing the proceeds for those performances.
-이제 우리는 그 공연에 대한 수익금을 제공하고 있습니다.
+```
+extension Comparable {
+    func precedes(other: Self) -> Bool { return self < other }
+}
+extension Int : Ordered {}
+extension String : Ordered {}
+```
 
-so on the one hand this is really nice, right?
-한편으로는 정말 멋지지 않나요?
+우리는 이제 `proceeds`을 대신할 구현을 `Comparable`에서 제공합니다.
 
-when I want a binary search for doubles well all I have to do is add this conformance and I can do it.
-복식에 대한 이진 검색을 원할 때 이 적합성을 추가하기만 하면 되니까요.
+정말 멋지지 않나요? `Double`에 대한 이진 검색을 원할 때 이 적합성을 추가하기만 하면 되니까요.
 
-on the other hand, it's kind of Vicky because even if I take away this conformance I still have this precedes function that's been glommed onto doubles which already have enough of an interface. right?
-반면에, 이 적합성을 제거하더라도 이미 복식 검색에 붙어있는 이미 충분한 인터페이스가 있는 더블에 붙어있으니까요. 그렇죠?
+```
+extension Comparable {
+    func precedes(other: Self) -> Bool { return self < other }
+}
+extension Int : Ordered {}
+extension String : Ordered {}
+extension Double : Ordered {}
+```
 
-we maybe would like to be a little bit more selective about adding stuff to double.
-더블에 기능을 추가할 때 좀 더 선택적으로 추가하고 싶을 수도 있습니다.
+한편으로는 좀 불편합니다. 적합성을 제거하더라도 `Double`에는 여전히 `proceeds`함수가 붙어있기 때문이죠.
 
-and even though I can do thatI can't binary search with it so it's really that precedes function is buys me nothing.
-그리고 그렇게 할 수는 있지만 이진 검색을 할 수 없기 때문에 실제로는 precedes 함수가 저에게 아무 도움이 되지 않습니다.
+`Double`에 기능을 추가할 때 좀 더 선택적으로 추가하고 싶을 수도 있습니다.
 
-fortunately I can be more selective about what gets a precedes API by using a constrained extension on ordered.
-다행히도 Ordered에 제약된 확장자를 사용하여 앞의 API를 가져오는 대상을 보다 선택적으로 지정할 수 있습니다.
+그리고 이런식으로 만들어봐야 이진 검색을 할 수 없기 때문에 `precedes` 함수는 아무 도움이 되지 않습니다.
+
+```
+protocol Ordered {
+    func precedes(other: Self) -> Bool
+}
+func binarySearch<T : Ordered>(sortedKeys: [T], forKey k: T) -> Int { ... }
+
+extension Comparable {
+    func precedes(other: Self) -> Bool { return self < other }
+}
+extension Int : Ordered {}
+extension String : Ordered {}
+let truth = 3.14.precedes(98.6) //컴파일
+
+// 'binarySearch'를 호출할 수 없습니다. '([Double], forKey: Double)' 타입의 인자 목록으로 호출할 수 없습니다.
+let position = binarySearch([2.0, 3.0, 5.0, 7.0], forKey: 5.0)
+```
+
+다행히도 `Ordered`에 제약된 확장자를 사용하여 `precedes` API를 가져오는 대상을 보다 선택적으로 지정할 수 있습니다.
+
+```
+protocol Ordered {
+    func precedes(other: Self) -> Bool
+}
+func binarySearch<T : Ordered>(sortedKeys: [T], forKey k: T) -> Int { ... }
+
+extension Ordered where Self : Comparable {
+    func precedes(other: Self) -> Bool { return self < other }
+}
+extension Int : Ordered {}
+extension String : Ordered {}
+let truth = 3.14.precedes(98.6) //'Double'은 이름이 'precedes'인 멤버를 갖고 있지 않습니다.
+```
 
 so this says that a type that is comparable and is also declared to be ordered will automatically be able to satisfy the proceeds requirement which is exactly what we want.
 따라서 이것은 비슷하고 주문 된 것으로 선언 된 유형이 자동으로 우리가 원하는 수익 요구 사항을 충족 할 수 있다고 말합니다.
