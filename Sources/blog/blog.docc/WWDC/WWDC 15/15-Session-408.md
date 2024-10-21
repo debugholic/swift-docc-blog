@@ -596,7 +596,7 @@ struct TestRenderer : Renderer {
 
     훌륭하군. 키보드 줘봐.
 
-그리고 키보드를 낚아채더니 너무 빨리 뭔가를 해버려서 거의 볼 수도 없었어요.
+그리고 키보드를 낚아채고는 너무 빨리 뭔가를 해버려서 거의 보이지도 않았습니다.
 
 ```
 extension CGContext : Renderer {
@@ -664,7 +664,7 @@ struct TestRenderer : Renderer {
 
 다이어그램에서 비눗방울은 바깥쪽 원과 하이라이트를 나타내는 안쪽 원으로 나타냅니다.
 
-이 코드를 문맥에 넣었을 때 크러스티는 끓어오르기 시작했고, 모든 코드 반복은 그를 지루하게 만들었습니다.
+이 코드를 문맥에 넣었을 때 크러스티는 부들거리기 시작했고, 모든 코드 반복은 그를 지루하게 만들었습니다.
 
 ```
 struct Bubble : Drawable {
@@ -823,82 +823,134 @@ r.rectangleAt(edges);
 
 `rectangleAt`이 요구사항에 있어야 한다는 뜻일까요?
 
-좋아요. 이 새로운 기능은 우연히도 Swift 표준 라이브러리 작업에 혁신을 가져왔습니다.
-
 더 효율적인 방법으로 직사각형을 그리는 렌더러에게는 사용자 정의가 필요할 수도 있습니다.
 
 하지만 프로토콜 확장에 있는 모든 것이 요구사항으로 뒷받침되어야 할까요? 반드시 그렇지는 않습니다.
 
-일부 API는 사용자 정의 지점이 아니기 때문이죠.
+모든 API가 커스터마이징 포인트가 되야 하는건 아니죠.
 
-so sometimes the right fix is to just not Shadow the requirement in the model. not Shadow the method in the model.
-따라서 때로는 모델에서 메서드를 섀도하는 것이 아니라. 요구 사항을 섀도하지 않는 것이 올바른 해결책일 수 있습니다. 
+가끔은 모델이 요구사항을 가리지 않는 것도 해결책일 수 있습니다.
 
-sometimes what we can do with protocol extensions. it just feels like magic.
-가끔 프로토콜 확장을 통해 할 수 있는 일들이 마법처럼 느껴지죠.
+####더 많은 프로토콜 확장 트릭(More Protocol Extension Tricks)
+---
+이 새로운 기능은 우연히도 Swift 표준 라이브러리 작업에 혁신을 가져왔습니다.
 
-I I really hope that you'll enjoy working with the latest Library as much as we've enjoyed applying this to it and updating it.
-우리가 이 기능을 적용하고 업데이트하면서 즐거웠던 만큼 여러분도 최신 라이브러리로 즐겁게 작업해 주셨으면 좋겠어요.
+가끔 프로토콜 확장을 통해 할 수 있는 일들이 마법처럼 느껴질 때가 있죠.
 
-and I want to put our story aside for a second so I can show you some of the things that we did in the standard library with protocol
-그리고 잠시 이야기를 잠시 접어두고 표준 라이브러리에서 프로토콜 확장으로 한 일들 중 몇 가지를 보여드리고 싶습니다.
+우리가 이 기능을 적용하고 업데이트하면서 즐거웠던 만큼 여러분도 이 최신 라이브러리로 즐겁게 작업해 주셨으면 좋겠어요.
 
-extensions and a few other tricks besides.
-확장 및 기타 몇 가지 트릭을 소개해드리겠습니다.
+잠시 이야기를 잠시 접어두고 표준 라이브러리에서 프로토콜 확장으로 한 일들 중 일부를 소개하고, 몇 가지 트릭을 소개해 드리겠습니다.
 
-so first there's a new index of method.
 먼저 새로운 메서드 인덱스가 있습니다.
 
-so this just walks through the indices of a collection until it finds an element that's equal to what we're looking for and it returns that index.
-이것은 우리가 찾고 있는 것과 동일한 요소를 찾을 때까지 컬렉션의 인덱스를 살펴본 다음 그 인덱스를 반환합니다.
+```
+extension CollectionType {
+    public func indexOf(element: Generator.Element) -> Index? {
+        for i in self.indices {
+            if self[i] == element {
+                return i
+            }
+        }
+        return nil
+    }
+}
+```
 
-and if it doesn't find one it returns nil simple enough, right?
-찾지 못하면 nil을 반환하는 간단한 방식이죠?
+이것은 우리가 찾고 있는 것과 동일한 요소를 찾을 때까지 컬렉션의 인덱스를 조회한 다음, 그 인덱스를 반환하는 코드입니다.
 
-but if we write it this way we have a problem.
+찾지 못하면 `nil`을 반환하는 간단한 방식이죠.
+
 하지만 이런 식으로 작성하면 문제가 생깁니다.
 
-see the elements of an arbitrary collection can't be compared with equal equal.
-임의의 컬렉션의 요소는 동일한 요소와 비교할 수 없다는 것을 알 수 있습니다.
+컬렉션의 요소들을 == 연산자로 비교할 수 없다고 나오죠.
 
-so to fix that we can constrain the extension.
-그래서 이를 해결하기 위해 확장자를 제한할 수 있습니다.
+```
+extension CollectionType {
+    public func indexOf(element: Generator.Element) -> Index? {
+        for i in self.indices {
+            // 두 개의 Generator.Element 피연산자에 이진 연산자 '=='를 적용할 수 없습니다.
+            if self[i] == element {
+                return i
+            }
+        }
+        return nil
+    }
+}
+```
 
-this is another aspect of this new feature.
+이를 해결하기 위해 확장자를 제한할 수 있습니다.
+
 이것이 이 새로운 기능의 또 다른 측면입니다.
 
-so by saying this extension applies when the the element type of the collection is equatable, we've given Swift the information it needs to allow that equality comparison.
-따라서 이 확장은 컬렉션의 요소 유형이 같을 때 적용된다고 말함으로써, 우리는 스위프트에 동등성 비교를 허용하는 데 필요한 정보를 제공한 것입니다.
+```
+extension CollectionType where Generator.Element : Equatable {
+    public func indexOf(element: Generator.Element) -> Index? {
+        for i in self.indices {
+            if self[i] == element {
+                return i
+            }
+        }
+        return nil
+    }
+}
+```
 
-and now that we've seen a simple example of a constrainted extension, let's revisit our binary search.
+이 확장은 컬렉션의 요소 유형이 `equatable`일 때 적용된다고 말함으로써, 우리는 Swift에 동등성 비교를 허용하는 데 필요한 정보를 제공한 것입니다.
+
 이제 제약된 확장의 간단한 예제를 살펴봤으니 이진 검색을 다시 살펴봅시다.
 
-and let's use it on an array of int.
-int 배열에 사용해 보겠습니다.
+```
+protocol Ordered {
+    func precedes(other: Self) -> Bool
+}
 
-okay, int doesn't conform to ordered .
-좋아, int가 ordered를 따르지 않습니다.
+func binarySearch<T : Ordered>(sortedKeys: [T], forKey k: T) -> Int { ... }
 
-well that's a simple fix, right?
+```
+
+`Int` 배열에 사용해 보겠습니다.
+
+```
+// 'binarySearch'를 호출할 수 없습니다. '([Int], forKey: Int)' 타입의 인자 목록으로 호출할 수 없습니다.
+let position = binarySearch([2, 3, 5, 7], forKey: 5)
+```
+
+`Int`가 `Ordered`를 따르지 않네요.
+
+```
+extension Int : Ordered {
+    func precedes(other: Int) -> Bool { return self < other }
+}
+
+let position = binarySearch([2, 3, 5, 7], forKey: 5)
+```
+
 간단한 수정이죠?
 
-we just add conformance.
-순서를 추가하기만 하면 됩니다.
+준수(Conformance)를 추가하기만 하면 됩니다.
 
-okay, now what about strings.
-이제 문자열은 어떨까요?
+이제 `String`은 어떨까요?
 
-well, of course this doesn't work for Strings so we do it again.
-물론 이것은 문자열에서는 작동하지 않으므로 다시 해봅시다.
+당연히 `String`에서는 작동하지 않죠. 
 
-now before crusty starts banging on his desk we really want to factor this stuff out, right?
-이제 크러스티가 책상을 두드리기 전에 이걸 고려해야겠지?
+```
+// 'binarySearch'를 호출할 수 없습니다. '([String], forKey: String)' 타입의 인자 목록으로 호출할 수 없습니다.
+let position = binarySearch(["2", "3", "5", "7"], forKey: "5")
+```
 
-the less than operator is present in the comparable protocol.
-비교 가능한 프로토콜에는 연산자보다 작은 연산자가 존재합니다.
+다시 해봅시다.
 
-so we could do this with an extension to comparable like this.
-그래서 비교 가능한 프로토콜을 이렇게 확장할 수 있습니다.
+```
+extension String : Ordered {
+    func precedes(other: Int) -> Bool { return self < other }
+}
+```
+
+크러스티가 책상을 두들기기 전에 얼른 처리해야겠죠?
+
+`comparable` 프로토콜에는 더 작은 연산자가 존재합니다.
+
+그래서 `comparable` 프로토콜을 이렇게 확장할 수 있습니다.
 
 now we're providing the proceeds for those performances.
 이제 우리는 그 공연에 대한 수익금을 제공하고 있습니다.
