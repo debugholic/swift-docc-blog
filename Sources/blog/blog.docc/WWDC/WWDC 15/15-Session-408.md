@@ -831,7 +831,7 @@ r.rectangleAt(edges);
 
 가끔은 모델이 요구사항을 가리지 않는 것도 해결책일 수 있습니다.
 
-####더 많은 프로토콜 확장 트릭(More Protocol Extension Tricks)
+#### 더 많은 프로토콜 확장 트릭(More Protocol Extension Tricks)
 ---
 이 새로운 기능은 우연히도 Swift 표준 라이브러리 작업에 혁신을 가져왔습니다.
 
@@ -841,7 +841,7 @@ r.rectangleAt(edges);
 
 잠시 이야기를 잠시 접어두고 표준 라이브러리에서 프로토콜 확장으로 한 일들 중 일부를 소개하고, 몇 가지 트릭을 소개해 드리겠습니다.
 
-먼저 새로운 메서드 인덱스가 있습니다.
+먼저 새로운 메서드 `indexOf`를 보시죠.
 
 ```
 extension CollectionType {
@@ -862,7 +862,7 @@ extension CollectionType {
 
 하지만 이런 식으로 작성하면 문제가 생깁니다.
 
-컬렉션의 요소들을 == 연산자로 비교할 수 없다고 나오죠.
+컬렉션의 요소들을 `==` 연산자로 비교할 수 없다고 나오죠.
 
 ```
 extension CollectionType {
@@ -977,7 +977,7 @@ extension Double : Ordered {}
 
 `Double`에 기능을 추가할 때 좀 더 선택적으로 추가하고 싶을 수도 있습니다.
 
-그리고 이런식으로 만들어봐야 이진 검색을 할 수 없기 때문에 `precedes` 함수는 아무 도움이 되지 않습니다.
+또, 이런식으로 만들어봐야 이진 검색을 할 수 없기 때문에 `precedes` 함수는 아무 도움이 되지 않습니다.
 
 ```
 protocol Ordered {
@@ -1012,210 +1012,270 @@ extension String : Ordered {}
 let truth = 3.14.precedes(98.6) //'Double'은 이름이 'precedes'인 멤버를 갖고 있지 않습니다.
 ```
 
-so this says that a type that is comparable and is also declared to be ordered will automatically be able to satisfy the proceeds requirement which is exactly what we want.
-따라서 이것은 비슷하고 주문 된 것으로 선언 된 유형이 자동으로 우리가 원하는 수익 요구 사항을 충족 할 수 있다고 말합니다.
+이 말은 `Comparable`이면서 동시에 `Ordered`로 선언되는 타입은 자동으로 `procedes` 요구사항을 만족한다는 의미입니다. 
 
-I'm sorry but I think that's just really cool.
-죄송하지만 정말 멋지다고 생각합니다.
+정말 멋지죠.
 
-we've got the same abstraction, the same logical abstraction coming from two different places and we've just made them interoperate 
-seamlessly. 
 서로 다른 두 곳에서 동일한 추상화, 동일한 논리적 추상화를 가져와서 서로 원활하게 상호 운용되도록 만들었습니다. 
 
-thank you for the Applause but I just I think it's cool.
-박수 보내주셔서 감사하지만 전 그냥 멋지다고 생각해요.
+다음으로 넘어가 볼까요?
 
-okay, ready for a pallet?
-좋아요, 팔레트 준비됐나요?
+자 이것은 적절한 인덱스와 타입을 가진 모든 컬렉션에서 동작하는 일반화된 이진 검색의 시그니처입니다.
 
-cleanser that's just showing it work.
-클렌저가 작동하는 것을 보여줍니다.
+```
+func binarySearch<
+    C : CollectionType where C.Index == RandomAccessIndexType,
+    C.Generator.Element : Ordered
+>(sortedKeys: C, forKey k: C.Generator.Element) -> Int {
+    ...
+}
 
-okay this is the signature of a fully generalized binary search that works on any collection with the appropriate index and element types.
-좋아, 이것은 적절한 인덱스와 요소 유형을 가진 모든 컬렉션에서 작동하는 완전히 일반화된 이진 검색의 시그니처입니다.
+let pos = binarySearch([2, 3, 5, 7, 11, 13, 17], 5) 
+```
 
-now I can already hear you guys getting uncomfortable out there.
-이제 여러분들이 불편해하는 소리가 벌써 들리네요.
+여러분들이 불편해하는 소리가 벌써 들리네요.
 
-I’m not going to write the body out here because this is already pretty awful to look at, right?
 이미 보기에도 끔찍하기 때문에 본문은 여기 쓰지 않겠습니다.
 
-Swift one had lots of generic free functions like this.
-Swift 1에는 이와 같은 일반적인 무료 함수가 많이 있었습니다.
+Swift 1에는 이와 같은 함수가 많이 있었습니다.
 
-in Swift 2 we use protocol extensions to make them into methods like this which is awesome, right?
-Swift 2에서는 프로토콜 확장을 사용해 이런 메서드로 만들었는데, 정말 멋지지 않나요?
+Swift 2에서는 프로토콜 확장을 사용해 이런 메서드로 만들었죠. 정말 멋지지 않나요?
 
-now everybody focuses on the Improvement this makes at the call site which is now clearly full, chalk full of method goodness, right?
-이제 모든 사람들이 메서드의 장점으로 가득 찬 호출 사이트에서 이것이 만들어내는 개선점에 집중하고 있죠?
+```
+extension CollectionType where Index == RandomAccessIndexType,
+    Generator.Element : Ordered {
+    func binarySearch(forKey: Generator.Element) -> Int {
+    ...
+    }
+}
 
-but as the guy writing binary search, I love what it did for the signature by separating the conditions under which this method applies from the rest of the Declaration which now just reads like a regular method.
-하지만 이진 검색을 작성하는 사람으로서 저는 이 메서드가 적용되는 조건을 선언의 나머지 부분과 분리하여 이제 일반 메서드처럼 읽히는 서명에 대해 한 일이 마음에 듭니다.
+let pos = [2, 3, 5, 7, 11, 13, 17].binarySearch(5)
+```
 
-no more angle bracket blindness. thank you very much.
-더 이상 꺾쇠 괄호로 인한 실명은 없습니다. 정말 감사합니다.
+여러분 모두가 간단해진 메서드 호출 부분에서의 개선점에 집중하고 계실텐데요.
 
-okay, last trick before we go back to our story.
-이야기로 돌아가기 전 마지막 트릭입니다.
+```
+let pos = [2, 3, 5, 7, 11, 13, 17].binarySearch(5)
+```
 
-this is a playground containing a minimal model of Swift's new Option set type protocol.
-이것은 Swift의 새로운 옵션 세트 타입 프로토콜의 최소한의 모델이 포함된 플레이그라운드입니다.
+저는 이진 검색을 작성하는 사람으로서, 선언에서 메서드가 적용되는 조건을 나머지 부분과 분리하여 시그니처를 메서드처럼 읽을 수 있다는 점이 마음에 듭니다.
 
-it's just a struct with a readon int property called raw value.
-원시값이라는 읽기 전용 int 프로퍼티가 있는 구조체일 뿐입니다.
+```
+extension CollectionType where Index == RandomAccessIndexType,
+    Generator.Element : Ordered {
+```
 
-now take a look at the broad setlik interface, you actually get for free once you've done that.
-이제 광범위한 setlik 인터페이스를 살펴보겠습니다.
+더 이상 꺾쇠 괄호로 인해 눈이 아플 일은 없습니다.
 
-all of this comes from protocol extensions.
+자, 이야기로 돌아가기 전 마지막 트릭입니다.
+
+이것은 Swift의 새로운 OptionSet 타입 프로토콜 모델이 포함된 플레이그라운드입니다.
+
+```
+strcut Choices : OptionSetType {
+    let rawValue: Int
+}
+
+var choices = Choices()
+```
+
+이것은 `rawValue`라는 읽기 전용 `Int` 프로퍼티가 있는 구조체일 뿐입니다.
+
+이제 미리 갖춰진 많은 인터페이스를 볼 수 있는데, 이 모든 것을 공짜로 이용할 수 있습니다.
+
 이 모든 것은 프로토콜 확장에서 비롯됩니다.
 
-and when you get a chance I invite you to take a look at how those extensions are declared in the standard library because several layers are working together to provide this Rich API.
-기회가 된다면 표준 라이브러리에서 이러한 확장이 어떻게 선언되는지 살펴보시기 바랍니다. 여러 계층이 함께 작동하여 이 리치 API를 제공하기 때문입니다.
+기회가 된다면 표준 라이브러리에서 이러한 확장이 어떻게 선언되는지 살펴보시기 바랍니다. 여러 계층이 함께 작동하여 풍부한 API를 제공하기 때문입니다.
 
-okay, so those are some of the cool things that you can do with protocol extensions.
-지금까지 프로토콜 확장으로 할 수 있는 몇 가지 멋진 일들을 살펴보았습니다.
+지금까지 프로토콜 확장으로 할 수 있는 여러 가지 멋진 일들을 살펴보았습니다.
 
-now for the I'd like to return to our diagramming example.
 이제 다이어그램 예제로 돌아가 보겠습니다.
 
-always make value types equatable. why?
-항상 값 유형을 동등하게 만드세요. 왜죠?
+* 항상 값 타입을 `Equatable`로 만드세요.
 
-because I said so. also eat your vegetables.
-제가 그렇게 말했으니까요. 채소도 먹으세요.
+`Equatable`은 대부분의 유형에서 간단합니다.
 
-no actually if you want to know why go to this session on Friday which I've told you about already.
-아니요, 그 이유를 알고 싶으시다면 금요일에 제가 이미 말씀드린 이 세션에 가보세요.
+이렇게 동등성을 위해 특정 부분을 비교하면 됩니다.
 
-uh it's a really cool talk and they're going to discuss this issue in detail.
-정말 멋진 강연이고 이 문제에 대해 자세히 논의할 거예요.
+```
+func == (lhs: Polygon, rhs: Polygon) -> Bool {
+    return lhs.corners == rhs.corners
+}
+extension Polygon : Equatable {}
 
-anyway, equatable is easy for most types.
-어쨌든 이퀄러블은 대부분의 유형에서 간단합니다.
+func == (lhs: Circle, rhs: Circle) -> Bool {
+    return lhs.center == rhs.center
+    && lhs.radius == rhs.radius
+}
+extension Circle : Equatable {}
+```
 
-you just compare corresponding parts for equality like this.
-이렇게 동등성을 위해 해당 부분을 비교하면 됩니다.
+이제 `Diagram`에서는 어떻게 적용될 지 봅시다.
 
-but now let's see what happens with diagram.
-하지만 이제 다이어그램은 어떻게 되는지 봅시다.
+```
+struct Diagram : Drawable {
+    func draw(renderer: Renderer) { ... }
+    var elements: [Drawable] = []
+}
 
-uhoh. we can't compare two arrays of drawable for equality.
-두 개의 배열이 같은지 비교할 수 없습니다.
+func == (lhs: Diagram, rhs: Diagram) -> Bool {
+    // 이항 연산 '=='은 두 [Drawable] 항에는 적용할 수 없습니다.
+    return lhs.elements == rhs.elements
+}
+```
 
-all right maybe we can do it by comparing the individual Elements which looks something like this.
-개별 엘리먼트를 비교하면 이렇게 될 것 같습니다.
+음, 두 `elements` 배열이 같은지 비교할 수 없습니다.
 
-okay, I'll I'll go through it for you.
-좋아요, 제가 설명해드릴게요.
+좋습니다, 아마 각 `elements`를 비교하면 이렇게 될 것 같습니다.
 
-first, you make sure they have the same number of elements then you zip the two arrays together if they do have the same number of elements and you look for one where you have a pair that's not equal, right?
-먼저 두 배열의 요소 수가 같은지 확인한 다음 요소 수가 같으면 두 배열을 합치고 같지 않은 한 쌍이 있는 배열을 찾으면 되죠.
+```
+struct Diagram : Drawable {
+    func draw(renderer: Renderer) { ... }
+    var elements: [Drawable] = []
+}
 
-you can take my word for it. this isn't the interesting part of the problem.
-제 말을 믿어도 됩니다. 이 문제는 흥미로운 부분이 아닙니다.
+func == (lhs: Diagram, rhs: Diagram) -> Bool {
+    return lhs.elements.count == rhs.elements.count
+        && !zip(lhs.elements, rhs.elements).contains { $0 != $1 }
+}
+```
 
-oops, right? this is the whole reason we couldn't compare the arrays is because drawables aren't equatable.
-배열을 비교할 수 없었던 이유는 드로어블이 같지 않기 때문이죠.
+먼저 `elements`의 개수가 같은지 확인한 다음, 두 배열을 합치고 서로 다른 쌍이 없는지를 찾으면 되죠.
 
-so we didn't have an equality operator for the arrays, we don't have an equality operator for the underlying drawables.
-배열에 대한 같음 연산자가 없고, 기본 드로어블에 대한 같음 연산자도 없으니까요.
+그냥 받아들이셔도 됩니다. 이것은 흥미로운 부분이 아니니까요.
 
-so can we just make all drawables equatable? we change our design like this?
-그럼 모든 드로어블을 동일하게 만들 수 있을까요? 이렇게 디자인을 변경하면 되겠죠?
+```
+struct Diagram : Drawable {
+    func draw(renderer: Renderer) { ... }
+    var elements: [Drawable] = []
+}
 
-well, the problem with this is that equatable has self- requirements, which means that drawable now has self- requirements.
-문제는 이퀄러블에 자체 요구사항이 있다는 것인데, 이는 드로어블에도 자체 요구사항이 있다는 뜻입니다.
+func == (lhs: Diagram, rhs: Diagram) -> Bool {
+    return lhs.elements.count == rhs.elements.count
+        // 이항 연산 '!='은 두 Drawable 항에는 적용할 수 없습니다.
+        && !zip(lhs.elements, rhs.elements).contains { $0 != $1 }
+}
+```
 
-and a self requirement puts drawable squarely in the homogeneous statically dispatched world.
-그리고 자체 요구사항은 드로어블을 동질적인 정적으로 파견된 세계에 정사각형으로 배치한다는 거죠.
+배열을 비교할 수 없었던 이유는 `Drawable`이 `Equatable`이 아니기 때문이죠.
 
-but diagram really needs a heterogeneous array of drawables, right.
-하지만 다이어그램에는 이질적인 드로어블 배열이 필요합니다.
+배열에 대한 `==` 연산자도 없고, `drawable`에 대한 `==` 연산자도 없습니다.
 
-so we can put polygons and circles in the same diagram.
+그럼 모든 `drawable`을 `Equatable`로 만들 수 있을까요? 이렇게 디자인을 변경하면 되겠죠?
+
+```
+struct Diagram : Drawable {
+    func draw(renderer: Renderer) { ... }
+    var elements: [Drawable] = []
+}
+
+func == (lhs: Diagram, rhs: Diagram) -> Bool {
+    return lhs.elements.count == rhs.elements.count
+        && !zip(lhs.elements, rhs.elements).contains { $0 != $1 }
+}
+
+protocol Drawable : Equatable {
+    func draw()
+}
+```
+
+문제는 `Equatable` 자체 요구사항이 있다는 것인데, 이는 `Drawable`에도 자체 요구사항이 있다는 뜻입니다.
+
+```
+protocol Equatable {
+    func == (Self, Self) -> Bool
+}
+```
+
+그리고 이 자체 요구사항은 `Drawable`을 동질적인 것끼리 묶인 정적인 세상에 놓도록 합니다.
+
+하지만 `Diagram`에는 이질적인 `Drawable` 배열이 필요합니다.
+
 그래야 다각형과 원을 같은 다이어그램에 넣을 수 있죠.
 
-so drawable has to stay in the heterogeneous dynamically dispatched world.
-그래서 드로어블은 동적으로 파견된 이질적인 세계에 머물러야 합니다.
+그래서 `Drawable`은 이질적인 것끼리 묶인 동적인 세계에 머물러야 합니다.
 
-and we've got a contradiction making drawable equatable is not going to work.
-드로어블을 동등하게 만드는 것은 작동하지 않는 모순이 있습니다.
+우리는 모순에 빠졌죠.
 
-we'll need to do something like this, which means that adding a new is equal to requirement to drawable.
-새로운 것을 추가하는 것이 드로어블에 대한 요구 사항과 같다는 뜻입니다.
+`Drawable`을 `Equatable`로 만드는 것은 불가능합니다.
 
-but oh no, we can't use self, right?
-하지만 안 돼요, self는 사용할 수 없죠?
+그래서 우리는 다음과 같은 것들이 필요합니다.
 
-because we need to stay heterogeneous and without self this is just like implementing ordered with classes was.
-왜냐하면 우리는 이질성을 유지해야 하고 self가 없으면 이것은 클래스로 정렬을 구현하는 것과 마찬가지이기 때문입니다.
+```
+struct Diagram : Drawable, Equatable {
+    func draw(renderer: Renderer) { ... }
+    var elements: [Drawable] = []
+}
 
-we're now going to force all drawables to handle the heterogeneous comparison case.
-이제 모든 드로어블이 이질적인 비교 케이스를 처리하도록 강제할 것입니다.
+func == (lhs: Diagram, rhs: Diagram) -> Bool {
+    return lhs.elements.count == rhs.elements.count
+        && !zip(lhs.elements, rhs.elements).contains { !$0.isEqualTo($1) }
+}
 
-fortunately, there's a way out this time.
+protocol Drawable {
+    func isEqualTo(other: Drawable) -> Bool
+    func draw()
+}
+```
+
+`Drawable`에 새로운 `isEqualTo` 요구사항을 추가하는 거죠.
+
+하지만 `Self`를 사용할 수 없네요? 우리는 이질성을 유지해야 하기 때문입니다.
+
+`Self`가 없으면 클래스로 `Ordered`을 구현하는 것과 같은 꼴이니 이제 모든 `Drawable`이 이질적인 비교 케이스를 처리하도록 강제할 것입니다.
+
 다행히도 이번에는 탈출구가 있습니다.
 
-unlike most symmetric operations equality is special.
-대부분의 대칭 연산과 달리 같음은 특별합니다.
+대부분의 대칭 연산과 달리 `==`은 특별합니다.
 
-because there's an obvious default answer when the types don't match up, right?
-유형이 일치하지 않을 때 명백한 기본 답이 있기 때문이죠?
+타입이 일치하지 않을 때 명백한 기본 답이 있기 때문이죠.
 
-we can say if you have two different types they're not equal.
-서로 다른 두 가지 유형이 있다면 같지 않다고 말할 수 있습니다.
+서로 다른 두 가지 타입이 있다면 같지 않다고 말할 수 있습니다.
 
-with that Insight, we can Implement is equal to to for all drawables when they're equable like this.
-이 인사이트를 통해 이렇게 같을 때 모든 드로어블에 대해 is equal to를 구현할 수 있습니다.
+이 아이디어를 통해 모든 드로어블에 대해 `isEqualTo`를 다음과 같이 구현할 수 있습니다.
 
-so let me walk you through it.
-그럼 제가 설명해드리겠습니다.
+```
+extension Drawable where Self : Equatable {
+    func isEqualTo(other: Drawable) -> Bool {
+        if let o = other as? Self { return self == o }
+        return false
+    }
+}
+```
 
-the extension is just what we said it's for all drawables that are equatable.
-확장자는 우리가 말한 대로 모든 드로어블이 같을 때를 위한 것입니다.
+`extension`은 우리가 말한 대로 모든 `Drawable`이 `Equatable`일 때를 위한 것입니다.
 
-okay, first we uh conditionally downcast other to the self type, right?
-좋아요, 먼저 조건부로 다른 것을 자기 타입으로 다운캐스트하는 거죠?
+먼저 조건부로 `other`를 `Self` 타입으로 다운캐스트합니다.
 
-and if that succeeds then we can go ahead use equality comparison because we have an equable conformance.
-그리고 성공하면 동등한 적합성이 있기 때문에 동등 비교를 사용할 수 있습니다.
+그리고 만약 성공하면 `Equatable` 적합성이 있기 때문에 `==` 비교를 사용할 수 있습니다.
 
-otherwise the instances are deemed unequal.
-그렇지 않으면 인스턴스는 불평등하다고 간주됩니다.
+그렇지 않으면 인스턴스는 같지 않다고 여겨집니다.
 
-okay, so big picture of what just happened here.
 좋아요, 방금 무슨 일이 있었는지 큰 그림을 그려보세요.
 
-we made a deal with the implementers of drawable.
-드로어블 구현자와 거래를 했습니다.
+`Drawable`의 구현과 거래를 했습니다.
 
-we said if you really want to go and handle the heterogeneous case “be my guest, go Implement” is equal to.
-정말 이질적인 케이스를 처리하고 싶으시다면  “마음대로 하세요, 구현하세요"와 같다고요.
+"이질적인 케이스를 처리하고 싶으시다면 마음대로 하세요, `isEqualTo`를 구현하세요"
 
-but if you want to just use the regular way we express homogeneous comparison, we'll handle all the burdens of the heterogeneous comparison for you.
-하지만 동종 비교를 표현하는 일반적인 방법을 사용하고 싶다면 이질적인 비교의 모든 부담을 저희가 대신 처리해드리겠습니다.
+"하지만 동질적인 비교를 표현하는 일반적인 방법을 사용하고 싶다면, 이질적인 비교의 모든 부담을 저희가 대신 처리해드리겠습니다." 라고요.
 
-so Building Bridges between the static and dynamic worlds it's a fascinating design space.
-정적인 세계와 동적인 세계 사이에 다리를 놓는 것은 흥미로운 디자인 공간입니다.
+정적인 세계와 동적인 세계 사이에 다리를 놓는 것은 흥미로운 디자인 영역입니다.
 
-and I encourage you to look into it more this particular problem we solved using a special property of equality but the problems aren't all like that.
-평등이라는 특수한 속성을 이용해 해결한 이 문제를 좀 더 자세히 살펴보시길 권합니다.
+'같음'이라는 특수한 속성을 이용해 해결한 이 문제를 좀 더 자세히 살펴보시길 권합니다.
 
-and um there's lots of really cool stuff you can do.
 여러분이 할 수 있는 정말 멋진 일들이 많이 있습니다.
 
-so that property of equality doesn't necessarily apply but what does apply almost universally? protocol based design.
-따라서 평등의 속성이 반드시 적용되는 것은 아니지만 거의 보편적으로 적용되는 것은 프로토콜 기반 설계입니다.
+마무리하기 전에 클래스를 언제 사용해야 하는지에 대해 몇 마디 말씀드리고 싶습니다.
 
-okay, so I want to say a few words before we wrap up about when to use classes.
-클래스를 언제 사용해야 하는지에 대해 마무리하기 전에 몇 마디 말씀드리고 싶습니다.
-
-because they do have their place, okay?
 클래스는 제자리가 있으니까요.
 
-there are times when you really do want implicit sharing.
 암시적 공유가 정말 필요할 때가 있습니다.
+
+* Copying or comparing instances doesn't make sense (e.g., Window)
+
+* Instance lifetime is tied to external eﬀects (e.g., TemporaryFile)
+
+* Instances are just “sinks”—write-only conduits to external state (e.g., CGContext)
 
 for example, when the fundamental operations of a value type don't make any sense like copying this thing what would a copy mean if you can't figure out what that means then maybe you really do want it to be a reference type, or comparison, the same thing that's another fundamental part of being a value.
 예를 들어 값 타입의 기본 연산이 이해가 되지 않을 때 복사하는 것이 무슨 의미인지 알 수 없다면 참조 타입이나 비교, 값의 또 다른 기본 부분인 동일한 것을 원할 수도 있습니다.
