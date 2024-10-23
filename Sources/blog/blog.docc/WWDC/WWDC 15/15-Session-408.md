@@ -20,7 +20,7 @@ Swift에서 이를 해결하기 위해 도입한 프로토콜 지향 프로그�
 
 --- 
 
-#### 크러스티를 소개합니다(Meet Crusty)
+#### 크러스티 소개
 
 @Row {
     @Column { ![Crusty](15-Session-408-1.png) }
@@ -41,9 +41,7 @@ Swift에서 이를 해결하기 위해 도입한 프로토콜 지향 프로그�
 
 ---
 
-#### 클래스는 훌륭합니다(Classes Are Awesome)
-
-&nbsp;
+#### 클래스
 
 * 캡슐화(Encapsulation)
 
@@ -79,19 +77,22 @@ Swift에서 이를 해결하기 위해 도입한 프로토콜 지향 프로그�
     
 그것이 바로 소프트웨어 개발에서 해결하려고 노력하는 문제이고, 클래스는 이를 해결합니다.
 
-Crusty는 코웃음을 치며 말했습니다.
+크러스티는 코웃음을 치며 말했습니다.
 
     나는 구조체와 열거형을 가지고 그 모든 걸 할 수 있다고.
     
 맞는 말입니다. Swift에서 우리가 명명한 모든 자료형(Types)은 일급 객체이고 따라서 이 모든 이점을 얻을 수 있습니다.
     
+@Row {
+    @Column { ![Crusty](15-Session-408-2.png) }
+    @Column { ![Crusty](15-Session-408-3.png) }
+}
+
 저는 이전으로 돌아가서, 객체지향으로 개발할 때 어떤 주요 기능이 이 모든 것을 가능하게 하는지 되새겨 보았습니다.
 
 ---
 
 #### 상속
-
-&nbsp;
 
 역시 상속과 같은 클래스로만 할 수 있는 것에서 비롯되어야 합니다.
 
@@ -119,7 +120,8 @@ Crusty는 코웃음을 치며 말했습니다.
 그리고 그는 불만 사항을 늘여놓기 시작했습니다.
 
 ---
-#### 암시적인 공유(Implicit Sharing)
+
+#### 불만 #1: 암시적인 공유
 
     먼저, 자동으로 되는 공유.
 
@@ -163,7 +165,7 @@ Swift에서 열거와 수정은 각각 따로 동작합니다.
 
 ---
 
-#### 모든 것에 대한 상속(Inheritance All Up In Your Business)
+#### 불만 #2: 클래스 상속
 
     두 번째로, 클래스 상속은 아주 거슬려.
 
@@ -175,7 +177,7 @@ Swift에서 열거와 수정은 각각 따로 동작합니다.
 
 * 상속 한번에 걸리는 높은 부하
     
-    - 하나의 슈퍼클래스에 관련된 모든 것이 들어가게 딥니다.
+    - 하나의 슈퍼클래스에 관련된 모든 것이 들어가게 됩니다.
 
 * 소급적용이 없는 모델링
 
@@ -187,7 +189,7 @@ Swift에서 열거와 수정은 각각 따로 동작합니다.
 
     - 게다가 저장 속성 때문에 초기화를 해야합니다.
 
-    - 불변성을 깨지 않고 슈퍼 클래스와 상호 작용하는 방법도 이해해야 합니다.
+    - 불변성을 깨지 않고 슈퍼클래스와 상호 작용하는 방법도 이해해야 합니다.
 
 * 메소드 사용처 예측하기 
     
@@ -203,12 +205,12 @@ Cocoa 프로그래머에게 이런 것들은 별로 새롭지 않습니다.
  
 ---
 
-#### 관계의 부재(Lost Type Relationships)
+#### 불만 #3: 타입 관계의 부재 (예제: 정렬된 배열에 대한 이진 검색)
  
     그리고 클래스는 타입 간의 관계가 중요한 상황에 적합하지 않아.
     예를 들면, 비교와 같은 대칭 연산 말이야. 너도 그런적 있을걸?
  
-우리가 일반화된 정렬이나 이진 검색을 작성하려는 경우, 두 요소를 비교할 방법이 필요합니다.
+정렬된 배열에 대한 이진 검색을 작성하려면, 두 요소를 비교할 방법이 필요합니다.
 
 ```
 class Ordered {
@@ -244,7 +246,7 @@ class Ordered {
 
 이 방식은 우리가 타입 시스템과 싸우고 있다는 신호입니다.
 
-우리는 각 하위 클래스가 메서드를 구현하도록 제쳐두고, 그저 하위 클래스가 해야할 문제로 여기죠.
+각 서브클래스가 메서드를 구현하도록 제쳐두고, 그저 서브클래스가 해야할 문제로 여기죠.
 
 여기 `Double` 값을 가진 서브 클래스 `Number`가 있고 `precedes`를 오버라이딩 했습니다.
 
@@ -266,7 +268,7 @@ class Number: Ordered {
 class Label: Ordered { var text: String = "" ... }
 ```
 
-그래서 올바른 타입을 찾기 위해 다운캐스팅을 해야 합니다.
+그래서 다운캐스팅을 해야 합니다.
 
 ```
 class Number: Ordered {
@@ -277,41 +279,37 @@ class Number: Ordered {
 }
 ```
 
-만약에 `other`가 `Label`로 밝혀졌다고 가정해봅시다. 다시 트랩으로 가겠죠?
+`other`가 `Label`로 밝혀졌다고 가정해봅시다. 다시 트랩으로 가겠죠?
 
 슈퍼클래스에서 `precedes`메서드를 작성할 때와 비슷한 코드 스멜(code smell)이 발생했어요.
 
-이는 클래스에서는 `self`의 타입과 `other`의 타입 사이의 중요한 타입 관계(type relationship)를 표현하지 못하기 때문입니다.
+이는 클래스에서는 `self`의 타입과 `other`의 타입 사이의 관계를 표현하지 못하기 때문입니다.
 
 ---
 
-#### 프로토콜로 재시작하기 (Starting Over with Protocols)
-
-&nbsp;
+#### 프로토콜을 사용한 추상화 (예제: 정렬된 배열에 대한 이진 검색)
 
 우리에게 필요한 것은 더 나은 추상화(abstraction) 메커니즘입니다.
 
-* 값 타입 (및 클래스) 지원 (Supports value types (and classes))
+* 값 타입 (및 클래스) 지원
 
-* 정적 타입 관계 (및 동적 디스패치) 지원 (Supports static type relationships (and dynamic dispatch))
+* 정적 타입 관계 (및 동적 디스패치) 지원
 
-* 비독단적 (Non-monolithic)
+* 비독단적
 
-* 소급 적용 모델링 지원 (Supports retroactive modeling)
+* 소급 적용 모델링 지원
 
-* 인스턴스 데이터 강요하지 않음 (Doesn’t impose instance data on models)
+* 인스턴스 데이터를 강요하지 않음
 
-* 초기화 부담을 강요하지 않음 (Doesn’t impose initialization burdens on models)
+* 초기화 부담을 강요하지 않음
 
-* 구현이 필요한 대상에 대한 명확함 (Makes clear what to implement)
-
-&nbsp;
+* 구현이 필요한 대상에 대한 명확함
 
 프로토콜은 이 모든 장점을 가지고 있고, 그래서 Swift는 최초의 프로토콜 지향 프로그래밍 언어로 만들어졌습니다. 물론 Swift는 객체 지향 프로그래밍에도 적합합니다.
 
 방금 전 예제를 보겠습니다.
 
-먼저 우리는 프로토콜이 필요하죠. 이때 Swift는 메서드 본문을 넣을 수 없다고 말합니다.
+먼저 프로토콜이 필요하죠. 이때 Swift는 메서드 본문을 넣을 수 없다고 말합니다.
 
 ```
 protocol Ordered {
@@ -320,7 +318,7 @@ protocol Ordered {
 }
 ```
 
-사실 이건 꽤 좋은 의미인데, `precedes`가 구현된 상태에서의 정적인 검사에서, 동적인 런타임 검사로 전환한다는 의미이기 때문입니다.
+사실 이건 꽤 좋은 의미인데, `precedes`에 대한 정적인 검사에서, 동적인 런타임 검사로 전환한다는 의미이기 때문입니다.
 
 ```
 protocol Ordered {
@@ -363,11 +361,9 @@ struct Number : Ordered {
 
 이제 프로토콜이 예제의 첫번째 버전에서 클래스가 했던 것과 똑같은 역할을 하고 있습니다.
 
-확실히 조금 더 나아졌습니다. 치명적인 오류가 더 이상 발생하지 않으니까요.
-
 하지만 여전히 강제 다운캐스트가 필요하기 때문에, `other`를 `Number`로 만들고 타입 캐스팅을 삭제하고 싶습니다.
 
-이제 Swift가 시그니처가 일치하지 않는다고 하겠죠?
+이제 Swift가 시그니처가 일치하지 않는다고 하네요.
 
 ```
 protocol Ordered {
@@ -418,11 +414,11 @@ func binarySearch(sortedKeys: [Ordered], forKey k: Ordered) -> Int {
 
 이것은 `Ordered`가 클래스일 때 작동했던 이진 검색입니다.
 
-`Ordered` 배열이란 이질적인(heterogeneous) `Ordered` 타입을 처리하겠다는 말이죠. 배열 내에는 `Number`와 `Label`이 섞여 있을 겁니다.
+`[Ordered]`라는 것은 이질적인(heterogeneous) `Ordered` 타입을 처리하겠다는 말이죠. 배열 내에는 `Number`와 `Label`이 섞여 있을 겁니다.
 
-그동안 `Ordered`에 대해 수정이 있었고, 자체 요구사항도 추가했으니, 컴파일러는 아마 이것을 동질하게(homogeneous) 만들도록 강제할 것입니다.
+그동안 `Ordered`를 많이 뜯어 고쳤고 자체 요구사항도 추가했으니, 컴파일러는 아마 이것을 동질하게(homogeneous) 만들도록 강제할 것입니다.
 
-이것을 정렬된 단일 타입 'T'의 동질한 배열로 작업한다고 말합니다.
+이제 `Ordered`를 단일 타입 'T'의 동질한 배열로 고치겠습니다.
 
 ```
 func binarySearch<T : Ordered>(sortedKeys: [T], forKey k: T) -> Int {
@@ -439,11 +435,11 @@ func binarySearch<T : Ordered>(sortedKeys: [T], forKey k: T) -> Int {
 
 배열을 강제로 동질하게 만드는 것이 너무 제한적이거나, 기능과 유연성을 잃는 것 같다고 생각할 수 있습니다.
 
-하지만 생각해 보면 사실 원래의 시그니처는 거짓이었습니다.
+하지만 생각해 보면 사실 원래의 시그니처 자체가 거짓이었습니다.
 
 트랩을 만드는 것 말고는 이질적인 유형을 제대로 처리한 적이 없었으니까요.
 
-프로토콜에 자체 요구사항을 추가하면 프로토콜은 클래스와 매우 다른 종류의 것이 됩니다.
+프로토콜은 자체 요구사항의 여부에 따라 다음과 같이 큰 차이가 있습니다.
 
 | **Without Self Requirement** | **With Self Requirement** |
 |:-- | :-- |
@@ -456,21 +452,17 @@ func binarySearch<T : Ordered>(sortedKeys: [T], forKey k: T) -> Int {
 
 ---
 
-#### 크러스티의 과제(A Challenge for Crusty)
+#### 프로토콜 지향 프로그래밍 (예제: 다이어그램 그리기)
 
-&nbsp;
-
-프로토콜의 정적인 부분이 어떻게 작동하는지는 알겠습니다.
+프로토콜이 어떻게 작동하는지는 알겠습니다.
 
 하지만 프로토콜이 정말 클래스를 대체할 수 있다는 크러스티의 말에는 확신이 서지 않았죠.
 
-그래서 저는 크러스티에게 우리가 보통 객체지향을 사용하지만 프로토콜로 대체할 수 있는 무언가를 만들어보라는 과제를 내줬어요.
+그래서 저는 크러스티에게 보통은 객체지향을 사용하지만 프로토콜로 대체할 수 있는 무언가를 만들어보라는 과제를 내줬어요.
 
 저는 도형을 드래그 앤 드롭해서 도형과 상호작용할 수 있는 작은 다이어그램 앱을 염두에 두고 있었어요.
 
 그래서 크러스티에게 디스플레이 모델을 만들어 달라고 부탁했죠.
-
-그가 생각해낸 것은 다음과 같습니다.
 
 먼저 그는 드로잉 프리미티브(primitive)를 만들었습니다.
 
@@ -506,7 +498,7 @@ struct Polygon : Drawable {
 }
 ```
 
-`Polygon`에서 가장 먼저 눈에 띄는 것은 값 타입으로 구성된 값 타입이라는 점입니다. 그저 점의 배열이 있는 구조체인거죠.
+`Polygon`에서 가장 먼저 눈에 띄는 것은 값 타입으로 구성된 값 타입이라는 점입니다. 점의 배열이 있는 구조체인거죠.
 
 다각형을 그리려면 마지막 모서리로 이동한 다음 모든 모서리를 순환하며 선을 그리면 됩니다.
 
@@ -522,7 +514,7 @@ struct Circle : Drawable {
 }
 ```
 
-`Circle` 역시 값 타입으로 만들어진 값 타입으로, `center`와 `radius`을 포함하는 구조체입니다.
+`Circle` 역시 값 타입으로 이루어진 값 타입으로, `center`와 `radius`을 포함하는 구조체입니다.
 
 원을 그리기 위해서는 0에서 2π 라디안까지 이어지는 호를 만듭니다.
 
@@ -547,9 +539,9 @@ struct Diagram : Drawable {
 
 `Diagram`은 `Drawable`이고, 또 다른 값 타입입니다.
 
-지금까지의 모든 `Drawable`은 값 타입이고, `Drawable`의 배열도 값 타입이기 때문입니다.
+지금까지의 모든 `Drawable`은 값 타입이고, `[Drawable]`도 값 타입이기 때문입니다.
 
-`Diagram`을 그리려면 모든 `elements`를 반복해서 하나씩 `draw`하면 됩니다.
+다이어그램을 그리려면 모든 그리기 요소들을 반복해서 하나씩 그리면 됩니다.
 
 테스트해 봅시다.
 
@@ -580,16 +572,16 @@ diagram.draw(Renderer())
 저는 크러스티만큼 머릿속으로 삼각형을 그리는데 능숙하지 않나 봅니다.
 
     아니요, 크러스티, 내 눈에는 안보여요.
-    화면에 그림을 그리는 것처럼 실제로 효과가 있는 작업이라면 이 데모가 훨씬 더 매력적으로 느껴졌을 텐데요.
+    화면에 그림을 그리는 것처럼 실용적이였다면 이 데모가 훨씬 더 설득력 있었을 텐데요.
 
 짜증을 가라앉히고, 저는 `CorGraphics`를 사용해 그의 `Renderer`를 다시 작성하기로 결정했습니다.
 
     잠깐 기다려 봐, 애송이.
-    그렇게 해버리면 내가 어떻게 내 코드를 테스트할 수 있겠어?
+    그렇게 해버리면 내가 어떻게 코드를 테스트할 수 있겠어?
 
-그는 테스트 중 무언가가 변경될 때 즉시 결과를 확인할 수 있는 그럴싸한 사례가 있다며, 프로토콜 지향 프로그래밍을 해보자고 제안했습니다.
+그는 테스트 값을 텍스트 출력으로 확인할 수 있는 방식을 사용하되, 프로토콜 지향 프로그래밍을 해보자고 제안했습니다.
 
-그리고 `Renderer`를 프로토콜로 만들었습니다.
+그리고 `Renderer` 프로토콜을 만들었습니다.
 
 ```
 protocol Renderer {
@@ -611,9 +603,9 @@ struct TestRenderer : Renderer {
 }
 ```
 
-이 모든 리팩터링 작업은 저를 조급하게 만들었고 화면에서 이걸 빨리 보고 싶었습니만, 크러스티가 코드를 다시 테스트할 때까지 기다려야 했습니다.
+이 모든 리팩터링 작업은 저를 초조하게 만들었고 저는 얼른 `CoreGraphics`를 사용한 렌더러를 구현하고 싶었습니다.
 
-이윽고 마침내 만족스러워졌을 때 그가 말했습니다.
+테스트를 마치고 이윽고 만족스러워진 그가 말했습니다.
 
     Renderer에 뭘 넣을 건데?
 
@@ -625,7 +617,7 @@ struct TestRenderer : Renderer {
 
 그가 말했습니다.
 
-    훌륭하군. 키보드 줘봐.
+    좋아. 키보드 줘봐.
 
 그리고 키보드를 낚아채고는 눈 깜짝할 사이에 끝내버렸습니다.
 
@@ -643,7 +635,7 @@ extension CGContext : Renderer {
     
     뭘 기다리고 있어? 중괄호 안이나 채워.
 
-그래서 저는 필요한 `CoreGraphics` 한 스쿱을 플레이그라운드(Playground)에 부어 넣었습니다.
+그래서 저는 `CoreGraphics`를 아래와 같이 채워 넣었죠.
 
 ```
 extension CGContext : Renderer {
@@ -661,12 +653,6 @@ extension CGContext : Renderer {
 }
 ```
 
----
-
-#### 테스트 가능성을 위한 프로토콜 및 제네릭(Protocols and Generics for Testability)
-
-&nbsp;
-
 크러스티가 `TestRenderer`에 무엇을 했는지 잠시 되돌아보고 싶습니다. 꽤 훌륭하거든요.
 
 ```
@@ -679,27 +665,29 @@ struct TestRenderer : Renderer {
 }
 ```
 
-그는 코드가 수행하는 모든 작업을 자세히 보여주는 로그를 연결할 수 있었습니다.
+그는 코드가 수행하는 작업을 자세히 보여주는 테스트 컴포넌트를 연결하고 코드 전체에 이러한 접근 방식을 적용했습니다.
 
-그리고 코드 전체에 이 접근 방식을 적용했습니다.
+프로토콜로 분리하면 할 수록 테스트하기 쉬워집니다.
 
-이것으로 인해 프로토콜로 더 많은 것을 분리할 수록 모든 것을 테스트할 수 있다는 것을 알게 되었습니다.
+그리고 이런 방식의 테스트는 모의 테스트(mocks)보다 훨씬 더 낫습니다. 모의 테스트는 본질적으로 취약하죠.
 
-이런 부류의 테스트는 모의 테스트(mocks)와 비슷하지만 훨씬 더 낫습니다. 모의 테스트는 본질적으로 취약하죠.
-
-테스트 코드를 대상을 구현하는 중간에 연결해야 합니다.
+테스트 컴포넌트를 대상을 구현하는 중간에 연결해야 합니다.
 
 그리고 그 취약성 때문에 Swift의 강력한 정적 타입 시스템과는 잘 어울리지 않습니다.
 
-프로토콜은 강제적인 인터페이스를 제공하면서도, 필요한 모든 측정에 대한 연결 고리를 제공합니다.
+프로토콜은 강제적인 인터페이스를 제공하면서도, 필요한 모든 테스트 측정에 대한 연결 고리를 제공합니다.
+
+---
+
+#### 프로토콜 확장 (예제: 비눗방울 다이어그램)
 
 이제 비눗방울에 대한 얘기를 하러 예제로 돌아가 보겠습니다.
 
-우리는 이 다이어그램 앱이 아이들에게 인기가 있기를 원했고, 당연히 아이들은 비눗방울을 좋아합니다.
+우리는 다이어그램 앱이 아이들에게 인기가 있기를 원했고, 아이들은 비눗방울을 좋아합니다.
 
-다이어그램에서 비눗방울은 바깥쪽 원과 하이라이트를 나타내는 안쪽 원으로 나타냅니다.
+비눗방울 다이어그램은 바깥쪽 원과 하이라이트를 나타내는 안쪽 원으로 나타냅니다.
 
-이 코드를 문맥에 넣었을 때 크러스티는 부들거리기 시작했고, 계속된 코드 반복은 그를 지루하게 만들었습니다.
+이 코드를 문맥에 넣었을 때 크러스티는 끓어오르기 시작했고, 계속된 코드 반복은 그를 지루하게 만들었습니다.
 
 ```
 struct Bubble : Drawable {
@@ -762,17 +750,13 @@ extension CGContext : Renderer {
 }
 ```
 
-이제 크러스티는 부츠를 벗고 책상을 두드리고 있습니다. 여기서도 코드를 다시 반복하고 있었기 때문입니다.
+이제 크러스티는 부츠를 벗고 책상을 두드리고 있습니다. 여전히 코드를 다시 반복하고 있었기 때문입니다.
 
     나 혼자 다 해야 되네.
 
 그는 중얼거리며 키보드를 뺏어갔어요.
 
-그리고는 Swift의 새로운 기능을 사용해 저를 가르치기 시작했죠.
-
----
-
-#### 프로토콜 확장(Protocol Extension)
+그리고는 Swift의 새로운 기능을 사용해 저를 가르치기 시작했죠. 프로토콜 확장입니다.
 
 ```
 protocol Renderer {
@@ -789,7 +773,7 @@ extension Renderer {
 }
 ```
 
-이제 프로토콜에 있는 `circleAt` 요구사항에 대해 모든 `Renderer` 모델에는 공유되는 구현이 생겼습니다.
+이제 `circleAt` 요구사항에 대해 모든 `Renderer` 모델에는 공유되는 구현이 생겼습니다.
 
 `extension`에서 작성된 요구사항은 사용자 정의 지점을 생성한다는 의미입니다.
 
@@ -809,7 +793,7 @@ extension Renderer {
 }
 ```
 
-이제 크러스티의 `TestRenderer`를 확장시켜 이 두 가지 메서드를 모두 구현할 수 있습니다.
+크러스티의 `TestRenderer`를 확장시켜 이 두 가지 메서드를 모두 구현할 수 있습니다.
 
 ```
 extension TestRenderer : Renderer {
@@ -822,9 +806,7 @@ r.circleAt(origin, radius: 1);
 r.rectangleAt(edges);
 ```
 
-그냥 호출하면 됩니다. 놀랄 것도 없죠.
-
-`TestRenderer`의 구현이 직접 호출되고, 여기서는 프로토콜은 관여하지도 않습니다. 
+이 때는 두 메서드 모두 `TestRenderer`의 구현이 직접 호출되고, 프로토콜은 관여하지도 않습니다. 
 
 `Renderer` 적합성(conformance)을 제거해도 같은 결과를 얻을 수 있습니다.
 
@@ -839,7 +821,7 @@ r.circleAt(origin, radius: 1);
 r.rectangleAt(edges);
 ```
 
-하지만 이제 Swift가 모델이 `Renderer` 타입인 것만 알고 있다고 바꿔 보겠습니다.
+하지만 Swift가 모델이 `Renderer` 타입인 것만 알고 있다고 바꿔 보겠습니다.
 
 ```
 let r: Renderer = TestRenderer()
@@ -849,13 +831,13 @@ r.rectangleAt(edges);
 
 `circleAt`은 요구사항이므로 우리가 만든 모델은 사용자 정의 권한을 갖고 커스터마이징한 `circleAt`을 호출합니다.
 
-하지만 `rectangleAt`은 요구사항이 아니므로, `TestRenderer`에서 만든 구현은 프로토콜의 구현으로 인해 가려집니다. 
+하지만 `rectangleAt`은 요구사항이 아니므로, 프로토콜에서 구현한 내용에 의해 가려집니다. 
 
-따라서 이 문맥에서는 프로토콜의 구현이 호출됩니다. 좀 이상하죠?
+즉, 이 문맥에서는 프로토콜의 구현이 호출됩니다. 좀 이상하죠?
 
 `rectangleAt`이 요구사항에 있어야 한다는 뜻일까요?
 
-더 효율적인 방법으로 직사각형을 그리는 렌더러에게는 사용자 정의가 필요할 수도 있습니다.
+더 효율적인 방법으로 직사각형을 그리는 렌더러에게는 사용자 정의가 필요할 수 있습니다.
 
 하지만 프로토콜 확장에 있는 모든 것이 요구사항으로 뒷받침되어야 할까요? 반드시 그렇지는 않습니다.
 
@@ -863,13 +845,11 @@ r.rectangleAt(edges);
 
 ---
 
-#### 추가 프로토콜 확장 트릭(More Protocol Extension Tricks)
-
-&nbsp;
+#### 프로토콜 확장 트릭 #1: 제약된 확장
 
 이 새로운 기능은 우연히도 Swift 표준 라이브러리 작업에 혁신을 가져왔습니다.
 
-가끔 프로토콜 확장을 통해 할 수 있는 일들이 마법처럼 느껴질 때가 있죠.
+가끔 프로토콜 확장을 통해 할 수 있는 일들이 마법처럼 느껴질 때가 있어요.
 
 잠시 이야기를 잠시 접어두고 표준 라이브러리에서 프로토콜 확장으로 한 일들 중 일부를 소개하고, 몇 가지 트릭을 소개해 드리겠습니다.
 
@@ -910,9 +890,7 @@ extension CollectionType {
 }
 ```
 
-이를 해결하기 위해 확장자를 제한할 수 있습니다.
-
-이것이 이 새로운 기능의 또 다른 측면입니다.
+이를 해결하기 위해 확장에 제약을 만들 수 있습니다.
 
 ```
 extension CollectionType where Generator.Element : Equatable {
@@ -927,7 +905,12 @@ extension CollectionType where Generator.Element : Equatable {
 }
 ```
 
-이 확장은 컬렉션의 요소 유형이 `Equatable`일 때 적용된다고 말함으로써, 우리는 Swift에 동등성 비교를 허용하는 데 필요한 정보를 제공한 것입니다.
+이 확장은 컬렉션의 요소 유형이 `Equatable`일 때 적용된다고 말함으로써, 우리는 Swift에 동등 비교를 허용하는 데 필요한 정보를 제공한 것입니다.
+
+---
+
+#### 프로토콜 확장 트릭 #2: 소급 적용
+
 
 이제 제약된 확장의 간단한 예제를 살펴봤으니 이진 검색을 다시 살펴봅시다.
 
@@ -937,7 +920,6 @@ protocol Ordered {
 }
 
 func binarySearch<T : Ordered>(sortedKeys: [T], forKey k: T) -> Int { ... }
-
 ```
 
 `Int` 배열에 사용해 보겠습니다.
@@ -990,9 +972,9 @@ extension Int : Ordered {}
 extension String : Ordered {}
 ```
 
-이제 `procedes`를 대신할 구현을 `Comparable`에서 제공합니다.
+이제 `procedes`의 구현을 `Comparable`에서 대신 제공합니다.
 
-정말 멋지지 않나요? `Double`에 대한 이진 검색이 필요해지면 적합성을 추가하면 되니까요.
+정말 멋지네요. 이제는 `Double`에 대한 이진 검색이 필요해지면 적합성을 추가하면 됩니다. 
 
 ```
 extension Comparable {
@@ -1002,11 +984,12 @@ extension Int : Ordered {}
 extension String : Ordered {}
 extension Double : Ordered {}
 ```
-한편으로는 좀 불편합니다. `Double`에서 적합성을 제거하더라도 여전히 `procedes`함수가 붙어있기 때문이죠.
+
+한편으로는 좀 불편합니다. `Double`에서 `Ordered` 적합성을 제거하더라도 여전히 `procedes`함수가 붙어있기 때문이죠.
 
 `Double`에 기능을 추가할 때 좀 더 선택적으로 추가하고 싶을 수도 있습니다.
 
-또, 어차피 이진 검색을 할 수 없기 때문에 `precedes` 함수는 아무 도움이 되지 않습니다.
+또, `Ordered`가 아니면 이진 검색을 할 수 없기 때문에 `precedes` 함수는 아무 도움이 되지 않습니다.
 
 ```
 protocol Ordered {
@@ -1041,11 +1024,13 @@ extension String : Ordered {}
 let truth = 3.14.precedes(98.6) //'Double'은 이름이 'precedes'인 멤버를 갖고 있지 않습니다.
 ```
 
-`Comparable` 중 `Ordered`로 선언되는 타입만 `procedes` 요구사항을 만족한다는 의미입니다. 
+`Comparable` 중 `Ordered`로 선언되는 타입만 `procedes` 요구사항이 있다는 의미입니다. 
 
-정말 멋지죠.
+정말 멋지죠. 서로 다른 두 곳에서 동일한 논리적 추상화를 가져와서 서로 원활하게 상호 운용되도록 만들었습니다. 
 
-서로 다른 두 곳에서 동일한 논리적 추상화를 가져와서 서로 원활하게 상호 운용되도록 만들었습니다. 
+---
+
+#### 프로토콜 확장 트릭 #3: 제네릭 미화
 
 다음으로 넘어가 볼까요?
 
@@ -1096,17 +1081,17 @@ extension CollectionType where Index == RandomAccessIndexType,
     Generator.Element : Ordered {
 ```
 
-지금까지 프로토콜 확장으로 할 수 있는 여러 가지 멋진 일들을 살펴보았습니다.
+---
+
+#### 값 타입을 `Equatable`로 만들기 (예제: 다이어그램)
 
 이제 다이어그램 예제로 돌아가 보겠습니다.
 
----
+항상 값 타입을 `Equatable`로 만드세요. 왜 그래야 하는지는 이번주 금요일 세션에서 확인해 보세요.
 
-#### 모든 값 타입을 `Equatable`로 만들기(Make All Value Types `Equatable`)
+대부분의 타입에서 `Equatable`로 만드는 방법은 간단합니다.
 
-`Equatable`로 만드는 방법은 대부분의 타입에서 간단합니다.
-
-이렇게 특정 부분이 같은지를 비교하면 됩니다.
+그냥 특정 부분이 같은지를 비교하면 됩니다.
 
 ```
 func == (lhs: Polygon, rhs: Polygon) -> Bool {
@@ -1121,7 +1106,7 @@ func == (lhs: Circle, rhs: Circle) -> Bool {
 extension Circle : Equatable {}
 ```
 
-`Diagram`에서는 어떻게 적용될 지 봅시다.
+`Diagram`에서는 어떻게 적용될지 봅시다.
 
 ```
 struct Diagram : Drawable {
@@ -1135,9 +1120,9 @@ func == (lhs: Diagram, rhs: Diagram) -> Bool {
 }
 ```
 
-음, 두 `elements` 배열 간에는 비교할 수 없습니다.
+음, 두 `elements` 간에는 비교할 수 없군요.
 
-좋습니다. 그러면 각 `elements`를 비교하면 이렇게 될 것 같습니다.
+좋습니다. 그러면 `elements`를 개별로 비교하면 이렇게 될 것 같습니다.
 
 ```
 struct Diagram : Drawable {
@@ -1151,9 +1136,7 @@ func == (lhs: Diagram, rhs: Diagram) -> Bool {
 }
 ```
 
-먼저 `elements`의 개수가 같은지 확인한 다음, 두 배열을 합치고 서로 다른 쌍이 없는지를 찾으면 되죠.
-
-그냥 받아들이셔도 됩니다. 여기가 흥미로운 부분이 아니니까요.
+먼저 개수가 같은지 확인한 다음, 두 배열을 합치고 서로 다른 쌍이 없는지를 찾으면 되죠.
 
 ```
 struct Diagram : Drawable {
@@ -1168,11 +1151,11 @@ func == (lhs: Diagram, rhs: Diagram) -> Bool {
 }
 ```
 
-배열을 비교할 수 없었던 이유는 `Drawable`이 `Equatable`이 아니기 때문이죠.
+배열을 비교할 수 없었던 이유는 `Drawable`이 `Equatable`이 아니기 때문입니다.
 
-배열에 대한 동등 연산자도 없고, `Drawable`에 대한 동등 연산자도 없습니다.
+`[Drawable]`에 대한 동등 연산자도 없고, `Drawable`에 대한 동등 연산자도 없으니까요.
 
-그럼 모든 `Drawable`을 `Equatable`로 만들 수 있을까요? 이렇게 디자인을 변경하면 되겠죠?
+그럼 어떻게 모든 `Drawable`을 `Equatable`로 만들 수 있을까요? 이렇게 변경하면 되겠죠?
 
 ```
 struct Diagram : Drawable {
@@ -1202,19 +1185,19 @@ protocol Drawable : Equatable {
 }
 ```
 
-그리고 이제 `Drawable`에도 자체 요구사항이 생겼습니다.
+그러면 이제 `Drawable`에도 자체 요구사항이 생겼습니다.
 
-이 자체 요구사항이 `Drawable`을 동질적인 것끼리 정적으로 존재하는 세상으로 데려갑니다.
+이 자체 요구사항이 `Drawable`을 동질적이고 정적인 세상으로 데려갑니다.
 
 하지만 `Diagram`에는 이질적인 `Drawable` 배열이 필요합니다.
 
 그래야 다각형과 원을 같은 다이어그램에 넣을 수 있죠.
 
-그래서 `Drawable`은 이질적인 것끼리 동적으로 존재하는 세상에 있어야 합니다.
+그래서 `Drawable`은 이질적이고 동적인 세상에 있어야 합니다.
 
 모순적이죠. `Drawable`은 `Equatable`일 수 없습니다.
 
-그래서 우리는 다음과 같은 것들이 필요합니다.
+그래서 다음과 같이 다리를 놓겠습니다.
 
 ```
 struct Diagram : Drawable, Equatable {
@@ -1233,21 +1216,19 @@ protocol Drawable {
 }
 ```
 
-`Drawable`에 새로운 `isEqualTo` 요구사항을 추가하는 거죠.
+`Drawable`에 `isEqualTo` 요구사항을 추가하는 거죠.
 
 여전히 이질성을 유지해야 하기 때문에, 우리는 자체 요구사항을 사용할 수 없습니다.
 
-자체 요구사항이 없으면 클래스로 `Ordered`를 구현했던 것과 마찬가지로 모든 이질적인 비교 케이스를 처리하도록 강제 다운캐스팅을 해줘야 할 겁니다.
+자체 요구사항이 없으면 모든 이질적인 비교 케이스를 처리하도록 강제 다운캐스팅을 해줘야 할 겁니다.
 
-다행히도 이번에는 탈출구가 있습니다.
-
-대부분의 대칭 연산과 달리 동등 연산은 특별합니다.
+다행히도 이번에는 탈출구가 있습니다. 대칭 연산과 달리 동등 연산은 특별합니다.
 
 타입이 일치하지 않을 때 명백한 기본 답이 있기 때문이죠.
 
 서로 다른 두 가지 타입이 있다면 같지 않다고 말할 수 있습니다.
 
-이 아이디어를 통해 모든 드로어블에 대해 `isEqualTo`를 다음과 같이 구현할 수 있습니다.
+이 아이디어를 통해 `Drawable`에 대해 `isEqualTo`를 다음과 같이 구현할 수 있습니다.
 
 ```
 extension Drawable where Self : Equatable {
@@ -1258,127 +1239,62 @@ extension Drawable where Self : Equatable {
 }
 ```
 
-이 확장은 우리가 말한 대로 `Drawable`이 `Equatable`일 때를 위한 것입니다.
-
 먼저 조건부로 `other`를 `Self` 타입으로 다운캐스트합니다.
 
-그리고 만약 성공하면 `Equatable` 적합성이 있기 때문에 동등 비교를 사용할 수 있습니다.
+만약 성공하면 `Equatable` 적합성이 있기 때문에 동등 비교를 사용할 수 있습니다.
 
-좋아요, 방금 무슨 일이 있었는지 큰 그림을 그려보세요.
+방금 무슨 일이 있었는지 큰 그림을 그려보세요.
 
-`Drawable`의 구현과 거래를 했습니다.
+이질적인 비교를 표현하기 위해서 `isEqualTo`를 구현했는데
 
-"이질적인 케이스를 처리하고 싶으시다면 마음대로 하세요, `isEqualTo`를 구현하세요"
-
-"하지만 동질적인 비교를 표현하는 일반적인 방법을 사용하고 싶다면, 이질적인 비교의 모든 부담을 저희가 대신 처리해드리겠습니다." 라고요.
+타입 캐스트에 이질적인 비교에 대한 부담을 넘기고 동질적인 비교가 가능하도록 만들었죠.
 
 정적인 세계와 동적인 세계 사이에 다리를 놓는 것은 흥미로운 디자인 영역입니다. 
 
 '같음'이라는 특수한 속성을 이용해 해결한 이 문제를 좀 더 자세히 살펴보시길 권합니다.
 
+---
+
+#### 마무리
+
 마무리하기 전에 클래스를 언제 사용해야 하는지에 대해 몇 마디 말씀드리고 싶습니다.
 
-클래스는 제자리가 있으니까요.
+클래스는 제자리가 있으니까요. 암시적 공유가 정말 필요할 때가 있습니다.
 
-암시적 공유가 정말 필요할 때가 있습니다.
+* 인스턴스 복사 또는 비교가 말이 안되는 경우(예: `Window`)
 
-* 인스턴스 복사 또는 비교가 의미가 없는 경우(예: 윈도우)
+    - 윈도우를 복사한다는 것은 새 그래픽 윈도우가 현재 윈도우 바로 위에 나타난다는 의미입니다.
+        
+    - 뷰 계층 구조 상 윈도우는 참조 타입으로 존재해야 합니다.
 
-- 
+* 인스턴스의 수명이 외부 부작용과 연관된 경우(예: `TemporaryFile`)
 
+    - 컴파일러는 임시 파일들을 자유롭게 생성하고 소멸시키면서 가능한 최적화하려고 합니다.
 
-* Instance lifetime is tied to external eﬀects (e.g., TemporaryFile)
+    - 참조 타입은 안정적인 정체성을 가지고 있어 외부 엔티티로 사용이 용이합니다.
 
-* Instances are just “sinks”—write-only conduits to external state (e.g., CGContext)
+* 인스턴스가 외부 상태에 대한 쓰기 전용 통로 역할인 경우(예: `CGContext`)
 
-for example, 
+    - `CGContext`는 그리기 정보를 누적하여 갖고 있어야 합니다.
 
-when the fundamental operations of a value type don't make any sense
- 
-이걸 복사하는 게 무슨 의미가 있겠어?, 그게 무슨 뜻이지?, 참조 유형이길 원한다던지와 같이 값 유형의 기본 연산이 의미가 없을 때거나
+    - 이런 경우 `final`을 사용하고, 클래스 상속 대신 프로토콜을 추상화 사용을 권장합니다. 
 
-, or comparison, the same thing that's another fundamental part of being a value.
+우리는 객체 지향적인 세상에 살고 있고 Cocoa는 객체를 다루죠.
 
-예를 들어 값 타입의 기본 연산이 이해가 되지 않을 때 복사하는 것이 무슨 의미인지 알 수 없다면 참조 타입이나 비교, 값의 또 다른 기본 부분인 동일한 것을 원할 수도 있습니다.
+프레임워크는 서브클래싱을 요구하고, 그 서브클래스의 API에는 객체를 기대할 겁니다.
 
-so for example a window, what would it mean to copy a window.
-창을 예로 들면 창을 복사한다는 것은 어떤 의미일까요?
+시스템과 싸우지 마세요. 동시에 신중해야 합니다.
 
-would you actually want to see you know a new graphical window what right on top of the other one? I don't know.
-새 그래픽 창이 다른 그래픽 창 바로 위에 있는 것을 실제로 보고 싶으세요? 글쎄요.
+프로그램의 어떤 것도 너무 커져서는 안 되며 이는 마찬가지로 클래스에도 적용됩니다.
 
-it wouldn't be part of your view hierarchy. doesn't make sense.
-뷰 계층 구조의 일부가 아닐 테니까요. 말이 안 되죠.
+그러니 클래스에서 무언가를 리팩터링하고 팩터링할 때는 값 타입을 사용하는 것을 고려하세요.
 
-so another case, where the lifetime of your instance is tied to some external side effect like files appearing on your desk.
-인스턴스의 수명이 책상에 나타나는 파일과 같은 외부 부작용과 연관된 또 다른 경우가 있습니다.
+좋아요, 요약하겠습니다.
 
-part of this is because values get created very liberally by the compiler and created and destroyed and we try to optimize that as well as possible.
-이 중 일부는 컴파일러가 값을 매우 자유롭게 생성하고 생성 및 소멸하기 때문에 가능한 한 최적화하려고 노력하기 때문입니다.
+프로토콜은 추상화에 있어 슈퍼클래스보다 훨씬 더 뛰어납니다.
 
-It's the reference types have this stable identity so if you're going to make something that corresponds to an external entity you might want to make it a reference type, a class.
-참조 타입은 안정적인 정체성을 가지고 있기 때문에 외부 엔티티에 해당하는 무언가를 만들려면 참조 타입, 즉 클래스로 만드는 것이 좋습니다.
-
-another case is where the instance of the abstraction are just syncs like our renderers for example.
-또 다른 경우는 예를 들어 렌더러처럼 추상화 인스턴스가 동기화되는 경우입니다.
-
-so we're just pumping we're just pumping information into that thing into that renderer right we tell it to draw a line.
-그래서 우리는 렌더러에 선을 그리라고 지시하면 렌더러에 정보를 펌핑하는 것입니다.
-
-so for example, if you wanted to make a test renderer that accumulated the text output of these commands into a string instead of just dumping them to the console you might do it like this.
-예를 들어 이러한 명령의 텍스트 출력을 콘솔에 덤프하는 대신 문자열로 누적하는 테스트 렌더러를 만들고 싶다면 이렇게 할 수 있습니다.
-
-but notice a couple of things about this.
-하지만 여기서 몇 가지 주의할 점이 있습니다.
-
-first, it's final, right?
-첫째, 최종적이죠?
-
-second, it doesn't have a base class. that's still a protocol.
-둘째, 기본 클래스가 없습니다. 여전히 프로토콜입니다.
-
-I'm using the protocol for the abstraction.
-추상화를 위해 프로토콜을 사용하고 있습니다.
-
-okay, a couple of more cases.
-좋아, 몇 가지 더
-
-so we live in an object-oriented world right Cocoa and Cocoa touch deal in objects.
-우리는 객체 지향 세상에 살고 있고 코코아와 코코아 터치는 객체를 다루죠.
-
-they're going to give you base classes and expect you to subclass them they're going to expect objects in their apis.
-기본 클래스를 제공하고 서브클래스를 기대할 거고, 그 서브클래스의 API에 객체를 기대할 겁니다.
-
-don't fight the system.
-시스템과 싸우지 마세요.
-
-okay, that would just be feudal.
-그건 봉건적일 뿐이죠.
-
-but at the same, time be circumspect about it.
-하지만 동시에 신중해야 합니다.
-
-nothing in your program should ever get too big and that goes for classes just as well well as anything else.
-프로그램의 어떤 것도 너무 커져서는 안 되며 이는 다른 모든 것과 마찬가지로 클래스에도 적용됩니다.
-
-so when you're refactoring and factoring something out of a class consider using a value type instead.
-따라서 클래스에서 무언가를 리팩터링하고 팩터링할 때는 대신 값 타입을 사용하는 것을 고려하세요.
-
-okay, to sum up.
-좋아요, 요약하자면
-
-protocol is much greater than super classes for abstraction.
-프로토콜은 추상화를 위해 슈퍼 클래스보다 훨씬 더 뛰어납니다.
-
-second, protocol extensions. this new feature let you do almost magic things.
 둘째, 프로토콜 확장. 이 새로운 기능을 사용하면 거의 마법 같은 일을 할 수 있습니다.
 
-third, did I mention you should go see the this talk on Friday? go see this talk on Friday?
-셋째, 금요일에 이 강연을 보러 가야 한다고 말씀드렸나요? 금요일에 이 강연을 보러 가세요?
+셋째, 이번주 금요일에 값 타입에 대한 강연을 보러 가야 한다고 말씀드렸나요?
 
-eat your vegetables.
-채소를 드세요.
-
-be like crusty. thank you very much.
-크러스티처럼 되세요. 정말 감사합니다.
-
+채소를 드세요. 크러스티처럼 되세요. 정말 감사합니다.
