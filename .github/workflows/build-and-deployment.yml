@@ -43,7 +43,7 @@ jobs:
           --output-path docs;
         echo "<script>window.location.href += \"/documentation/blog\"</script>" > docs/index.html
     - name: artifact 업로드
-      uses: actions/upload-pages-artifact@v1
+      uses: actions/upload-pages-artifact@v3
       with:
         # docs 경로에 있는 것만 업로드
         path: 'docs'
