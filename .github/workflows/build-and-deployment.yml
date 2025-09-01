@@ -35,7 +35,7 @@ jobs:
     - name: DocC 문서 빌드
       run: |
         xcodebuild -scheme blog -destination 'platform=macOS' \
-          -derivedDataPath /tmp/docbuild \
+          -derivedDataPath /tmp/docbuild;
         $(xcrun --find docc) process-archive \
           transform-for-static-hosting /tmp/docbuild/Build/Products/Debug-iphoneos/swift-docc-blog.doccarchive \
           --hosting-base-path swift-docc-blog \
