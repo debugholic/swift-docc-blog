@@ -26,6 +26,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Install Swift
+        uses: fwal/setup-swift@v1
+        with:
+          swift-version: "5.9"
+      - name: Clean build
+        run: swift package clean
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Pages
