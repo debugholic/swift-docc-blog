@@ -34,7 +34,7 @@ jobs:
         xcode-version: '16.0'
     - name: DocC 문서 빌드
       run: |
-        xcodebuild docbuild -scheme swift-docc-blog \
+        xcodebuild docbuild -scheme blog \
           -derivedDataPath /tmp/docbuild \
           -destination 'generic/platform=iOS';
         $(xcrun --find docc) process-archive \
