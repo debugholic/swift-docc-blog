@@ -34,11 +34,11 @@ jobs:
         xcode-version: '16.0'
     - name: DocC 문서 빌드
       run: |
-        xcodebuild -scheme blog -destination 'platform=macOS' \
+        xcodebuild -scheme blog \
           -derivedDataPath /tmp/docbuild \
-          -destination 'generic/platform=iOS';
+          -destination 'generic/platform=macOS';
         $(xcrun --find docc) process-archive \
-          transform-for-static-hosting /tmp/docbuild/Build/Products/Debug-iphoneos/swift-docc-blog.doccarchive \
+          transform-for-static-hosting /tmp/docbuild/Build/Products/Debug-macosx/blog.doccarchive \
           --hosting-base-path swift-docc-blog \
           --output-path docs;
         echo "<script>window.location.href += \"/documentation/blog\"</script>" > docs/index.html
