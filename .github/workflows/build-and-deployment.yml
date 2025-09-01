@@ -4,6 +4,8 @@ on:
   # "master" 브랜치에 푸시할 때 마다 워크플로우 작동
   push:
     branches: [ "master" ]
+  
+  workflow_dispatch:
 
 # GitHub Pages 에 배포하기 위한 GITHUB_TOKEN 권한 설정
 permissions:
