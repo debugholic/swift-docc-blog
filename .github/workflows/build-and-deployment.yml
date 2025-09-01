@@ -34,23 +34,16 @@ jobs:
         xcode-version: '16.0'
     - name: DocC 문서 빌드
       run: |
-        xcodebuild -scheme blog -destination 'platform=macOS' \
-          -derivedDataPath /tmp/docbuild \
-          -destination 'generic/platform=iOS';
-        $(xcrun --find docc) process-archive \
-          transform-for-static-hosting /tmp/docbuild/Build/Products/Debug-macos/blog.doccarchive \
-          --hosting-base-path swift-docc-blog \
-          --output-path docs;
-        echo "<script>window.location.href += \"/documentation/blog\"</script>" > docs/index.html
+        swift package --allow-writing-to-directory ./docs \
+        generate-documentation --target blog --disable-indexing \
+        --output-path ./docs \
+        --transform-for-static-hosting \
+        --hosting-base-path swift-docc-blog
     - name: artifact 업로드
-      uses: actions/upload-pages-artifact@v3
+      uses: actions/upload-pages-artifact@v4
       with:
         # docs 경로에 있는 것만 업로드
         path: 'docs'
     - name: GitHub Pages 에 배포
       id: deployment
-      uses: actions/deploy-pages@v1
-
-
-
-      
+      uses: actions/deploy-pages@v4
