@@ -38,7 +38,7 @@ jobs:
           -derivedDataPath /tmp/docbuild \
           -destination 'generic/platform=macOS';
         $(xcrun --find docc) process-archive \
-          transform-for-static-hosting /tmp/docbuild/Build/Products/Debug-macosx/blog.doccarchive \
+          transform-for-static-hosting ./.build/plugins/Swift-DocC/outputs/intermediates/blog.doccarchive \
           --hosting-base-path swift-docc-blog \
           --output-path docs;
         echo "<script>window.location.href += \"/documentation/blog\"</script>" > docs/index.html
