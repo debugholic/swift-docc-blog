@@ -36,7 +36,6 @@ jobs:
       run: |
         xcodebuild -scheme blog -destination 'platform=macOS' \
           -derivedDataPath /tmp/docbuild \
-          -destination 'generic/platform=iOS';
         $(xcrun --find docc) process-archive \
           transform-for-static-hosting /tmp/docbuild/Build/Products/Debug-iphoneos/swift-docc-blog.doccarchive \
           --hosting-base-path swift-docc-blog \
