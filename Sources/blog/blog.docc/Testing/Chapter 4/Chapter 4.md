@@ -1,0 +1,377 @@
+# 4. 좋은 단위 테스트의 네 가지 기둥
+
+## 요약
+
+가치 있는 테스트를 인식하는 방법과 성공적인 테스트 스위트의 특성을 분석하는 방법을 알아봅니다.
+
+### 4.1 좋은 단위 테스트의 특성
+
+* 회귀 방지 (Protection against regressions)
+* 리팩토링에 대한 저항 (Resistance to refactoring)
+* 빠른 피드백 (Fast feedback)
+* 유지 가능성 (Maintainability)
+
+##### 4.1.1 첫번째 기둥: 회귀 방지 (Protection against regressions)
+
+회귀는 소프트웨어 버그로, 일부 코드를 수정한 후 기능이 의도한 대로의 작동을 멈춘 경우를 나타냅니다.
+
+더 많은 기능을 개발할수록 새로운 릴리스로 그 기능 중 하나를 깨뜨릴 가능성은 올라갑니다.
+
+코드 기반이 클수록 잠재적인 버그에 더 많이 노출되므로, 회귀에 대한 좋은 방지를 개발하는 것이 중요합니다.
+
+회귀 방지 메트릭에 대한 평가는 다음을 고려해야 합니다.
+
+  * 테스트 중에 실행되는 코드의 양
+  * 해당 코드의 복잡성
+  * 코드의 도메인 중요성
+
+실행되는 코드의 양이 많을수록 테스트가 회귀를 드러낼 확률이 높아집니다.
+
+복잡한 비즈니스 로직을 나타내는 코드는 보일러 플레이트 코드보다 더 중요합니다.
+
+사소한 코드를 테스트하는 것은 거의 가치가 없습니다.
+
+테스트 범위에 해당 라이브러리, 프레임워크 및 외부 시스템을 포함해야 합니다.
+
+##### 4.1.2 두번째 기둥: 리팩토링 저항성 (Resistance to refactoring)
+
+코드를 리팩토링 했을 때, 기능 자체는 정상적으로 작동하지만 테스트가 실패합니다. 이 상황을 거짓 양성(false positive) 이라고 합니다.
+
+* 테스트 실패 경고의 이점
+
+  - 테스트는 기존 기능을 깨뜨릴 때 조기 경고를 제공합니다. 이러한 조기 경고 덕분에 결함이 있는 코드가 프로덕션에 배포되기 훨씬 전에 문제를 해결할 수 있습니다.
+  - 코드 변경이 회귀로 이어지지 않을 것이라고 확신하게 됩니다. 그러한 확신이 없다면, 리팩토링을 훨씬 더 주저할 것이고 코드 기반을 악화시킬 가능성이 훨씬 더 높아질 것입니다.
+
+* 거짓 양성이 발생했을 때의 문제
+
+  - 정당한 이유 없이 테스트가 실패하면 코드의 문제에 반응할 수 있는 능력과 의지가 희석됩니다. 시간이 지남에 따라, 당신은 그러한 실패에 익숙해지고 많은 관심을 기울이지 않게 됩니다. 잠시 후, 당신은 합법적인 실패를 무시하기 시작하여, 그것들이 생산으로 미끄러질 수 있도록 합니다.
+  - 거짓 양성이 빈번하면 테스트 제품군에 대한 신뢰를 서서히 잃게 됩니다. 당신은 더 이상 그것을 신뢰할 수 있는 안전망으로 인식하지 않습니다. 잘못된 경보로 인해 인식이 감소합니다. 이러한 신뢰 부족은 재진을 피하기 위해 코드 변경을 최소한으로 줄이려고 하기 때문에 리팩토링이 줄어듭니다.
+
+##### 4.1.3 거짓 양성의 원인 (What causes false positives?)
+
+테스트가 생성하는 오탐의 수는 테스트의 구조 방식과 직접적으로 관련이 있습니다.
+
+테스트가 대상 시스템(SUT)의 구현 세부 사항에 더 많이 결합될수록, 더 많은 오경보를 생성합니다.
+
+거짓 양성을 얻을 가능성을 줄이는 유일한 방법은 테스트를 구현 세부 사항과 분리하는 것입니다.
+
+테스트가 SUT가 제공하는 관찰 가능한 동작(observable behavior) 즉, 최종 결과를 검증하는지 확인해야 합니다.
+
+```
+public class Message
+{
+  public string Header { get; set; }
+  public string Body { get; set; }
+  public string Footer { get; set; }
+}
+public interface IRenderer
+{
+  string Render(Message message);
+}
+
+public class MessageRenderer : IRenderer
+{
+  public IReadOnlyList<IRenderer> SubRenderers { get; }
+  public MessageRenderer()
+  {
+    SubRenderers = new List<IRenderer>
+    {
+      new HeaderRenderer(),
+      new BodyRenderer(),
+      new FooterRenderer()
+    };
+  }
+
+  public string Render(Message message)
+  {
+    return SubRenderers
+            .Select(x => x.Render(message))
+            .Aggregate("", (str1, str2) => str1 + str2);
+  }
+}
+```
+
+MessageRenderer 클래스는 메시지 일부에 대한 실제 작업을 위임하는 여러 하위 렌더러를 포함합니다. 
+
+이후 결과를 HTML 문서로 결합합니다. 예를 들어 BodyRenderer 는 다음과 같습니다.
+
+```
+public class BodyRenderer : IRenderer
+{
+  public string Render(Message message)
+  {
+    return $"<b>{message.Body}</b>";
+  }
+}
+```
+
+그리고 아래와 같은 테스트가 있습니다.
+
+```
+[Fact]
+public void MessageRenderer_uses_correct_sub_renderers()
+{
+  var sut = new MessageRenderer();
+  IReadOnlyList<IRenderer> renderers = sut.SubRenderers;
+
+  Assert.Equal(3, renderers.Count);
+  Assert.IsAssignableFrom<HeaderRenderer>(renderers[0]);
+  Assert.IsAssignableFrom<BodyRenderer>(renderers[1]);
+  Assert.IsAssignableFrom<FooterRenderer>(renderers[2]);
+}
+```
+
+이 테스트는 BodyRenderer 를 BodyRenderer 와 동일한 작업을 수행하는 또 다른 BoldRenderer 를 만들어 리팩토링하면 거짓 양성이 발생합니다. 
+
+이는 테스트가 SUT의 구현 세부 사항에 너무 많이 결합되어 있기 때문입니다.
+
+##### 4.1.4 구현 세부사항보다는 최종 결과에 집중하라 (Aim at the end result instead of implementation details)
+
+이것을 리팩토링에 훨씬 더 저항력있는 코드로 변경하면 다음과 같습니다.
+
+```
+[Fact]
+public void Rendering_a_message()
+{
+  var sut = new MessageRenderer();
+  var message = new Message
+  {
+    Header = "h",
+    Body = "b",
+    Footer = "f"
+  };
+  string html = sut.Render(message);
+  Assert.Equal("<h1>h</h1><b>b</b><i>f</i>", html);
+}
+```
+
+이 테스트는 MessageRenderer를 블랙박스로 취급하며 관찰 가능한 동작에만 관심이 있습니다.
+
+HTML 출력이 동일하게 유지되는 한 SUT에 어떤 변경을 하든 상관하지 않습니다.
+
+물론 여전히 Render의 새 파라미터를 추가한다던가 하면 거짓 양성을 발생시킬 수 있지만 수정하기 쉬운 문제입니다.
+
+### 4.2 첫 두 가지 속성 간의 본질적인 연결 (The intrinsic connection between the first two attributes)
+
+##### 4.2.1 테스트 정확도를 최대화하기 (Maximizing test accuracy)
+
+@Image(source: 4-1.png, alt: nil)
+
+* 테스트 통과 & 기능 정확: 올바른 추론 (True Negative) – 시스템 상태를 정확하게 추론.
+* 테스트 실패 & 기능 손상: 올바른 추론 (True Positive) – 회귀 방지가 목표로 하는 시나리오.
+* 테스트 통과 & 기능 손상: 오류 음성 (False Negative, Type II 오류) – 버그를 놓친 경우.
+* 테스트 실패 & 기능 정확: 오류 양성 (False Positive, Type I 오류) – 잘못된 알람.
+
+독감 테스트를 예로 들면 "양성(Positive)"은 테스트 생성자가 설정한 조건(예: 독감 존재)이 참임을 의미합니다. "음성(Negative)"은 그 반대입니다.
+
+가짜 양성(독감인데 아니라고 함)과 가짜 음성(독감이 아닌데 있다고 함)의 확률이 낮을수록 테스트는 더 정확합니다.
+
+> 테스트 정확도 = Signal (발견된 버그 개수) / Noise (잘못된 알람의 개수)
+
+정확성을 높이려면 신호를 늘리고(버그를 더 잘 찾고) 잡음(거짓 양성)을 줄여야 합니다.
+
+이때 어느 한 쪽이 0에 가까우면 테스트의 가치도 0이 됩니다.
+
+##### 4.2.2 가짜 양성 및 가짜 음성의 중요성 (The importance of false positives and false negatives: The dynamics)
+
+* 초기 단계: 
+
+  - 프로젝트 초기에는 가짜 양성이 가짜 음성만큼 나쁘지는 않습니다. 리팩토링이 덜 빈번하고, 코드가 개발자의 기억에 신선하기 때문입니다. 잘못된 경고는 버그가 발견되지 않고 프로덕션으로 유출되는 위험보다 덜 중요하게 여겨집니다.
+
+* 프로젝트 성장 시: 
+
+  - 하지만 프로젝트가 성장함에 따라 오류 양성은 점점 더 중요해집니다. 리팩토링 노력을 방해하고, 개발 속도를 저해하여 프로젝트를 정체 상태로 이끌 수 있습니다.
+
+@Image(source: 4-2.png, alt: nil)
+
+많은 개발자가 회귀 방지 개선에만 초점을 맞추지만, 가치 있고 정확한 테스트 스위트를 구축하려면 거짓 음성(놓친 버그)과 거짓 양성(잘못된 알람) 모두에 동등한 주의를 기울여야 합니다.
+
+중간 규모에서 대규모 프로젝트에서는 이 두 가지 모두 매우 중요합니다.
+
+### 4.3 세 번째 및 네 번째 기둥: 빠른 피드백과 유지보수성 (Fast feedback and maintainability)
+
+테스트가 빠를수록, 테스트 스위트에 더 많은 테스트를 포함하고 더 자주 실행할 수 있습니다.
+
+테스트를 자주 실행하면 피드백 루프가 극적으로 짧아져, 코드를 변경하자마자 버그에 대한 경고를 받을 수 있으며, 이는 버그 수정 비용을 거의 0으로 줄이는 데 기여합니다.
+
+반대로, 느린 테스트는 피드백을 지연시키고 버그가 감지되지 않은 채로 남아있는 기간을 늘려, 결국 버그 수정 비용을 증가시킵니다. 
+
+느린 테스트는 개발자들이 테스트를 자주 실행하지 않게 만들어 잘못된 방향으로 더 많은 시간을 낭비하게 만듭니다.
+
+유지보수성 지표는 테스트의 유지보수 비용을 평가합니다.
+
+유지보수성은 다음 두 가지 주요 요소로 구성됩니다.
+
+* 테스트를 이해하기 얼마나 어려운가: 
+  - 이는 테스트 코드의 길이에 비례합니다. 
+  - 테스트 코드의 줄 수가 적을수록 읽기 쉽고, 필요할 때 변경하기도 쉽습니다. 
+  - 단, 코드 줄 수를 줄이기 위해 테스트 코드를 인위적으로 압축해서는 안 됩니다. 테스트 코드의 품질은 프로덕션 코드만큼 중요합니다.
+
+* 테스트를 실행하기 얼마나 어려운가: 
+  - 이는 테스트가 직접적으로 사용하는 외부 프로세스 의존성의 수에 따라 달라집니다. 
+  - 테스트가 외부 프로세스 의존성(예: 데이터베이스 서버)과 연동할 경우, 해당 의존성을 유지보수하고 운영하는 데 시간이 소요됩니다 (예: 데이터베이스 서버 재부팅, 네트워크 연결 문제 해결)
+
+### 4.4 이상적인 테스트를 찾아서 (In search of an ideal test)
+
+좋은 단위 테스트의 네 가지 속성은 테스트의 가치를 결정하는 데 함께 작용합니다.
+
+이 네 가지 속성을 수학적인 의미로 곱하면 테스트의 가치를 추정할 수 있습니다.
+
+> Value estimate = [0..1] * [0..1] * [0..1] * [0..1]
+
+이는 만약 테스트가 이 속성들 중 하나라도 0점을 받는다면, 그 테스트의 가치도 0이 된다는 것을 의미합니다.
+
+따라서, 가치 있는 테스트로 간주되려면 모든 네 가지 범주에서 최소한의 점수라도 받아야 합니다.
+
+##### 4.4.1 이상적인 테스트를 만들 수 있을까? (Is it possible to create an ideal test?)
+
+이상적인 테스트(모든 네 가지 속성에서 최고 점수를 받는 테스트)는 생성할 수 없습니다.
+
+그 이유는 회귀 방지, 리팩토링 저항성, 빠른 피드백이라는 처음 세 가지 속성이 상호 배타적이기 때문입니다. 즉, 이 중 두 가지를 극대화하려면 나머지 하나를 희생해야 합니다.
+
+그러나 유지보수성은 처음 세 가지 속성과 직접적인 상관관계가 없으며, 단지 엔드-투-엔드 테스트처럼 대규모 의존성을 다루는 경우에만 비용이 증가하는 경향이 있습니다.
+
+##### 4.4.2 극단적인 사례 #1: 엔드-투-엔드 테스트 (End-to-end tests)
+
+엔드-투-엔드 테스트는 최종 사용자 관점에서 시스템을 바라보며, UI, 데이터베이스, 외부 애플리케이션을 포함한 모든 시스템 구성 요소를 통과합니다.
+    
+* 회귀 방지: 가장 많은 코드를 실행하므로 회귀에 대한 최고의 보호 기능을 제공합니다. 이는 개발자가 작성한 코드와 외부 라이브러리, 프레임워크, 타사 애플리케이션을 포함한 모든 코드를 아우릅니다.
+
+* 리팩토링 저항성: 회귀 오류 및 거짓 양성(false positives)에 대한 뛰어난 보호 기능을 제공합니다.
+빠른 피드백: 속도 면에서는 실패합니다.
+
+* 유지보수성: 일반적으로 크기가 크고 관련된 외부 의존성(out-of-process dependencies)을 유지 관리하는 데 추가 노력이 필요하므로 유지보수성이 떨어집니다.
+
+##### 4.4.3 극단적인 사례 #2: 사소한 테스트 (Trivial tests)
+
+사소한 테스트는 너무 사소해서 깨지기 어려운 간단한 코드를 커버합니다. 예를 들어, Name 속성과 같은 한 줄짜리 코드입니다.
+
+```
+public class User
+{
+  // One-liners like this are unlikely to contain bugs.
+  public string Name { get; set; } 
+}
+
+[Fact]
+public void Test()
+{
+  var sut = new User();
+  sut.Name = "John Smith";
+  Assert.Equal("John Smith", sut.Name);
+}
+```
+
+* 빠른 피드백: 매우 빠르게 실행됩니다.
+
+* 리팩토링 저항성: 거짓 양성을 생성할 가능성이 매우 낮아 리팩토링에 대한 저항성이 좋습니다.
+
+* 회귀 방지: 기본 코드에 오류를 범할 여지가 거의 없으므로 회귀를 거의 발견하지 못합니다.
+
+극단적인 경우 항상 통과하거나 의미론적으로 무의미한 단정문을 포함하는 동어반복 테스트(tautology tests)로 이어질 수 있습니다.
+
+##### 4.4.4 극단적인 사례 #3: 취약한 테스트 (Brittle tests)
+
+취약한 테스트는 빠르게 실행되고 회귀를 포착할 가능성이 높지만, 많은 거짓 양성(false positives)을 유발합니다. 즉, 기본 기능이 손상되었는지 여부와 상관없이 리팩토링 시 실패하는 테스트입니다.
+
+```
+public class UserRepository
+{
+  public User GetById(int id)
+  {
+    /* ... */
+  }
+  public string LastExecutedSqlStatement { get; set; }
+}
+
+[Fact]
+public void GetById_executes_correct_SQL_code()
+{
+  var sut = new UserRepository();
+  User user = sut.GetById(5);
+  Assert.Equal(
+    "SELECT * FROM dbo.[User] WHERE UserID = 5", 
+    sut.LastExecutedSqlStatement);
+}
+```
+
+UserRepository 클래스가 정확한 SQL 문을 생성하는지 확인하는 테스트를 예시로 보면, SQL 스크립트를 변경하면 기능이 여전히 작동하더라도 테스트가 실패합니다.
+
+```
+SELECT * FROM dbo.[User] WHERE UserID = 5
+SELECT * FROM dbo.User WHERE UserID = 5
+SELECT UserID, Name, Email FROM dbo.[User] WHERE UserID = 5
+SELECT * FROM dbo.[User] WHERE UserID = @UserID
+```
+
+* 빠른 피드백: 빠르게 실행됩니다.
+
+* 회귀 방지: 회귀에 대한 좋은 보호 기능을 제공할 수 있습니다.
+
+* 리팩토링 저항성: 리팩토링에 대한 저항성이 거의 없습니다. 이는 SUT의 내부 구현 세부 사항에 테스트를 결합하기 때문입니다 (hows에 집중하는 대신 whats에 집중).
+
+이러한 테스트는 구현 세부 사항을 고착화하여 더 이상의 리팩토링을 방해합니다.
+
+##### 4.4.5 이상적인 테스트 탐색 결과 (In search of an ideal test: The results)
+
+리팩토링 저항성(Resistance to refactoring)은 타협할 수 없는(non-negotiable) 속성입니다.
+
+테스트가 이 속성을 가지거나 가지지 않거나 둘 중 하나에 가깝기 때문에, 이 속성을 조금이라도 양보하는 것은 전체를 잃는 것과 같습니다. 
+
+따라서, 항상 리팩토링 저항성을 최대한 높이는 것을 목표로 해야 합니다.
+
+반면, 회귀 방지(Protection against regressions)와 빠른 피드백(Fast feedback)은 유연한(malleable) 속성입니다. 
+
+이 둘 사이에서 트레이드오프를 결정해야 하며, 하나에서 얻는 만큼 다른 하나에서는 잃게 됩니다.
+
+유지보수성(Maintainability)도 함께 최대화하는 것을 목표로 해야 합니다.
+
+@Image(source: 4-3.png, alt: nil)
+
+### 4.5 잘 알려진 테스트 자동화 개념 탐색 (Exploring well-known test automation concepts)
+
+##### 4.5.1 테스트 피라미드 (Breaking down the Test Pyramid)
+
+테스트 피라미드는 테스트 스위트에서 단위(Unit), 통합(Integration), 엔드-투-엔드(End-to-end) 테스트 간의 특정 비율을 지지하는 개념입니다.
+
+@Image(source: 4-4.png, alt: nil)
+
+* 시각적 표현
+
+  - 피라미드의 너비는 특정 유형의 테스트의 보급률을 나타내며, 넓을수록 테스트 수가 많습니다.
+  - 높이는 테스트가 최종 사용자 행동을 얼마나 잘 에뮬레이트하는지를 나타냅니다.
+
+* 속성간의 관계
+
+  - 피라미드의 아래쪽 계층(단위 테스트)은 실행 속도(빠른 피드백)를 강조합니다.
+  - 위쪽 계층(엔드-투-엔드 테스트)은 회귀 방지를 선호합니다.
+  - 리팩토링 저항성은 어떤 계층에서도 포기되어서는 안 됩니다. 모든 테스트는 가능한 한 적은 거짓 양성을 생성하는 것을 목표로 해야 합니다.
+
+* 비율
+  
+  - 정확한 비율은 팀과 프로젝트마다 다르지만, 일반적으로 피라미드 형태를 유지해야 합니다.
+  - 엔드-투-엔드 테스트는 빠른 피드백 측면에서 극도로 낮은 점수를 받고 유지보수성도 부족하므로, 소수로 제한되어야 합니다. 가장 중요한 기능에만 적용되어야 하며, 다른 테스트 유형으로 동일한 보호를 얻을 수 없는 경우에만 사용되어야 합니다.
+  - 단위 테스트는 일반적으로 균형 잡힌 가치를 제공하므로 수가 가장 많아야 합니다.
+  - 통합 테스트는 이 둘의 중간에 위치합니다.
+  - 애플리케이션이 간단한 CRUD 작업만 수행하고 복잡성이 거의 없는 경우, 테스트 피라미드는 단위 테스트와 통합 테스트의 수가 동일한 직사각형 모양이 될 수 있으며, 엔드-투-엔드 테스트는 없을 수 있습니다.
+
+##### 4.5.2 블랙박스 및 화이트박스 테스트 (Choosing between black-box and white-box testing)
+
+* 블랙박스 테스트 (Black-box testing)
+  
+  - 시스템의 내부 구조를 알지 못한 채 기능성을 검사하는 소프트웨어 테스트 방법입니다.
+  - 일반적으로 요구사항과 사양(애플리케이션이 무엇을 해야 하는지)을 기반으로 합니다.
+  - 리팩토링 저항성이 뛰어납니다.
+
+* 화이트박스 테스트 (White-box testing)
+  
+  - 애플리케이션의 내부 작동 방식을 검증하는 테스트 방법입니다.
+  - 테스트는 소스 코드(어떻게 작동하는지)에 기반하며, 요구사항이나 사양에 기반하지 않습니다.
+  - 리팩토링 저항성이 좋지 않습니다.
+
+* 권장 사항
+
+  - 리팩토링 저항성은 타협할 수 없는 속성이므로, 기본적으로 블랙박스 테스트를 선택해야 합니다.
+  - 모든 테스트(단위, 통합, 엔드-투-엔드)는 시스템을 블랙박스로 보고 문제 도메인에 의미 있는 동작을 검증해야 합니다.
+  - 테스트가 비즈니스 요구사항을 추적할 수 없다면, 이는 테스트의 취약성(brittleness)을 나타내는 지표입니다. 이러한 테스트는 재구성하거나 삭제해야 합니다.
+  - 알고리즘 복잡도가 높은 유틸리티 코드를 커버하는 테스트의 경우 예외가 될 수 있습니다.
