@@ -15,16 +15,17 @@ Mock 사용 사례를 구축하고 테스트 취약성과의 관계를 탐구합
 
 @Image(source: 5-1.png, alt: nil)
 
-* Mocks (목, 스파이 포함) 
+* Mocks (Mock, Spy 포함) 
   
   - SUT가 의존성 객체에 상태 변경을 유발하기 위해 호출하는 "나가는 상호작용(outcoming interactions)"을 에뮬레이션하고 검사하는 데 도움을 줍니다. 
-  - 이는 주로 사이드 이펙트(side effects)를 생성하는 명령(commands)과 관련됩니다. 스파이는 수동으로 작성된 Mock에 해당합니다.
+  - 이는 주로 사이드 이펙트(side effects)를 생성하는 명령(commands)과 관련됩니다.
+  - Spy는 수동으로 작성된 Mock에 해당합니다.
 
-* Stubs (스텁, 더미, 페이크 포함)
+* Stubs (Stub, Dummy, Fake 포함)
   
   - SUT가 의존성 객체로부터 입력 데이터를 얻기 위해 호출하는 "들어오는 상호작용(incoming interactions)"을 에뮬레이션하는 데 도움을 줍니다. (하지만 검사하지는 않습니다.) 
   - 이는 값을 반환하고 사이드 이펙트가 없는 쿼리(queries)와 관련됩니다. 
-  - 더미는 간단한 하드코딩된 값이고, 스텁은 더 정교하며, 페이크는 아직 존재하지 않는 의존성을 대체하기 위해 구현됩니다.
+  - Dummy는 간단한 하드코딩된 값이고, Stub은 더 정교하며, Fake는 아직 존재하지 않는 의존성을 대체하기 위해 구현됩니다.
 
 ##### 5.1.2 Mock(도구) vs. Mock(테스트 더블)의 구분(Mock (the tool) vs. mock (the test double))
 
@@ -32,9 +33,9 @@ Mock이라는 용어는 모의 객체 라이브러리의 클래스 자체 (예: 
 
 Mock(도구)는 Mock(테스트 더블)과 Stub을 모두 생성할 수 있습니다.
 
-##### 5.1.3 Stub과의 상호작용을 Assert하지 마라(Don’t assert interactions with stubs)
+##### 5.1.3 Stub과의 상호작용을 검증(assert)하지 마라(Don’t assert interactions with stubs)
 
-Stub과의 상호작용을 assert 하는 것은 흔히 발생하는 안티패턴이며, 취약한 테스트(fragile tests)로 이어집니다. 
+Stub과의 상호작용을 검증하는 것은 흔히 발생하는 안티패턴이며, 취약한 테스트(fragile tests)로 이어집니다. 
 
 이는 SUT의 최종 결과가 아닌 구현 세부 사항(implementation details)을 검증하는 것이기 때문입니다.
 
@@ -55,7 +56,9 @@ public void Creating_a_report()
 }
 ```
 
-GetNumberOfUsers() 호출을 assert 하는 것은 리포트 생성에 필요한 데이터를 SUT가 어떻게 수집하는지에 대한 내부 구현을 검증하는 것이므로 테스트를 취약하게 만듭니다.
+예시에서 GetNumberOfUsers() 호출을 검증하는 것은 리포트 생성에 필요한 데이터를 SUT가 어떻게 수집하는지에 대한 내부 구현을 검증하는 것입니다.
+
+최종 결과물에 포함되지 않는 사항을 검증하는 이러한 관행을 과잉 명세(overspecification)라고도 합니다.
 
 ##### 5.1.4 Mocks와 Stubs 함께 사용하기(Using mocks and stubs together)
 
@@ -91,7 +94,7 @@ public void Purchase_fails_when_not_enough_inventory()
 
 이는 SUT가 의존성 객체에 상태 변경을 유발하는 상호작용을 검사하는 Mock의 역할입니다.
 
-이 예시에서 storeMock은 두 가지 역할을 하지만, HasEnoughInventory() (stub 역할)와 RemoveInventory() (mock 역할)는 서로 다른 메서드이므로, Stub과의 상호작용을 직접 assert 하지 않는다는 원칙을 위반하지 않습니다. 
+이 예시에서 storeMock은 두 가지 역할을 하지만, HasEnoughInventory() (stub 역할)와 RemoveInventory() (mock 역할)는 서로 다른 메서드이므로, Stub과의 상호작용을 직접 검증하지 않는다는 원칙을 위반하지 않습니다. 
 
 즉, 데이터를 얻기 위한 상호작용(쿼리)을 검증하는 것이 아니라, 사이드 이펙트를 발생시키는 상호작용(명령)을 검증합니다.
 
@@ -137,9 +140,9 @@ GetNumberOfUsers() 메서드는 데이터베이스 상태를 변경하지 않고
 
 테스트에서는 이 메서드가 반환할 "가상의" 값을 stub.Setup().Returns()로 설정합니다.
 
-### 5.2 관찰 가능한 행동(Observable Behavior) vs. 구현 세부 사항(Implementation Details)(Observable behavior vs. implementation details)
+### 5.2 관찰 가능한 행동 vs. 구현 세부 사항(Observable behavior vs. implementation details)
 
-테스트 취약성은 Chapter 4에서 다루었던 리팩토링에 대한 저항력(resistance to refactoring)과 밀접하게 관련되어 있으며, 거짓 양성(false positive)을 줄여 리팩토링 저항력을 높이는 것이 중요합니다.
+테스트 취약성은 Chapter 4에서 다루었던 리팩토링에 대한 내성(resistance to refactoring)과 밀접하게 관련되어 있으며, 거짓 양성(false positive)을 줄여 리팩토링 내성을 높이는 것이 중요합니다.
 
 거짓 양성은 테스트가 코드의 구현 세부 사항(implementation details)에 결합(coupling)되어 발생하며, 이를 피하려면 테스트가 코드의 최종 결과(end result), 즉 관찰 가능한 동작(observable behavior)을 검증해야 합니다. 
 
@@ -288,7 +291,7 @@ SubRenderers 컬렉션은 public이지만, 클라이언트의 목표가 HTML 메
 
 이러한 취약성은 테스트를 Render 메서드의 최종 출력(관찰 가능한 동작)으로 리타겟팅하여 해결되었습니다.
 
-API를 잘 설계하여 모든 구현 세부 사항을 private으로 만들면, 테스트는 코드의 관찰 가능한 동작만 검증하게 되므로 자동으로 리팩토링 저항력이 향상됩니다.
+API를 잘 설계하여 모든 구현 세부 사항을 private으로 만들면, 테스트는 코드의 관찰 가능한 동작만 검증하게 되므로 자동으로 리팩토링 내성이 향상됩니다.
 
 클라이언트가 목표를 달성하는 데 직접적으로 도움이 되는 최소한의 작업과 상태만 노출해야 합니다. 나머지는 구현 세부 사항이므로 private API 뒤에 숨겨야 합니다.
 
@@ -448,8 +451,8 @@ RemoveInventory() 메서드 호출은 클라이언트 목표 달성을 위한 �
 * 런던 학파의 문제점
 
   - 런던 학파는 불변(immutable) 의존성을 제외한 모든 의존성에 Mock을 사용하도록 권장합니다. 
-  - 이로 인해 시스템 내부 통신과 외부 통신을 구분하지 않고 Mock을 사용하게 되며, 결과적으로 테스트가 구현. 세부. 사항에 결합되어 리팩토링에 대한 저항력을 상실하게 됩니다. 
-  - 리팩토링 저항력은 테스트 가치를 결정하는 이분법적인(binary) 속성이므로, 이를 훼손하는 것은 테스트를 거의 가치 없게 만듭니다.
+  - 이로 인해 시스템 내부 통신과 외부 통신을 구분하지 않고 Mock을 사용하게 되며, 결과적으로 테스트가 구현. 세부. 사항에 결합되어 리팩토링 내성을 상실하게 됩니다. 
+  - 리팩토링 내성은 테스트 가치를 결정하는 이분법적인(binary) 속성이므로, 이를 훼손하는 것은 테스트를 거의 가치 없게 만듭니다.
 
 * 고전적 학파의 강점과 한계
 
@@ -486,12 +489,11 @@ RemoveInventory() 메서드 호출은 클라이언트 목표 달성을 위한 �
 - 애플리케이션이 외부 시스템에 대한 프록시 역할을 하고 클라이언트가 직접 액세스할 수 없는 경우 이전 버전과의 호환성 요구 사항이 사라집니다.
 - 하위 호환성 유지 요구 사항이 필요한 이유는 외부 시스템과 애플리케이션을 동시에 변경할 수 없거나, 다른 배포 주기를 따르거나, 간단하게 제어할 수 없기 때문입니다.
 
-##### 5.4.2 행동 검증에 모킹 사용하기 (Using mocks to verify behavior)
+##### 5.4.2 행동 검증에 모킹 사용하기(Using mocks to verify behavior)
 
 Mocks은 흔히 행동을 검증한다고 알려져 있지만 대부분의 경우 그렇지 않습니다.
 
-개별 클래스가 특정 목표를 달성하기 위해 주변 클래스와 상호작용하는 방식은 관찰 가능한 행동과 무관하며,
-이는 구현 세부사항에 불과합니다.
+개별 클래스가 특정 목표를 달성하기 위해 주변 클래스와 상호작용하는 방식은 관찰 가능한 행동과 무관하며, 이는 구현 세부사항에 불과합니다.
 
 중요한 것은 클라이언트 목표까지 추적 가능한 행동입니다.
 
