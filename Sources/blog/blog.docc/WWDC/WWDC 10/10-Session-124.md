@@ -24,7 +24,7 @@ Foundation 프레임워크는 iPhone OS 및 Mac OS 개발의 근간을 제공하
 
 ### 빌딩 블록(Building blocks)
 
-@Image(source: 10-Session-124-7.png, alt: nil)
+@Image(source: 10-Session-124-7.png)
 
 ##### 컬렉션(Collections)
 * 오브젝트를 보관하는 공간

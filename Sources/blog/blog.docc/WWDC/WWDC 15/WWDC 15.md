@@ -9,7 +9,7 @@
 }
 
 ## Overview
-@Image(source: WWDC15.png, alt: nil)
+@Image(source: WWDC15.png)
 
 ## Topics
 - <doc:15-Session-408>

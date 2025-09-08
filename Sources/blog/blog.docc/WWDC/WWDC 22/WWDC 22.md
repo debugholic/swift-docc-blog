@@ -10,7 +10,7 @@
 }
 
 ## Overview
-@Image(source: WWDC22.png, alt: nil)
+@Image(source: WWDC22.png)
 
 ## Topics
 

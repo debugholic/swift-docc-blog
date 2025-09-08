@@ -7,6 +7,6 @@
 }
 
 ## Overview
-@Image(source: WWDC07.png, alt: nil)
+@Image(source: WWDC07.png)
 
 ## Topics

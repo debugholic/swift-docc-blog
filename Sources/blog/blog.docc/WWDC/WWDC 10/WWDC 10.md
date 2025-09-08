@@ -7,7 +7,7 @@
 }
 
 ## Overview
-@Image(source: WWDC10.png, alt: nil)
+@Image(source: WWDC10.png)
 
 ## Topics
 - <doc:10-Session-124>

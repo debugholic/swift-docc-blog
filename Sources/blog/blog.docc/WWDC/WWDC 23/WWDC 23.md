@@ -11,7 +11,7 @@
 }
 
 ## Overview
-@Image(source: WWDC23.png, alt: nil)
+@Image(source: WWDC23.png)
 
 ## Topics
 - <doc:23-Session-10162>

@@ -3,10 +3,10 @@
 스위프트 디자인의 중심에는 두 가지 믿기지 않는 강력한 아이디어가 있습니다: 프로토콜 지향 프로그래밍(protocol-oriented progmamming)과 일급 값 의미론(first-class value semantics). 각각은 예측 가능성 및 성능 그리고 생산성에 도움이 되지만, 함께 사용하면 우리가 프로그래밍할 때의 사고를 바꿀 수도 있습니다. 당신이 작성한 코드를 개선하기 위해 이러한 아이디어를 어떻게 적용할 수 있는지 알아보세요.
 
 @Metadata {
-    @CallToAction(purpose: link,
-                  url:"https://devstreaming-cdn.apple.com/videos/wwdc/2015/408509vyudbqvts/408/408_hd_protocoloriented_programming_in_swift.mp4",
-                  label: "보기 (45분)")
-    @TitleHeading("Session 408")
+  @CallToAction(purpose: link,
+                url:"https://devstreaming-cdn.apple.com/videos/wwdc/2015/408509vyudbqvts/408/408_hd_protocoloriented_programming_in_swift.mp4",
+                label: "보기 (45분)")
+  @TitleHeading("Session 408")
 }
 
 --- 
@@ -14,8 +14,7 @@
 #### 크러스티
 
 @Row {
-    @Column { ![Crusty](15-Session-408-1.png) }
-    @Column { }
+  @Column { ![Crusty](15-Session-408-1.png) }
 }
 
 이 세션은 구식 개발자 크러스티와 발표자와의 대담으로 구성됩니다.
