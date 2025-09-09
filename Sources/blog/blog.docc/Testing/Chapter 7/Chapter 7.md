@@ -271,60 +271,342 @@ public int ChangeEmail(string newEmail,
 }
 
 ##### 7.2.4 애플리케이션 서비스에서 복잡성 제거
-    ◦ 목표: UserController의 재구성 로직 복잡성을 제거하여 "컨트롤러" 사분면에 확고히 배치하는 것입니다.
-    ◦ 해결책: 재구성 로직을 UserFactory와 같은 별도의 클래스로 추출합니다. 이 팩토리는 object[] 데이터를 받아 User 객체를 생성하며 Precondition.Requires를 사용한 유효성 검사를 포함할 수 있습니다. 이 재구성 로직은 복잡하지만 도메인 중요성이 낮아 유틸리티 코드의 예시입니다.
+
+* `UserController`를 컨트롤러 사분면에 확실히 위치시키려면, 해당 컨트롤러에서 재구성 로직을 추출해야 합니다. 
+
+* 객체-관계형 매핑(ORM) 라이브러리를 사용하여 데이터베이스를 도메인 모델로 매핑하면, 재구성 로직을 할당하기에 적합한 위치가 될 것입니다. 
+
+* ORM 라이브러리를 사용하기 어려운 경우, 재구성 로직을 `UserFactory`와 같은 별도의 팩토리 클래스로 추출하는 방법이 있습니다.
+
+```
+public class UserFactory
+{
+  public static User Create(object[] data)
+  {
+    Precondition.Requires(data.Length >= 3);
+
+    int id = (int)data[0];
+    string email = (string)data[1];
+    UserType type = (UserType)data[2];
+
+    return new User(id, email, type);
+  }
+}
+```
+
+* 팩토리는 `object[]` 데이터를 받아 `User` 객체를 생성하며 `Precondition`를 사용한 유효성 검사를 포함 하고 있습니다. 
+
+* `Precondition`은 `Boolean` 인자가 `false`일 경우 예외를 발생시키는 간단한 클래스입니다.
+
+* 이 클래스를 사용한 이유는 코드를 더 간결하게 만들고 조건을 반전시키기 위함입니다: 긍정적 진술이 부정적 진술보다 가독성이 높습니다.
+
+* 이 재구성 로직은 복잡하지만 도메인 중요성이 낮아 유틸리티 코드의 예시입니다.
 
 ##### 7.2.5 새로운 Company 클래스 도입
-    ◦ 문제점: User 클래스가 회사 직원 수 업데이트 같은 회사 관련 책임을 가지는 것은 잘못된 것입니다.
-    ◦ 해결책: Company라는 새로운 도메인 클래스를 도입하여 회사 관련 로직과 데이터를 캡슐화합니다. 이 클래스는 "묻지 말고 시켜라 (tell-don't-ask)" 원칙을 따릅니다.
-    ◦ CompanyFactory도 도입되어 Company 객체 재구성을 담당합니다.
-    ◦ UserController와 User 클래스는 Company 인스턴스를 통해 작업을 위임하도록 변경됩니다.
-    ◦ 최종 결과: User, Company, UserFactory, CompanyFactory는 모두 "도메인 모델 및 알고리즘" 사분면에 위치하며, UserController는 "컨트롤러" 사분면에 확고히 자리 잡습니다.
-    ◦ 이점: 모든 부수 효과(이메일 변경, 직원 수 변경)가 도메인 모델 내에만 존재하고, 컨트롤러가 데이터베이스에 저장할 때만 도메인 모델 경계를 넘으므로 테스트 용이성이 크게 향상됩니다.
+
+* 다음 코드를 다시 확인해 봅시다.
+
+```
+object[] companyData = _database.GetCompany();
+string companyDomainName = (string)companyData[0];
+int numberOfEmployees = (int)companyData[1];
+
+int newNumberOfEmployees = user.ChangeEmail(
+  newEmail, companyDomainName, numberOfEmployees);
+```
+
+* `User` 클래스가 업데이트된 회사 직원 수를 반환하는 것은 잘못된 책임 소재입니다.
+
+* `Company`라는 새로운 도메인 클래스를 도입하여 회사 관련 로직과 데이터를 캡슐화합니다.
+```
+public class Company
+{
+  public string DomainName { get; private set; }
+  public int NumberOfEmployees { get; private set; }
+  
+  public void ChangeNumberOfEmployees(int delta)
+  {
+    Precondition.Requires(NumberOfEmployees + delta >= 0);
+    
+    NumberOfEmployees += delta;
+  }
+  
+  public bool IsEmailCorporate(string email)
+  {
+
+    string emailDomain = email.Split('@')[1];
+    return emailDomain == DomainName;
+  }
+}
+```
+
+* 이 클래스에는 `ChangeNumberOfEmployees()`와 `IsEmail-Corporate()` 두 가지 메서드가 있습니다.
+
+* 이 메서드들은 제5장에서 언급한 "묻지 말고 시켜라 (tell-don't-ask)" 원칙을 따릅니다.
+
+* `CompanyFactory`도 도입되어 `Company` 객체 재구성을 담당합니다.
+
+```
+public class UserController
+{
+  private readonly Database _database = new Database();
+  private readonly MessageBus _messageBus = new MessageBus();
+  
+  public void ChangeEmail(int userId, string newEmail)
+  {
+    object[] userData = _database.GetUserById(userId);
+    User user = UserFactory.Create(userData);
+
+    object[] companyData = _database.GetCompany();
+    Company company = CompanyFactory.Create(companyData);
+
+    user.ChangeEmail(newEmail, company);
+
+    _database.SaveCompany(company);
+    _database.SaveUser(user);
+    _messageBus.SendEmailChangedMessage(userId, newEmail);
+  }
+}
+```
+
+* `User` 도 변경됩니다.
+
+```
+public class User
+{
+  public int UserId { get; private set; }
+  public string Email { get; private set; }
+  public UserType Type { get; private set; }
+
+  public void ChangeEmail(string newEmail, Company company)
+  {
+    if (Email == newEmail)
+      return;
+    
+    UserType newType = company.IsEmailCorporate(newEmail)
+      ? UserType.Employee
+      : UserType.Customer;
+
+    if (Type != newType)
+    {
+      int delta = newType == UserType.Employee ? 1 : -1;
+      company.ChangeNumberOfEmployees(delta);
+    }
+    
+    Email = newEmail;
+    Type = newType;
+  }
+}
+```
+
+* `UserController`와 `User` 클래스는 `Company` 인스턴스를 통해 작업을 위임하도록 변경됩니다.
+
+*  이메일이 회사 이메일인지 판단하는 것과 회사 직원 수를 변경하는 작업입니다.
+
+@Row {
+  @Column {
+    @Image(source: 7-8.png)  
+  }
+  @Column {}
+}
+
+* 이제 `User`, `Company`, `UserFactory`, `CompanyFactory`는 모두 "도메인 모델 및 알고리즘" 사분면에 위치하며, `UserController`는 "컨트롤러" 사분면에 확고히 자리 잡습니다.
+
+* 모든 부수 효과(이메일 변경, 직원 수 변경)가 도메인 모델 내에만 존재하고, 컨트롤러가 데이터베이스에 저장할 때만 도메인 모델 경계를 넘으므로 테스트 용이성이 크게 향상됩니다.
 
 ### 7.3 최적의 단위 테스트 커버리지 분석
+
 리팩토링 후 코드 유형 분류표를 기반으로 테스트 방법을 분석합니다.
 
+| | 적은 협력자 | Sloth powers |
+|:--|:--|:--|
+| 높은 복잡성 또는 도메인 중요도 | `User` 의 `ChangeEmail(newEmail, company)`; | |
+| ^ | `Company` 의 `ChangeNumberOfEmploye(delta)` 와 `IsEmailCorporate(email)`; | ^ |
+| ^ | `UserFactory` 와 `CompanyFactory` 의 `Create(data)` | ^ |
+| 낮은 복잡성과 도메인 중요성 | `User` 및 `Company`의 생성자 | `UserController` 의 `ChangeEmail(userId, newEmail)` |
+
+
 ##### 7.3.1 도메인 계층 및 유틸리티 코드 테스트
-    ◦ "도메인 모델 및 알고리즘" 사분면의 코드 테스트가 비용-이점 측면에서 최고의 결과를 제공합니다. 높은 복잡성/도메인 중요성으로 회귀 방어 효과가 크고, 적은 협력자로 유지보수 비용이 낮습니다.
-    ◦ 매개변수화된 테스트를 사용하여 여러 테스트 케이스를 그룹화하는 것이 효과적입니다.
+
+* "도메인 모델 및 알고리즘" 사분면의 코드 테스트가 비용-이점 측면에서 최고의 결과를 제공합니다. 
+
+* 높은 복잡성/도메인 중요성으로 회귀 방어 효과가 크고, 적은 협력자로 유지보수 비용이 낮습니다.
+
+* `User` 는 다음과 같이 테스트 됩니다.
+
+```
+[Fact]
+public void Changing_email_from_non_corporate_to_corporate()
+{
+  var company = new Company("mycorp.com", 1);
+  var sut = new User(1, "user@gmail.com", UserType.Customer);
+
+  sut.ChangeEmail("new@mycorp.com", company);
+
+  Assert.Equal(2, company.NumberOfEmployees);
+  Assert.Equal("new@mycorp.com", sut.Email);
+  Assert.Equal(UserType.Employee, sut.Type);
+}
+```
+* 완전한 커버리지를 달성하려면, 이와 같은 테스트를 세 번 더 수행해야 합니다.
+
+```
+public void Changing_email_from_corporate_to_non_corporate()
+public void Changing_email_without_changing_user_type()
+public void Changing_email_to_the_same_one()
+```
+
+* 매개변수화된 테스트를 사용하여 여러 테스트 케이스를 그룹화하는 것이 효과적입니다.
+
+```
+[InlineData("mycorp.com", "email@mycorp.com", true)]
+[InlineData("mycorp.com", "email@gmail.com", false)]
+[Theory]
+public void Differentiates_a_corporate_email_from_non_corporate(
+string domain, string email, bool expectedResult)
+{
+  var sut = new Company(domain, 0);
+  
+  bool isEmailCorporate = sut.IsEmailCorporate(email);
+
+  Assert.Equal(expectedResult, isEmailCorporate);
+}
+```
 
 ##### 7.3.2 나머지 세 가지 사분면의 코드 테스트
 
-    ◦ 낮은 복잡성과 적은 협력자를 가진 코드는 테스트할 가치가 없으며, 지나치게 복잡한 코드는 리팩토링으로 제거되었으므로 테스트할 것이 없습니다. 컨트롤러 테스트는 다음 챕터에서 다룹니다.
+* 복잡도가 낮고 협력자가 적은 코드는
+`User` 및 `Company`의 생성자들이 대표적이며, 예를 들어 다음과 같습니다.
+
+```
+public User(int userId, string email, UserType type)
+{
+  UserId = userId;
+  Email = email;
+  Type = type;
+}
+```
+
+* 생성자들은 테스트할 가치가 없으며, 생성된 테스트는
+회귀에 대한 충분한 보호를 제공하지 못할 것입니다.
+
+* 지나치게 복잡한 코드는 리팩토링으로 제거되었으므로 테스트할 것이 없습니다.
 
 ##### 7.3.3 선결 조건을 테스트해야 하는가?
-    ◦ 일반 가이드라인: 도메인 중요성이 있는 모든 선결 조건은 테스트해야 합니다. 이는 클래스의 불변식(invariants)의 일부이기 때문입니다.
-    ◦ 테스트하지 않는 경우: 도메인 중요성이 없는 선결 조건은 테스트할 필요가 없습니다.
+
+* 특별한 종류의 분기점인 전제 조건을 살펴보고 이를 테스트해야 하는지 알아봅시다.
+
+* 예를 들어, Company의 이 메서드를 다시 한번 살펴보겠습니다
+
+```
+public void ChangeNumberOfEmployees(int delta)
+{
+  Precondition.Requires(NumberOfEmployees + delta >= 0);
+  
+  NumberOfEmployees += delta;
+}
+```
+
+* 이 조건은 회사 직원 수가 절대 음수가 되어서는 안 된다는 전제 조건을 명시합니다.
+
+* 이러한 예외적인 경우는 대개 버그로 인해 발생합니다. 
+
+* 직원 수가 0 미만으로 떨어질 수 있는 유일한 가능성은 코드에 오류가 있을 때입니다.
+
+* 이 안전 장치는 소프트웨어가 빠르게 실패하도록 하고, 오류가 확산되어
+데이터베이스에 영구적으로 저장되는 것을 방지하는 메커니즘을 제공합니다.
+
+* 권장하는 일반적인 지침은 도메인 중요성이 있는 모든 전제 조건을 테스트하는 것입니다. 
+
+* 이는 클래스의 불변식(invariants)의 일부이기 때문입니다.
+
+* 그러나 도메인 상의 의미가 없는 전제조건을 테스트하는 데 시간을 낭비하지 마십시오. 
+
+* 예를 들어, `UserFactory`의 `Create` 메서드에는 다음과 같은 안전 장치가 있습니다:
+
+```
+public static User Create(object[] data)
+{
+  Precondition.Requires(data.Length >= 3);
+
+  /* Extract id, email, and type out of data */
+}
+```
 
 ### 7.4 컨트롤러의 조건부 로직 처리
-도메인 계층을 아웃-오브-프로세스 협력자로부터 자유롭게 유지하면서 컨트롤러의 조건부 로직을 처리하는 것은 트레이드오프가 따릅니다.
-• 비즈니스 작업은 일반적으로 데이터 검색 -> 비즈니스 로직 실행 -> 데이터 유지의 세 단계로 잘 작동합니다.
-• 하지만 비즈니스 로직 중간에 추가 데이터 쿼리가 필요할 때 세 가지 처리 옵션이 있습니다:
-    1. 모든 외부 읽기/쓰기를 가장자리로 밀어넣기: 컨트롤러 단순성 및 도메인 모델 테스트 용이성 유지, 성능 희생. (불필요한 DB 호출이 많아짐)
-    2. 아웃-오브-프로세스 의존성을 도메인 모델에 주입: 성능 및 컨트롤러 단순성 유지, 도메인 모델 테스트 용이성 손상. (도메인 모델이 "지나치게 복잡한 코드"가 됨)
-    3. 의사 결정 프로세스를 더 세분화된 단계로 분할: 성능 및 도메인 모델 테스트 용이성 유지, 컨트롤러 단순성 희생. (컨트롤러에 의사 결정 지점이 도입되어 복잡성 증가)
-• 권장 사항: 대부분의 프로젝트에서 **세 번째 옵션(의사 결정 프로세스 분할)**이 가장 현실적인 절충안입니다. 이로 인해 컨트롤러가 더 복잡해질 수 있지만 관리 가능합니다.
+
+* 도메인 계층을 외부 프로세스 협력자로부터 자유롭게 유지하면서 컨트롤러의 조건부 로직을 처리하는 것은 트레이드오프가 따릅니다.
+
+* 비즈니스 로직과 오케스트레이션의 분리는 비즈니스 운영이 세 가지 개별 단계를 가질 때 가장 효과적으로 작동합니다.
+
+  - 저장소에서 데이터 가져오기
+  - 비즈니스 로직 실행
+  - 데이터를 스토리지에 다시 저장
+
+* 하지만 비즈니스 로직 중간에 추가 데이터 쿼리가 필요할 때 세 가지 처리 옵션이 있습니다.
+
+  - 모든 외부 읽기/쓰기를 가장자리로 밀어넣기
+    + 읽기-결정-실행 구조를 유지하지만 성능을 희생합니다.
+    + 컨트롤러 단순성을 유지하고 도메인 모델을 프로세스 외부 의존성으로부터 격리시킵니다.
+    + 컨트롤러는
+필요하지 않은 경우에도 프로세스 외부 종속성을 호출할 것입니다.
+  - 도메인 모델에 외부 프로세스 종속성을 주입
+    + 비즈니스 로직이 해당 종속성을 호출할 시점을 직접 결정할 수 있도록 허용합니다.
+    + 성능과 컨트롤러 단순성은 유지하지만 도메인 모델 테스트 가능성을 저해합니다.
+  - 의사 결정 프로세스를 더 세분화된 단계로 분할
+    + 컨트롤러는 각 단계마다 개별적으로 동작합니다.
+    + 성능과 도메인 모델 테스트 가능성 모두에 도움이 되지만 컨트롤러 단순성을 희생합니다.
+
+* 다음 세 가지 속성의 균형을 맞추는 것이 과제입니다
+  - 도메인 모델의 테스트 가능성
+    + 도메인 클래스 내 협업자의 수와 유형에 따라 달라짐
+  - 컨트롤러의 단순성
+    + 컨트롤러 내 의사결정(분기) 지점의 유무에 따라 달라짐
+  - 성능
+    + 외부 프로세스 종속성에 대한 호출 횟수로 정의됨
+
+* 대부분의 프로젝트에서 세 번째 옵션(의사 결정 프로세스 분할)이 가장 현실적인 절충안입니다. 
 
 ##### 7.4.1 CanExecute/Execute 패턴 사용
-    ◦ 컨트롤러 복잡성 증가를 완화하는 방법 중 하나입니다.
-    ◦ 패턴: User 클래스에 CanChangeEmail() 메서드를 도입하여 이메일 변경이 가능한지 여부를 확인하고, 실제 변경 로직인 ChangeEmail() 메서드의 선결 조건으로 CanChangeEmail() == null을 설정합니다.
-    ◦ 이점:
-        ▪ 컨트롤러는 이메일 변경 과정에 대한 복잡한 지식 없이 CanChangeEmail()만 호출하여 작업 가능 여부를 확인합니다.
-        ▪ ChangeEmail()의 선결 조건은 확인 없이 이메일이 변경되는 것을 방지합니다.
-    ◦ 결과: 모든 의사 결정이 도메인 계층으로 통합되어 컨트롤러의 의사 결정 지점이 사실상 제거됩니다.
+
+* 컨트롤러 복잡성 증가를 완화하는 방법 중 하나입니다.
+
+* 패턴: User 클래스에 CanChangeEmail() 메서드를 도입하여 이메일 변경이 가능한지 여부를 확인하고, 실제 변경 로직인 ChangeEmail() 메서드의 선결 조건으로 CanChangeEmail() == null을 설정합니다.
+    
+* 이점:
+  - 컨트롤러는 이메일 변경 과정에 대한 복잡한 지식 없이 CanChangeEmail()만 호출하여 작업 가능 여부를 확인합니다.
+  - ChangeEmail()의 선결 조건은 확인 없이 이메일이 변경되는 것을 방지합니다.
+
+* 결과: 모든 의사 결정이 도메인 계층으로 통합되어 컨트롤러의 의사 결정 지점이 사실상 제거됩니다.
 
 ##### 7.4.2 도메인 이벤트를 사용하여 도메인 모델의 변경 사항 추적
-    ◦ 도메인 모델의 중요한 변경 사항을 추적하고, 이를 비즈니스 작업 완료 후 외부 시스템 호출로 전환해야 할 때 도메인 이벤트를 사용합니다.
-    ◦ 적용: User 클래스 내에서 이메일이 변경될 때 EmailChangedEvent를 추가합니다.
-    ◦ 컨트롤러 처리: EventDispatcher와 같은 클래스가 이 도메인 이벤트를 외부 시스템(예: 메시지 버스, 로거) 호출로 변환합니다.
-    ◦ 데이터베이스 vs. 메시지 버스: 데이터베이스와의 통신은 CRM의 "구현 세부 정보"로 간주되어 무조건 영속화될 수 있지만, 메시지 버스와의 통신은 "관찰 가능한 동작"이므로 이메일 변경 시에만 메시지를 보내야 합니다.
-    ◦ 이점: 도메인 이벤트는 컨트롤러의 의사 결정 책임을 도메인 모델로 옮겨 외부 시스템과의 통신 단위 테스트를 단순화합니다. 단위 테스트에서는 도메인 이벤트 생성을 직접 테스트할 수 있습니다.
+* 도메인 모델의 중요한 변경 사항을 추적하고, 이를 비즈니스 작업 완료 후 외부 시스템 호출로 전환해야 할 때 도메인 이벤트를 사용합니다.
+
+* 적용: User 클래스 내에서 이메일이 변경될 때 EmailChangedEvent를 추가합니다.
+
+* 컨트롤러 처리: EventDispatcher와 같은 클래스가 이 도메인 이벤트를 외부 시스템(예: 메시지 버스, 로거) 호출로 변환합니다.
+
+* 데이터베이스 vs. 메시지 버스: 
+  - 데이터베이스와의 통신은 CRM의 "구현 세부 정보"로 간주되어 무조건 영속화될 수 있지만, 메시지 버스와의 통신은 "관찰 가능한 동작"이므로 이메일 변경 시에만 메시지를 보내야 합니다.
+
+* 이점: 
+  - 도메인 이벤트는 컨트롤러의 의사 결정 책임을 도메인 모델로 옮겨 외부 시스템과의 통신 단위 테스트를 단순화합니다. 단위 테스트에서는 도메인 이벤트 생성을 직접 테스트할 수 있습니다.
 
 ### 7.5 결론 (Conclusion)
-• 핵심 주제: 외부 시스템에 대한 부수 효과 적용을 추상화하는 것입니다. 도메인 이벤트는 메시지 버스 메시지에 대한 추상화이며, 도메인 클래스의 변경은 데이터베이스 수정에 대한 추상화입니다.
-• 이점: 추상화는 추상화되는 것보다 테스트하기 쉽습니다.
-• 한계: 모든 비즈니스 로직을 도메인 모델에 완벽하게 포함시키는 것은 불가능하며 (예: 이메일 고유성 검증, 외부 의존성 실패 처리), 일부 로직은 컨트롤러에 남아 통합 테스트로 커버해야 합니다.
-• 협력자: 도메인 클래스에서 모든 협력자를 제거하는 것은 항상 필요하지 않습니다. 아웃-오브-프로세스 의존성을 참조하지 않는 한 소수의 협력자는 문제가 되지 않습니다.
-• 목(Mock) 사용 주의: 도메인 모델의 관찰 가능한 동작과 관련 없는 내부 협력자(동일 비즈니스 로직 내 다른 도메인 클래스)와의 상호 작용은 구현 세부 정보이므로 목으로 검증해서는 안 됩니다.
-• 관찰 가능한 동작 대 구현 세부 정보: 코드 구성 요소를 양파 껍질처럼 바라보며, 각 계층을 외부 계층의 관점에서 테스트하고 하위 계층과의 통신 방식은 무시해야 합니다. 즉, 이전 계층에서는 구현 세부 정보였던 것이 다음 계층에서는 관찰 가능한 동작이 될 수 있습니다.
+* 핵심 주제: 
+  - 외부 시스템에 대한 부수 효과 적용을 추상화하는 것입니다.
+  - 도메인 이벤트는 메시지 버스 메시지에 대한 추상화이며, 도메인 클래스의 변경은 데이터베이스 수정에 대한 추상화입니다.
+* 이점:
+  - 추상화는 추상화되는 것보다 테스트하기 쉽습니다.
+* 한계:
+  - 모든 비즈니스 로직을 도메인 모델에 완벽하게 포함시키는 것은 불가능하며 (예: 이메일 고유성 검증, 외부 의존성 실패 처리), 일부 로직은 컨트롤러에 남아 통합 테스트로 커버해야 합니다.
+
+* 협력자: 
+  - 도메인 클래스에서 모든 협력자를 제거하는 것은 항상 필요하지 않습니다. 아웃-오브-프로세스 의존성을 참조하지 않는 한 소수의 협력자는 문제가 되지 않습니다.
+
+* 목(Mock) 사용 주의: 
+  - 도메인 모델의 관찰 가능한 동작과 관련 없는 내부 협력자(동일 비즈니스 로직 내 다른 도메인 클래스)와의 상호 작용은 구현 세부 정보이므로 목으로 검증해서는 안 됩니다.
+
+* 관찰 가능한 동작 대 구현 세부 정보:
+  - 코드 구성 요소를 양파 껍질처럼 바라보며, 각 계층을 외부 계층의 관점에서 테스트하고 하위 계층과의 통신 방식은 무시해야 합니다.
+  - 즉, 이전 계층에서는 구현 세부 정보였던 것이 다음 계층에서는 관찰 가능한 동작이 될 수 있습니다.
