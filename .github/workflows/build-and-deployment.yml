@@ -1,9 +1,9 @@
 name: 문서 배포
 
 on:
-  # "master" 브랜치에 푸시할 때 마다 워크플로우 작동
+  # 기본 브랜치인 "develop" 에 푸시할 때 마다 워크플로우 작동
   push:
-    branches: [ "master" ]
+    branches: [ "develop" ]
   
   workflow_dispatch:
 
