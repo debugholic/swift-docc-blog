@@ -99,7 +99,7 @@ CRM 시스템 예시를 통해 지나치게 복잡한 코드를 알고리즘과 
   - 시스템은 회사의 직원 수를 추적해야 합니다. 사용자 유형이 직원에서 고객으로 변경되거나 그 반대로 변경되는 경우 이 숫자도 변경되어야 합니다. 
   - 이메일이 변경되면 시스템은 메시지 버스에 메시지를 보내 외부 시스템에 알려야 합니다.
 
-```
+```csharp
 public class User
 {
   public int UserId { get; private set; }
@@ -195,7 +195,7 @@ public enum UserType
 
 * 도메인 클래스는 다른 도메인 클래스 또는 순수 값과 같은 프로세스 내 종속성에만 의존해야 합니다. 
 
-```
+```csharp
 public class UserController
 {
   private readonly Database _database = new Database();
@@ -234,7 +234,7 @@ public class UserController
 
 * 사용자 클래스는 더 이상 종속성이 없으므로 테스트하기가 매우 쉬워졌습니다.
 
-```
+```csharp
 public int ChangeEmail(string newEmail,
   string companyDomainName, int numberOfEmployees)
 {
@@ -278,7 +278,7 @@ public int ChangeEmail(string newEmail,
 
 * ORM 라이브러리를 사용하기 어려운 경우, 재구성 로직을 `UserFactory`와 같은 별도의 팩토리 클래스로 추출하는 방법이 있습니다.
 
-```
+```csharp
 public class UserFactory
 {
   public static User Create(object[] data)
@@ -306,7 +306,7 @@ public class UserFactory
 
 * 다음 코드를 다시 확인해 봅시다.
 
-```
+```csharp
 object[] companyData = _database.GetCompany();
 string companyDomainName = (string)companyData[0];
 int numberOfEmployees = (int)companyData[1];
@@ -318,7 +318,7 @@ int newNumberOfEmployees = user.ChangeEmail(
 * `User` 클래스가 업데이트된 회사 직원 수를 반환하는 것은 잘못된 책임 소재입니다.
 
 * `Company`라는 새로운 도메인 클래스를 도입하여 회사 관련 로직과 데이터를 캡슐화합니다.
-```
+```csharp
 public class Company
 {
   public string DomainName { get; private set; }
@@ -346,7 +346,7 @@ public class Company
 
 * `CompanyFactory`도 도입되어 `Company` 객체 재구성을 담당합니다.
 
-```
+```csharp
 public class UserController
 {
   private readonly Database _database = new Database();
@@ -371,7 +371,7 @@ public class UserController
 
 * `User` 도 변경됩니다.
 
-```
+```csharp
 public class User
 {
   public int UserId { get; private set; }
@@ -450,7 +450,7 @@ public class User
 
 * `User` 는 다음과 같이 테스트 됩니다.
 
-```
+```csharp
 [Fact]
 public void Changing_email_from_non_corporate_to_corporate()
 {
@@ -466,7 +466,7 @@ public void Changing_email_from_non_corporate_to_corporate()
 ```
 * 완전한 커버리지를 달성하려면, 이와 같은 테스트를 세 번 더 수행해야 합니다.
 
-```
+```csharp
 public void Changing_email_from_corporate_to_non_corporate()
 public void Changing_email_without_changing_user_type()
 public void Changing_email_to_the_same_one()
@@ -474,7 +474,7 @@ public void Changing_email_to_the_same_one()
 
 * 매개변수화된 테스트를 사용하여 여러 테스트 케이스를 그룹화하는 것이 효과적입니다.
 
-```
+```csharp
 [InlineData("mycorp.com", "email@mycorp.com", true)]
 [InlineData("mycorp.com", "email@gmail.com", false)]
 [Theory]
@@ -494,7 +494,7 @@ string domain, string email, bool expectedResult)
 * 복잡도가 낮고 협력자가 적은 코드는
 `User` 및 `Company`의 생성자들이 대표적이며, 예를 들어 다음과 같습니다.
 
-```
+```csharp
 public User(int userId, string email, UserType type)
 {
   UserId = userId;
@@ -514,7 +514,7 @@ public User(int userId, string email, UserType type)
 
 * 예를 들어, Company의 이 메서드를 다시 한번 살펴보겠습니다
 
-```
+```csharp
 public void ChangeNumberOfEmployees(int delta)
 {
   Precondition.Requires(NumberOfEmployees + delta >= 0);
@@ -540,7 +540,7 @@ public void ChangeNumberOfEmployees(int delta)
 
 * 예를 들어, `UserFactory`의 `Create` 메서드에는 다음과 같은 안전 장치가 있습니다:
 
-```
+```csharp
 public static User Create(object[] data)
 {
   Precondition.Requires(data.Length >= 3);

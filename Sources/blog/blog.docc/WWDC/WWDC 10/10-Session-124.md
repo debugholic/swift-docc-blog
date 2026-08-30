@@ -47,7 +47,7 @@ Foundation 프레임워크는 iPhone OS 및 Mac OS 개발의 근간을 제공하
 **반복(Iteration)**
 
 * `for`문
-```
+```objectivec
 NSUInteger count = [array count];
 for (NSUInteger i = 0; i < count; i++) {
   id value = [array objectAtIndex:i];
@@ -65,7 +65,7 @@ for (NSUInteger i = 0; i < count; i++) {
 * `while`문 에서 `NSEnumerator` 사용 
 
 열거자(*enumerator)는 위치와 반복을 추적할 수 있는 Foundation 객체
-```
+```objectivec
 NSEnumerator *e = [arrayOrSet objectEnumerator];
 while (id object = [e nextObject]) {
   // 인덱스에 접근하려면 추가 단계 필요
@@ -84,7 +84,7 @@ while (id key = [e nextObject]) {
     - 속도가 빠른 이유는 두 가지:
         1. 수행 속도가 실제로도 빠른데, 반복문 내에 컬렉션을 사용함으로써 컬렉션이 어떻게 생성되는 지에 대한 세부 구현 정보를 갖고 객체를 추적할 수 있기 때문
         2. 코드를 적게 써도 되니까
-```
+```objectivec
 for (id object in arrayOrSet) {
   // 배열 인덱스에는 액세스하기 어려움
   ...
@@ -99,7 +99,7 @@ for (id key in dictionary) {
 
 
 * 블록 (Snow Leopard 및 iOS 4에 새로 추가)
-```
+```objectivec
 [array enumerateObjectsUsingBlock:^(id object, NSUInteger index, BOOL *stop) {
   // 코드 작성 위치
 }];
@@ -136,7 +136,7 @@ for (id key in dictionary) {
 &nbsp;
 
 문자 배열을 길이 순으로 정렬하는 예:
-```
+```objectivec
 NSMutableArray *names = ...; // NSString 객체 배열
 [names sortUsingComparator:^(id left, id right) {
   NSComparisonResult result;
@@ -162,7 +162,7 @@ NSMutableArray *names = ...; // NSString 객체 배열
 * 변경 사항을 따로 모아놨다가 적용 
 
 후자의 예시:
-```
+```objectivec
 NSMutableArray *files = ...; // NSString 객체 배열
 NSIndexSet *toRemove = [files indexesOfObjectsPassingTest:^(id obj, NSUInteger idx, BOOL *stop) {
   if ([obj hasPrefix:@"."]) return YES;
@@ -196,7 +196,7 @@ NSIndexSet *toRemove = [files indexesOfObjectsPassingTest:^(id obj, NSUInteger i
 &nbsp;
 
 **문자열 비교(Comparing Strings)**
-```
+```csharp
 -(NSComparisonResult)compare:(NSString *)string;
 -(NSComparisonResult)localizedCompare:(NSString *)string;
 
@@ -211,7 +211,7 @@ NSIndexSet *toRemove = [files indexesOfObjectsPassingTest:^(id obj, NSUInteger i
 ```
 
 예를 들면:
-```
+```csharp
 NSString *str1 = @"string A";
 NSString *str2 = @"string B";
 NSComparisonResult result = [str1 compare:str2];
@@ -226,7 +226,7 @@ NSArray *sortedStrings = [strings sortedArrayUsingSelector:@selector(localizedCo
 
 **문자열 탐색(Searching Strings)**
 
-```
+```objectivec
 -(NSRange)rangeOfString:(NSString *)aString;
 -(NSRange)rangeOfString:(NSString *)aString
                 options:(NSStringCompareOptions)mask
@@ -241,7 +241,7 @@ NSArray *sortedStrings = [strings sortedArrayUsingSelector:@selector(localizedCo
 유니코드 표현이 다르기 때문에 길이가 달라도 같은 문자열이 있을 수 있습니다. 예를 들어 José는 `José`로 저장될 수 있지만 `Jose´`로도 저장 가능(`e´`를 분해된 문자(*decomposed character*)라고 합니다.)
 
 iPhone OS 3.2부터는, `NSStringCompareOptions`에서 `NSRegularExpressionSearch`를 지원:
-```
+```objectivec
 str = @"Going going gone!";
 found = [str rangeOfString:@"go(\\w*)"
                    options:NSRegularExpressionSearch
@@ -256,7 +256,7 @@ found = [str rangeOfString:@"go(\\w*)"
 * 인코딩이란 숫자를 문자로 매핑하는 것
 * 데이터에서 문자열을 만들 때는 항상 해당 데이터가 어떤 인코딩에 저장되어 있는지 아는 것이 중요
 
-```
+```objectivec
 /// NSData 에서 NSString 로
 NSData *data = ...;
 NSString *inString = [[NSString alloc] initWithData:data 
@@ -272,7 +272,7 @@ open과 같은 시스템 호출을 목적으로 `char *`를 사용하는 경우,
 * 이렇게 하면 파일 시스템에 대한 정확한 인코딩 데이터를 가리키는 문자 포인터가 제공됩니다.
 * `char *`가 가리키는 데이터는 자동 해제(autoreleased)됩니다.
 
-```
+```objectivec
 const char *fileName = [outString fileSystemRepresentation];
 ```
 
@@ -317,7 +317,7 @@ const char *fileName = [outString fileSystemRepresentation];
 * 정확한 속성의 의미는 달력에 따라 결정
 
 일례로 2010년 크리스마스와 블랙 프라이데이 사이에 며칠이 있는지 보면:
-```
+```objectivec
 // 크리스마스 찾기
 NSCalendar *cal = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
 
@@ -378,7 +378,7 @@ NSInteger days = [diff day]; // days == 29
 
 날짜로부터 문자열을 얻으려면:
 
-```
+```objectivec
 NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
 [fmt setTimeStyle:NSDateFormatterNoStyle];
 [fmt setDateStyle:NSDateFormatterLongStyle];
@@ -391,7 +391,7 @@ NSLog(@"Thanksgiving is: %@", [fmt stringFromDate:thanksgiving]);
 
 문자열을 파싱하는 경우:
 
-```
+```objectivec
 NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
 [fmt setDateFormat:@"dd/MM/yyyy HH:mm"];
 [fmt setTimeZone:[NSTimeZone timeZoneWithName:@"America/Los_Angeles"]];
@@ -428,7 +428,7 @@ NSDate *date = [formatter dateFromString:@"10/06/2010 9:30"];
 &nbsp;
 
 프로퍼티 리스트 저장:
-```
+```objectivec
 NSDictionary *colors = [NSDictionary dictionaryWithObjectsAndKeys:@"Verde", @"Green", @"Rojo",@"Red", @"Amarillo", @"Yellow", nil];
 
 NSError *error = nil;
@@ -446,7 +446,7 @@ if (!plist) [NSApp presentError:error];
 &nbsp;
 
 프로퍼티 리스트 불러오기:
-```
+```objectivec
 NSData *readData = [NSData dataWithContentsOfURL:urlOfFile];
 NSDictionary *newColors = [NSPropertyListSerialization propertyListWithData:readData
                                                                     options:0
@@ -470,7 +470,7 @@ if (!newColors) [NSApp presentError:error];
 &nbsp;
 
 등록 도메인 기본값(Registration Domain Defaults) 지정: 
-```
+```objectivec
 + (void)initialize {
   NSDictionary *appDefaults = [NSDictionary
     dictionaryWithObjectsAndKeys:
@@ -485,14 +485,14 @@ if (!newColors) [NSApp presentError:error];
 ```
 
 사용자 기본값(User Defaults) 읽기:
-```
+```objectivec
 BOOL doIt = [defaults boolForKey:@"FrogBlastVentCore"];
 // doIt == YES
 ```
 
 실행 파일 인수(Executable Arguments) 읽기:
 
-```
+```objectivec
 // Run your app with:
 // MyApp.app/Contents/MacOS/MyApp -ConferenceName WWDC
 NSString *argPref = [defaults stringForKey:@"ConferenceName"];
@@ -501,7 +501,7 @@ NSString *argPref = [defaults stringForKey:@"ConferenceName"];
 
 사용자 기본값(User Defaults) 설정:
 
-```
+```objectivec
 [defaults setBool:NO forKey:@"FrogBlastVentCore"];
 
 // 몇줄 뒤
@@ -526,7 +526,7 @@ doIt = [defaults boolForKey:@"FrogBlastVentCore"];
 
 다음과 같은 `Robot`에 대한 정의가 있다고 하면:
 
-```
+```objectivec
 @interface Robot : NSObject <NSCoding> {
   NSString *name;
   Robot *nemesis;
@@ -540,7 +540,7 @@ doIt = [defaults boolForKey:@"FrogBlastVentCore"];
 
 `NSCoding`을 수행하기 위해, 두 가지 매서드를 작성해야 합니다:
 
-```
+```objectivec
 // 객체를 인코딩하려면 키 지정 보관소(keyed archive)에게
 // 객체가 데이터를 프로퍼티로 저장하고 있는 방식을 알려야 합니다:
 - (void)encodeWithCoder:(NSCoder *)coder {
@@ -559,7 +559,7 @@ doIt = [defaults boolForKey:@"FrogBlastVentCore"];
 ```
 
 보관(Archiving):
-```
+```objectivec
 // r1와 r2가 서로를 참조하고 있지만, 키 저장 보관자(keyed archiver)가 이를 처리합니다.
 Robot *r1 = [[Robot alloc] init], *r2 = [[Robot alloc] init];
 r1.name = @"Bender"; r1.nemesis = r2; r1.model = 22;
@@ -569,7 +569,7 @@ NSData *data = [NSKeyedArchiver archivedDataWithRootObject:r2];
 ```
 
 해제(Unarchiving):
-```
+```objectivec
 Robot *r3 = [NSKeyedUnarchiver unarchiveObjectWithData:data];
 
 NSLog(@"Nemesis is: %@", r3.nemesis.name);
@@ -609,7 +609,7 @@ NSLog(@"Nemesis is: %@", r3.nemesis.name);
 &nbsp;
 
 URL 만들기:
-```
+```objectivec
 // 로컬 URL
 NSURL *file = [NSURL fileURLWithPath:@"/Users/tony/file.txt"];
 NSURL *up = [file URLByDeletingLastPathComponent];
@@ -630,7 +630,7 @@ NSURL *aapl = [NSURL URLWithString:@"http://www.apple.com"];
 
 번들 리소스 불러오기:
 
-```
+```objectivec
 NSBundle *bundle = [NSBundle mainBundle];
 NSURL *url = [bundle URLForResource:@"localizedImage"
                       withExtension:@"png"];
@@ -687,7 +687,7 @@ NSURL *url = [bundle URLForResource:@"localizedImage"
 
 `NSOperation` 서브클래스 사용
 
-```
+```objectivec
 @interface MyOp : NSOperation
 @end
 @implementation MyOp

@@ -33,7 +33,7 @@
 
 예를 들어 두 번째 문제를 설명해 보겠습니다.
 
-```
+```swift
 final class Order {
   private var customer: Customer
   private var products: [Product]
@@ -65,7 +65,7 @@ final class Order {
 
 중요한 비즈니스 로직을 포함하고 있으며 철저히 테스트해야 합니다. 
 
-```
+```swift
 final class Order {
   private var customer: Customer
   private var products: [Product]
@@ -108,7 +108,7 @@ final class PriceCalculator {
 
 해당 시스템에서 `Inquiry`의 모습은 다음과 같습니다.
 
-```
+```swift
 final class Inquiry {
   private(set) var isApproved: Bool
   private(set) var timeApproved: Date?
@@ -139,7 +139,7 @@ final class Inquiry {
 
 다음 코드 예시를 살펴보겠습니다.
 
-```
+```swift
 import Foundation
 
 public final class Customer {
@@ -188,7 +188,7 @@ public enum CustomerStatus {
 
 이는 주로 복잡한 알고리즘을 테스트할 때 발생합니다.
 
-```
+```swift
 final class Calculator {
   static func add(value1: Int, value2: Int) {
     return value1 + value2
@@ -198,7 +198,7 @@ final class Calculator {
 
 다음은 이를 잘못된 방식으로 테스트 하는 예시 입니다.
 
-```
+```swift
 final class CalculatorTests: XCTestCase {
   func addingTwoNumbers() {
     let value1 = 1
@@ -212,7 +212,7 @@ final class CalculatorTests: XCTestCase {
 
 테스트를 매개변수화하여 몇 가지 테스트 케이스를 더 포함시킬 수도 있습니다.
 
-```
+```swift
 final class CalculatorTests: XCTestCase {
   func testAddingTwoNumbers() {
     let testCases = [
@@ -243,7 +243,7 @@ final class CalculatorTests: XCTestCase {
 
 테스트는 프로덕션 코드를 블랙박스 관점에서 검증해야 합니다.
 
-```
+```swift
 final class CalculatorTests: XCTestCase {
   func testAddingTwoNumbers() {
     let testCases = [
@@ -267,7 +267,7 @@ final class CalculatorTests: XCTestCase {
 
 코드 오염은 종종 다양한 유형의 스위치 형태로 나타납니다. 로거를 예로 들어 보겠습니다.
 
-```
+```swift
 final class Logger {
   private let isTestEnvironment: Bool
 
@@ -289,7 +289,7 @@ final class Controller {
 ```
 이 예제에서 `Logger`는 해당 클래스가 프로덕션 환경에서 실행되는지 여부를 나타내는 생성자 매개변수를 가집니다.
 
-```
+```swift
 func testSomeMethod() {
   let logger = Logger(isTestEnvironment: true)
   let sut = Controller()
@@ -304,7 +304,7 @@ func testSomeMethod() {
 
 `Logger`와 같은 인터페이스를 도입하고, 프로덕션용 실제 구현과 테스트용 가짜 구현(`FakeLogger`)을 만들어 주입하는 방식을 사용해야 합니다.
 
-```
+```swift
 protocol Logger {
   func log(_ text: String)
 }
@@ -340,7 +340,7 @@ final class Controller {
 
 단일 책임 원칙을 위반한다는 점입니다.
 
-```
+```swift
 final class StatisticsCalculator {
   func calculate(customerId: Int) -> (totalWeight: Double, totalCost: Double) {
     let records = getDeliveries(customerId: customerId)
@@ -363,7 +363,7 @@ final class StatisticsCalculator {
 
 다음과 같이 `StatisticsCalculator`를 사용하는 컨트롤러가 있다고 가정해 보겠습니다.
 
-```
+```swift
 final class CustomerController {
   private let calculator: StatisticsCalculator
 
@@ -392,7 +392,7 @@ final class CustomerController {
 
 이는 해당 메서드를 가상(virtual)으로 만들어 수행할 수 있습니다.
 
-```
+```swift
 import XCTest
 
 class StubStatisticsCalculator: StatisticsCalculator {
@@ -420,7 +420,7 @@ final class CustomerControllerTests: XCTestCase {
 
 `StatisticsCalculator`를 모킹하는 대신, 다음과 같이 이 클래스를 두 개로 분할하세요.
 
-```
+```swift
 final class DeliveryGateway {
   func getDeliveries(customerId: Int) -> [DeliveryRecord] {
     // 외부 의존성 호출하여 배송 목록을 가져옴
@@ -436,7 +436,7 @@ final class StatisticsCalculator {
   }
 }
 ```
-```
+```swift
 final class CustomerController {
   private let calculator: StatisticsCalculator
   private let gateway: DeliveryGateway
@@ -474,7 +474,7 @@ final class CustomerController {
 
 시간의 맥락에서 주변 컨텍스트는 다음 코드 예시에서 보여지듯, 프레임워크의 내장 `Date()` 대신 코드에서 사용할 사용자 정의 클래스가 될 것입니다.
 
-```
+```swift
 final class DateTimeServer {
   static var now: () -> Date = { Date() }
 
@@ -490,13 +490,13 @@ final class DateTimeServer {
 
 또한 정적 필드는 테스트 간 공유 의존성을 도입하여 해당 테스트들을 통합 테스트 영역으로 전환시킵니다.
 
-#### 11.6.2 명시적 의존성으로서의 시간
+##### 11.6.2 명시적 의존성으로서의 시간
 
 더 나은 접근 방식은 시간 의존성을 명시적으로 주입하는 것입니다.
 
 이는 서비스(`DateTimeServer`) 형태 또는 순수 값(plain value) 형태(예: `Date` 값)로 주입될 수 있습니다.
 
-```
+```swift
 protocol DateTimeServer {
   var now: Date { get }
 }

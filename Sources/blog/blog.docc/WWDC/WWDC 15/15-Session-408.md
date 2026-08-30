@@ -174,7 +174,7 @@ Cocoa 프로그래머에게 이런 것들은 별로 새롭지 않습니다.
  
 예를 들어 이진 검색에서는 두 요소를 비교할 방법이 필요합니다.
 
-```
+```swift
 class Ordered {
     func precedes(other: Ordered) -> Bool {
         ... 
@@ -198,7 +198,7 @@ Swift는 `precedes` 메서드의 바디를 먼저 작성하기를 요구합니�
 
 그저 트랩을 만드는 것 외에 할 수 있는 것이 없죠.
 
-```
+```swift
 class Ordered {
     func precedes(other: Ordered) -> Bool { 
         fatalError("implement me!") 
@@ -212,7 +212,7 @@ class Ordered {
 
 여기 `Double` 값을 가진 서브 클래스 `Number`가 있습니다.
 
-```
+```swift
 class Label: Ordered { var text: String = "" ... }
 
 class Number: Ordered {
@@ -230,7 +230,7 @@ class Number: Ordered {
 
 그래서 다운캐스팅을 해야 합니다.
 
-```
+```swift
 class Number: Ordered {
     var value: Double = 0 
     override func precedes(other: Ordered) -> Bool {
@@ -271,7 +271,7 @@ class Number: Ordered {
 
 먼저 프로토콜이 필요하죠.
 
-```
+```swift
 protocol Ordered {
     // 프로토콜 메서드는 본문를 가질 수 없음.
     func precedes(other: Ordered) -> Bool { fatalError("implement me!") }
@@ -282,7 +282,7 @@ protocol Ordered {
 
 메서드에 대해 정적인 검사에서, 동적인 런타임 검사로 전환한다는 의미이기 때문입니다.
 
-```
+```swift
 protocol Ordered {
     func precedes(other: Ordered) -> Bool
 }
@@ -290,7 +290,7 @@ protocol Ordered {
 
 그 다음, 오버라이딩할 메서드가 없다고 합니다.
 
-```
+```swift
 protocol Ordered {
     func precedes(other: Ordered) -> Bool
 }
@@ -308,7 +308,7 @@ class Number : Ordered {
 
 그러면 이제는 `Number`가 클래스일 필요도 없겠죠.
 
-```
+```swift
 protocol Ordered {
     func precedes(other: Ordered) -> Bool
 }
@@ -327,7 +327,7 @@ struct Number : Ordered {
 
 이제 Swift가 시그니처가 일치하지 않는다고 하네요.
 
-```
+```swift
 protocol Ordered {
     func precedes(other: Ordered) -> Bool
 }
@@ -346,7 +346,7 @@ struct Number : Ordered {
 
 이를 자체 요구사항(Self requirement)이라고 합니다.
 
-```
+```swift
 protocol Ordered {
     func precedes(other: Self) -> Bool
 }
@@ -361,7 +361,7 @@ struct Number : Ordered {
 
 다시 유효한 코드가 생겼습니다. 이 프로토콜을 어떻게 사용하는지 살펴보겠습니다.
 
-```
+```swift
 // 프로토콜 'Ordered'는 일반 제약 조건으로만 사용할 수 있습니다.
 // Self 또는 연관된 타입 요구사항이 있기 때문입니다.
 func binarySearch(sortedKeys: [Ordered], forKey k: Ordered) -> Int {
@@ -386,7 +386,7 @@ func binarySearch(sortedKeys: [Ordered], forKey k: Ordered) -> Int {
 
 이제 `Ordered`를 단일 타입 'T'의 동질한 배열로 고치겠습니다.
 
-```
+```swift
 func binarySearch<T : Ordered>(sortedKeys: [T], forKey k: T) -> Int {
     var lo = 0
     var hi = sortedKeys.count
@@ -426,7 +426,7 @@ func binarySearch<T : Ordered>(sortedKeys: [T], forKey k: T) -> Int {
 
 먼저 그는 그리기 모델을 만들었습니다.
 
-```
+```swift
 struct Renderer {
     func moveTo(p: CGPoint) { print("moveTo(\(p.x), \(p.y))") }
     func lineTo(p: CGPoint) { print("lineTo(\(p.x), \(p.y))") }
@@ -438,7 +438,7 @@ struct Renderer {
 
 그리고 모든 그리기 요소에 공통 인터페이스를 제공하는 `Drawable` 프로토콜을 만들었죠. 
 
-```
+```swift
 protocol Drawable {
     func draw(renderer: Renderer)
 }
@@ -450,7 +450,7 @@ protocol Drawable {
 
 다각형을 그리려면 마지막 모서리로 이동한 다음 모든 모서리를 순환하며 선을 그리면 됩니다.
 
-```
+```swift
 struct Polygon : Drawable {
     func draw(renderer: Renderer) {
         renderer.moveTo(corners.last!)
@@ -468,7 +468,7 @@ struct Polygon : Drawable {
 
 원을 그리려면 0에서 2π 라디안까지 이어지는 호를 그립니다.
 
-```
+```swift
 struct Circle : Drawable {
     func draw(renderer: Renderer) {
         renderer.arcAt(center, radius: radius, startAngle: 0.0, endAngle: twoPi)
@@ -486,7 +486,7 @@ struct Circle : Drawable {
 
 그리고 `Diagram`을 만들었습니다.
 
-```
+```swift
 struct Diagram : Drawable {
     func draw(renderer: Renderer) {
         for f in elements {
@@ -509,7 +509,7 @@ struct Diagram : Drawable {
 
 그리고 `triangle`을 추가하고 마지막으로 `diagram`을 만들어 그리라고 지시했습니다.
 
-```
+```swift
 var circle = Circle(center: CGPoint(x: 187.5, y: 333.5), radius: 93.75)
 
 var triangle = Polygon(corners: [ 
@@ -543,7 +543,7 @@ diagram.draw(Renderer())
 
 그리고 `Renderer` 프로토콜을 만들었습니다.
 
-```
+```swift
 protocol Renderer {
     func moveTo(p: CGPoint)
     func lineTo(p: CGPoint)
@@ -553,7 +553,7 @@ protocol Renderer {
 
 요구사항을 작성한 다음, 원래 `Renderer`의 이름을 바꾸고 적절하게 만들었습니다.
 
-```
+```swift
 struct TestRenderer : Renderer {
     func moveTo(p: CGPoint) { print("moveTo(\(p.x), \(p.y))") }
     func lineTo(p: CGPoint) { print("lineTo(\(p.x), \(p.y))") }
@@ -581,7 +581,7 @@ struct TestRenderer : Renderer {
 
 그리고 키보드를 낚아채고는 눈 깜짝할 사이에 끝내버렸습니다.
 
-```
+```swift
 extension CGContext : Renderer {
     func moveTo(p: CGPoint) { }
     func lineTo(p: CGPoint) { }
@@ -623,7 +623,7 @@ extension CGContext : Renderer {
 
 아래 코드를 문맥에 넣었을 때 크러스티는 끓어오르기 시작했고, 지루해하기 시작했습니다.
 
-```
+```swift
 struct Bubble : Drawable {
     func draw(r: Renderer) {
         r.arcAt(center, radius: radius, startAngle: 0, endAngle: twoPi)
@@ -642,7 +642,7 @@ struct Circle : Drawable {
     봐봐, 전부 다 동그라미야.
     난 이걸 그냥 이런식으로 적고 싶어.
 
-```
+```swift
 struct Bubble : Drawable {
     func draw(r: Renderer) {
         r.circleAt(center, radius: radius)
@@ -663,7 +663,7 @@ struct Circle : Drawable {
     프로토콜에 요구사항 하나만 추가하면 되는 거죠?
     그럼 당연히 모델을 업데이트해서 TestRenderer와 CGContext에 구현하면 되잖아요.
 
-```
+```swift
 protocol Renderer {
     func moveTo(p: CGPoint)
     func lineTo(p: CGPoint)
@@ -692,7 +692,7 @@ extension CGContext : Renderer {
 
 그리고 Swift의 새로운 기능을 사용해 저를 가르치기 시작했죠. 프로토콜 확장입니다.
 
-```
+```swift
 protocol Renderer {
     func moveTo(p: CGPoint)
     func lineTo(p: CGPoint)
@@ -713,7 +713,7 @@ extension Renderer {
 
 비교를 위해 요구사항에 없는 메서드를 `extension`에 추가하여 확인해 보겠습니다.
 
-```
+```swift
 protocol Renderer {
     func moveTo(p: CGPoint)
     func lineTo(p: CGPoint)
@@ -729,7 +729,7 @@ extension Renderer {
 
 크러스티의 `TestRenderer`를 확장시켜 두 가지 메서드를 모두 구현할 수 있습니다.
 
-```
+```swift
 extension TestRenderer : Renderer {
     func circleAt(center: CGPoint, radius: CGFloat) { ... }
     func rectangleAt(edges: CGRect) { ... }
@@ -744,7 +744,7 @@ r.rectangleAt(edges);
 
 `Renderer` 적합성(conformance)을 제거해도 같은 결과를 얻을 수 있습니다.
 
-```
+```swift
 extension TestRenderer {
     func circleAt(center: CGPoint, radius: CGFloat) { ... }
     func rectangleAt(edges: CGRect) { ... }
@@ -757,7 +757,7 @@ r.rectangleAt(edges);
 
 하지만 Swift가 모델이 `Renderer` 타입인 것만 알고 있다고 바꿔 보겠습니다.
 
-```
+```swift
 let r: Renderer = TestRenderer()
 r.circleAt(origin, radius: 1);
 r.rectangleAt(edges);
@@ -787,7 +787,7 @@ r.rectangleAt(edges);
 
 먼저 메서드 `indexOf`를 보시죠.
 
-```
+```swift
 extension CollectionType {
     public func indexOf(element: Generator.Element) -> Index? {
         for i in self.indices {
@@ -808,7 +808,7 @@ extension CollectionType {
 
 컬렉션의 요소들을 `==` 연산자로 비교할 수 없다고 나오죠.
 
-```
+```swift
 extension CollectionType {
     public func indexOf(element: Generator.Element) -> Index? {
         for i in self.indices {
@@ -824,7 +824,7 @@ extension CollectionType {
 
 이를 해결하기 위해 확장에 제약을 만들 수 있습니다.
 
-```
+```swift
 extension CollectionType where Generator.Element : Equatable {
     public func indexOf(element: Generator.Element) -> Index? {
         for i in self.indices {
@@ -847,7 +847,7 @@ Swift에 동등 비교를 허용하는 데 필요한 정보를 제공한 것입�
 
 제약된 확장의 간단한 예제를 살펴봤으니 이진 검색을 다시 살펴봅시다.
 
-```
+```swift
 protocol Ordered {
     func precedes(other: Self) -> Bool
 }
@@ -857,14 +857,14 @@ func binarySearch<T : Ordered>(sortedKeys: [T], forKey k: T) -> Int { ... }
 
 `Int` 배열에 사용해 보겠습니다.
 
-```
+```swift
 // 'binarySearch'를 호출할 수 없습니다. '([Int], forKey: Int)' 타입의 인자 목록으로 호출할 수 없습니다.
 let position = binarySearch([2, 3, 5, 7], forKey: 5)
 ```
 
 `Int`가 `Ordered`를 따르지 않으니 적합성을 추가해 줍니다.
 
-```
+```swift
 extension Int : Ordered {
     func precedes(other: Int) -> Bool { return self < other }
 }
@@ -874,7 +874,7 @@ let position = binarySearch([2, 3, 5, 7], forKey: 5)
 
 당연히 `String`에도 작동하지 않죠. 다시 적합성을 추가해 줍니다.
 
-```
+```swift
 let position = binarySearch(["2", "3", "5", "7"], forKey: "5")
 extension String : Ordered {
     func precedes(other: Int) -> Bool { return self < other }
@@ -887,7 +887,7 @@ extension String : Ordered {
 
 그래서 `Comparable` 프로토콜을 이렇게 확장할 수 있습니다.
 
-```
+```swift
 extension Comparable {
     func precedes(other: Self) -> Bool { return self < other }
 }
@@ -899,7 +899,7 @@ extension String : Ordered {}
 
 정말 멋지네요. 만약 `Double`에 대한 이진 검색이 필요해지면 적합성을 추가하면 됩니다. 
 
-```
+```swift
 extension Comparable {
     func precedes(other: Self) -> Bool { return self < other }
 }
@@ -914,7 +914,7 @@ extension Double : Ordered {}
 
 게다가 더는 이진 검색을 할 수 없기 때문에 `precedes` 함수는 아무 도움이 되지 않습니다.
 
-```
+```swift
 extension Comparable {
     func precedes(other: Self) -> Bool { return self < other }
 }
@@ -928,7 +928,7 @@ let position = binarySearch([2.0, 3.0, 5.0, 7.0], forKey: 5.0)
 
 다행히도 `Ordered`에 제약된 확장을 사용하여 대상을 선택적으로 지정할 수 있습니다.
 
-```
+```swift
 extension Ordered where Self : Comparable {
     func precedes(other: Self) -> Bool { return self < other }
 }
@@ -947,7 +947,7 @@ let truth = 3.14.precedes(98.6) //'Double'은 이름이 'precedes'인 멤버를 
 
 이것은 적절한 인덱스와 타입을 가진 모든 컬렉션에서 동작하는 일반적인 이진 검색의 시그니처입니다.
 
-```
+```swift
 func binarySearch<
     C : CollectionType where C.Index == RandomAccessIndexType,
     C.Generator.Element : Ordered
@@ -964,7 +964,7 @@ Swift 1에는 이와 같은 함수가 많이 있었습니다.
 
 Swift 2에서는 프로토콜 확장을 사용해 이런 메서드로 만들었죠.
 
-```
+```swift
 extension CollectionType where Index == RandomAccessIndexType,
     Generator.Element : Ordered {
     func binarySearch(forKey: Generator.Element) -> Int {
@@ -977,7 +977,7 @@ let pos = [2, 3, 5, 7, 11, 13, 17].binarySearch(5)
 
 모두가 간단해진 메서드 호출 부분의 개선점에 집중하고 계실텐데요.
 
-```
+```swift
 let pos = [2, 3, 5, 7, 11, 13, 17].binarySearch(5)
 ```
 
@@ -985,7 +985,7 @@ let pos = [2, 3, 5, 7, 11, 13, 17].binarySearch(5)
 
 더 이상 꺾쇠 괄호로 인해 눈이 아플 일은 없죠.
 
-```
+```swift
 extension CollectionType where Index == RandomAccessIndexType,
     Generator.Element : Ordered {
 ```
@@ -1002,7 +1002,7 @@ extension CollectionType where Index == RandomAccessIndexType,
 
 그냥 특정 부분이 같은지를 비교하면 됩니다.
 
-```
+```swift
 func == (lhs: Polygon, rhs: Polygon) -> Bool {
     return lhs.corners == rhs.corners
 }
@@ -1017,7 +1017,7 @@ extension Circle : Equatable {}
 
 `Diagram`에서는 어떻게 적용될지 봅시다.
 
-```
+```swift
 struct Diagram : Drawable {
     func draw(renderer: Renderer) { ... }
     var elements: [Drawable] = []
@@ -1033,7 +1033,7 @@ func == (lhs: Diagram, rhs: Diagram) -> Bool {
 
 그렇다면 각각을 비교하면 이렇게 할 수 있습니다.
 
-```
+```swift
 struct Diagram : Drawable {
     func draw(renderer: Renderer) { ... }
     var elements: [Drawable] = []
@@ -1047,7 +1047,7 @@ func == (lhs: Diagram, rhs: Diagram) -> Bool {
 
 같은 개수인지 확인한 다음, 두 배열을 합치고 서로 다른 쌍이 없는지를 찾으면 되죠.
 
-```
+```swift
 struct Diagram : Drawable {
     func draw(renderer: Renderer) { ... }
     var elements: [Drawable] = []
@@ -1066,7 +1066,7 @@ func == (lhs: Diagram, rhs: Diagram) -> Bool {
 
 모든 `Drawable`을 `Equatable`로 바꿔주겠습니다.
 
-```
+```swift
 struct Diagram : Drawable {
     func draw(renderer: Renderer) { ... }
     var elements: [Drawable] = []
@@ -1086,7 +1086,7 @@ protocol Drawable : Equatable {
 
 `Equatable`에는 자체 요구사항이 있다는 것입니다.
 
-```
+```swift
 protocol Equatable {
     func == (Self, Self) -> Bool
 }
@@ -1108,7 +1108,7 @@ protocol Drawable : Equatable {
 
 그래서 다음과 같이 다리를 놓겠습니다.
 
-```
+```swift
 struct Diagram : Drawable, Equatable {
     func draw(renderer: Renderer) { ... }
     var elements: [Drawable] = []
@@ -1141,7 +1141,7 @@ protocol Drawable {
 
 이 아이디어를 통해 `Drawable`에 대해 `isEqualTo`를 다음과 같이 구현할 수 있습니다.
 
-```
+```swift
 extension Drawable where Self : Equatable {
     func isEqualTo(other: Drawable) -> Bool {
         if let o = other as? Self { return self == o }

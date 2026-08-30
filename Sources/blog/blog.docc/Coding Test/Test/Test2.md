@@ -68,7 +68,7 @@ n이 양의 정수 x의 제곱이라면 x+1의 제곱을 리턴하고, n이 양�
 
 각 소인수가 짝수 개로 존재하면, 어떤 값의 제곱이라는 뜻입니다.
 
-```
+```swift
 func solution(_ n:Int64) -> Int64 {
     var n: Int64 = n
     var dict = [Int64: Int64]()

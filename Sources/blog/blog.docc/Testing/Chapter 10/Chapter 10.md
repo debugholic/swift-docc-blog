@@ -87,7 +87,7 @@
   - DB 상태가 아니라 마이그레이션 자체가 소스 컨트롤에 저장되는 아티팩트가 됩니다.
   - 마이그레이션은 보통 SQL 스크립트로 작성하지만, DSL로 작성해 SQL로 변환할 수도 있습니다.
 
-```
+```swift
 import Fluent
 
 struct CreateUserTable: Migration {
@@ -141,7 +141,7 @@ struct CreateUserTable: Migration {
 
 데이터베이스는 각 메소드 호출에 별도의 SQL 연결을 만듭니다. 
 
-```
+```swift
 import Foundation
 import SQLite3
 
@@ -167,7 +167,7 @@ public final class Database {
 }
 ```
 결과적으로 사용자 컨트롤러는 다음 목록과 같이 단일 비즈니스 작업 중에 총 4개의 데이터베이스 트랜잭션을 생성합니다.
-```
+```swift
 public func changeEmail(userId: Int, newEmail: String) -> String {
   let userData: [Any] = _database.getUserById(userId)
   var user = UserFactory.create(from: userData)
@@ -246,7 +246,7 @@ SEPARATING DATABASE CONNECTIONS FROM DATABASE TRANSACTIONS
   @Column
 }
 
-```
+```csharp
 public class UserController {
   private let transaction: Transaction
   private let userRepository: UserRepository
@@ -340,7 +340,7 @@ Transaction 클래스를 **작업 단위(unit of work)** 로 업그레이드할 
 
 하지만 실제로, 당신은 그 일을 스스로 할 필요가 없습니다. 대부분의 ORM(객체 관계 매핑) 라이브러리는 작업 단위 패턴을 구현합니다. 
 
-```
+```swift
 public final class UserController {
   private let context: CrmContext
   private let userRepository: UserRepository
@@ -391,7 +391,7 @@ public final class UserController {
 
 다음은 해당 테스트를 Entity Framework로 전환한 후 통합 테스트에서 `CrmContext`를 재사용하는 예를 보여줍니다.
 
-```
+```swift
 import XCTest
 
 final class UserControllerTests: XCTestCase {
@@ -495,7 +495,7 @@ final class UserControllerTests: XCTestCase {
 
 이러한 기본 클래스를 사용하면 다음과 같이 각 테스트가 시작될 때 스크립트가 자동으로 실행됩니다.
 
-```
+```swift
 import Foundation
 
 open class IntegrationTests {
@@ -546,7 +546,7 @@ open class IntegrationTests {
 
 ##### 10.4.1 준비(Arrange) 섹션에서 코드 재사용
 
-```
+```swift
 import XCTest
 
 final class UserControllerTests: XCTestCase {
@@ -607,7 +607,7 @@ final class UserControllerTests: XCTestCase {
 기본값을 사용하면 인수를 선택적으로 지정하여 테스트를 더욱 단축할 수 있습니다. 
 
 
-```
+```swift
 func createUser(
   email: String = "user@mycorp.com",
   type: UserType = .employee,
@@ -642,7 +642,7 @@ func createUser(
 
 **데코레이터 메서드(decorator methods)**를 도입하여 컨트롤러 함수 호출을 데이터베이스 컨텍스트 생성과 같은 기술적인 부분으로 감쌉니다.
 
-```
+```swift
 private func execute(_ action: (UserController) -> String,
                      messageBus: MessageBus,
                      logger: IDomainLogger) -> String {
@@ -659,7 +659,7 @@ private func execute(_ action: (UserController) -> String,
 
 이를 수행하는 가장 쉬운 방법은 다음과 같이 `CreateUser` 및 `CreateCompany`와 유사한 헬퍼 메서드를 도입하는 것입니다.
 
-```
+```swift
 swift
 import XCTest
 
@@ -685,7 +685,7 @@ extension User {
 
 하지만 3개만 사용하던 작업 단위에서 5개를 사용하게 되었습니다.
 
-```
+```swift
 import XCTest
 
 final class UserControllerTests: IntegrationTests {

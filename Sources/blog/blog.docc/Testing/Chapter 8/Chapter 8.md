@@ -94,13 +94,13 @@
 
 잘못된 실행이 즉시 전체 응용 프로그램을 실패하면 굳이 엣지 케이스를 테스트할 필요가 없습니다. 
 
-```
+```swift
 func changeEmail(_ newEmail: String, company: Company) {
   precondition(canChangeEmail() == nil)
   /* the rest of the method */
 }
 ```
-```
+```swift
 func changeEmail(userId: Int, newEmail: String) -> String {
   let userData = database.getUserById(userId)
   let user = UserFactory.create(userData)
@@ -211,7 +211,7 @@ func changeEmail(userId: Int, newEmail: String) -> String {
 
 이 시스템은 사용자 이메일 변경 기능을 구현합니다.
 
-```
+```swift
 final class UserController {
   private let database = Database()
   private let messageBus = MessageBus()
@@ -293,7 +293,7 @@ final class UserController {
 
 ##### 8.3.4 통합 테스트: 첫 번째 시도
 
-```
+```swift
 final class UserControllerTests: XCTestCase {
   func changingEmailFromCorporateToNonCorporate() {
     // Arrange
@@ -354,7 +354,7 @@ final class UserControllerTests: XCTestCase {
 
 이 관행은 매우 널리 퍼져서 거의 의문을 제기하지 않습니다.
 
-```
+```csharp
 public interface MessageBus
 public class MessageBusImpl: MessageBus
 
@@ -411,7 +411,7 @@ public class UserRepositoryImpl: UserRepository
 
 데이터베이스는 관리되는 의존성이므로 그러한 인터페이스가 필요하지 않습니다.
 
-```
+```swift
 final class UserController {
   private let database: Database
   private let messageBus: MessageBus
@@ -434,7 +434,7 @@ final class UserController {
 
 때로는 외부 프로세스 의존성뿐만 아니라 내부 프로세스 의존성에도 인터페이스가 사용되는 코드베이스를 볼 수 있습니다.
 
-```
+```csharp
 public interface User {
   var userId: Int { get set }
   var email: String { get }
@@ -506,7 +506,7 @@ public class UserImpl: User {
 
 일반적인 예는 콜백(callback)입니다.
 
-```
+```swift
 final class CheckOutService: ReportGenerationDelegate {
   func checkOut(orderId: Int) {
     let service = ReportGenerationService()
@@ -549,7 +549,7 @@ final class ReportGenerationService {
 
 순환 의존성을 처리하는 더 나은 접근 방식은 완전히 제거하는 것입니다. 
 
-```
+```swift
 final class CheckOutService {
   func checkOut(orderId: Int) {
     let service = ReportGenerationService()
@@ -614,7 +614,7 @@ Steve Freeman과 Nat Pryce는 Growing 테스트에 따라 성장하는 객체 �
 
 로깅은 외부 프로세스 의존성을 포함하므로, 외부 프로세스 의존성과 관련된 다른 기능과 동일한 테스트 규칙이 적용됩니다.
 
-```
+```csharp
 func changeEmail(_ newEmail: String, company: Company) {
   logger.info("Changing email for user \(userId) to \(newEmail)")
   precondition(canChangeEmail() == nil, "Cannot change email: precondition failed")
@@ -641,7 +641,7 @@ func changeEmail(_ newEmail: String, company: Company) {
 
 `DomainLoggerImpl`라는 특별한 클래스를 만들어 비즈니스에 필요한 모든 지원 로깅을 명시적으로 나열하고, `Logger` 대신 이 클래스와의 상호작용을 검증합니다.
 
-```
+```csharp
 final class DomainLoggerImpl: DomainLogger {
   private let logger: Logger
 
@@ -663,7 +663,7 @@ final class DomainLoggerImpl: DomainLogger {
 
 전통적인 로깅은 단순 텍스트로 작동하여 로그 파일 분석이 어렵습니다.
         
-```
+```csharp
 logger.info("User Id is " + 12)
 ```
 
@@ -671,7 +671,7 @@ logger.info("User Id is " + 12)
 
 로깅 라이브러리의 사용은 표면적으로 비슷하게 보입니다.
 
-```
+```csharp
 let userId = 12
 logger.info("User Id is \(userId)")
 
@@ -687,7 +687,7 @@ logger.info("User Id is \(userId)")
 
 이 문제는 **도메인 이벤트(domain event)** 를 사용하여 해결할 수 있습니다.
  
-```
+```csharp
 func changeEmail(_ newEmail: String, company: Company) {
   logger.info("Changing email for user \(userId) to \(newEmail)")
   precondition(canChangeEmail() == nil, "Cannot change email: precondition failed")
@@ -714,7 +714,7 @@ func changeEmail(_ newEmail: String, company: Company) {
 
 둘 다 동일한 인터페이스(`DomainEvent`)를 구현하므로 동일한 컬렉션에 저장할 수 있습니다.
 
-```
+```swift
 func changeEmail(userId: Int, newEmail: String) -> String {
   guard let userData = database.getUserById(userId) else {
     return "UserNotFound"
@@ -785,7 +785,7 @@ func changeEmail(userId: Int, newEmail: String) -> String {
 
 로거 인스턴스를 해결하는 한 가지 방법은 정적 메서드를 사용하는 앰비언트 컨텍스트(ambient context) 방식입니다.
 
-```
+```csharp
 final class User {
   private static let logger: Logger = LoggerImpl()
 
@@ -803,7 +803,7 @@ final class User {
 
 더 나은 접근 방식은 로거 의존성을 명시적으로 주입하는 것입니다. 생성자나 메서드 인수를 통해 주입할 수 있습니다.
 
-```
+```csharp
 public func changeEmail(_ newEmail: String, company: Company, logger: Logger) {
   logger.info("Changing email for user \(userId) to \(newEmail)")
   

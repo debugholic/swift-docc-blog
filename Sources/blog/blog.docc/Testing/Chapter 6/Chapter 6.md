@@ -25,7 +25,7 @@ SUT(System Under Test)에 입력을 제공하고, SUT가 생성하는 출력 값
 
 이 스타일은 전역 또는 내부 상태를 변경하지 않는 코드에만 적용 가능하며, 유일하게 검증할 구성 요소는 반환 값입니다.
 
-```
+```swift
 // Product 클래스 정의
 class Product {
   let name: String
@@ -84,7 +84,7 @@ final class PriceEngineTests: XCTestCase {
   @Column
 }
 
-```
+```swift
 // Product 클래스
 class Product: Equatable {
   let name: String
@@ -141,7 +141,7 @@ final class OrderTests: XCTestCase {
   @Column {}
 }
 
-```
+```swift
 // 이메일 게이트웨이 프로토콜
 protocol EmailGateway {
   func sendGreetingsEmail(_ email: String)
@@ -261,7 +261,7 @@ final class ControllerTests: XCTestCase {
   - 수학 함수(순수 함수)는 숨겨진 입력이나 출력이 없는 함수(메서드)를 의미합니다.
   - 모든 입력과 출력은 함수 시그니처에 명시적으로 표현되어야 하며, 주어진 입력에 대해 호출 횟수에 관계없이 항상 동일한 출력을 생성합니다.
 
-```
+```swift
 func calculateDiscount(products: [Product]) -> Decimal {
   let discount = Decimal(products.count) * 0.01
   return min(discount, 0.2)
@@ -309,7 +309,7 @@ print(discount) // 0.02
 
 * 프로그램 동작을 변경하지 않고 메서드 호출을 반환 값으로 대체할 수 있는 능력을 **참조 투명성(Referential transparency)** 이라 하며, 수학 함수의 좋은 판별 기준입니다.
 
-```
+```swift
 static func increment(_ x: Int) -> Int {
 {
   return x + 1;
@@ -318,7 +318,7 @@ static func increment(_ x: Int) -> Int {
 
 이 함수는 수학 함수로 다음 두 개의 구문은 서로 동등합니다.
 
-```
+```swift
 var y = increment(4);
 var y = 5;
 ```
@@ -329,7 +329,7 @@ var y = 5;
 
 이 예에서 숨겨진 출력은 'x 필드'에서의 변경(부수 효과)입니다.
 
-```
+```swift
 static var x = 0
 static func increment() -> Int {
   x += 1
@@ -339,7 +339,7 @@ static func increment() -> Int {
 
 다음 예시는 겉에서는 수학 함수처럼 보이지만 실제로는 그렇지 않은 `addComment` 메서드를 보여줍니다.
 
-```
+```swift
 func addComment(_ text: String) -> Comment {
   let comment = Comment(text)
   _comments.append(comment) // <- Side effect
@@ -412,7 +412,7 @@ func addComment(_ text: String) -> Comment {
 
 * 파일당 최대 항목 수에 도달하면 새 파일을 생성합니다.
 
-```
+```swift
 class AuditManager {
   private let maxEntriesPerFile: Int
   private let directoryName: String
@@ -494,7 +494,7 @@ class AuditManager {
 
 * `FileManager` 작업을 `FileSystem` 인터페이스로 추출하고 `AuditManager`에 주입합니다.
 
-```
+```swift
 // 파일 시스템 프로토콜
 protocol FileSystem {
   func getFiles(directoryName: String) throws -> [String]
@@ -503,7 +503,7 @@ protocol FileSystem {
 }
 ```
 
-```
+```swift
 // AuditManager 클래스
 class AuditManager {
   private let maxEntriesPerFile: Int
@@ -564,7 +564,7 @@ class AuditManager {
 
 * 이제 `AuditManager`가 파일 시스템에서 분리되었으므로 공유 의존성이 사라지고 테스트가 서로 독립적으로 실행될 수 있습니다. 
 
-```
+```swift
 protocol FileSystem {
   func getFiles(directoryName: String) throws -> [String]
   func writeAllText(filePath: String, content: String) throws
@@ -644,7 +644,7 @@ final class AuditManagerTests: XCTestCase {
 
 * `AuditManager`는 파일에 대한 결정만 내리고, 새로운 `Persister` 클래스가 그 결정에 따라 파일 시스템에 업데이트를 적용합니다.
 
-```
+```swift
 import Foundation
 
 struct FileContent {
@@ -711,7 +711,7 @@ class AuditManager {
 
 * `FileContent`에는 `AuditManager`가 결정을 내리기 위해 파일에 대해 알아야 할 모든 것이 포함되어 있습니다.
 
-```
+```swift
 struct FileContent {
   let fileName: String
   let lines: [String]
@@ -725,7 +725,7 @@ struct FileContent {
 
 * 디렉토리의 파일을 변경하는 대신 `AuditManager`는 이제 수행하려는 부수 효과에 대한 `FileUpdate` 지침을 반환합니다.
 
-```
+```swift
 struct FileUpdate {
   let fileName: String
   let newContent: String
@@ -741,7 +741,7 @@ struct FileUpdate {
 
 * `Persister`는 `if` 문이 없는 매우 간단한 클래스입니다.
 
-```
+```swift
 class Persister {
   func readDirectory(directoryName: String) throws -> [FileContent] {
     let fileManager = FileManager.default
@@ -767,7 +767,7 @@ class Persister {
 
 * `ApplicationService`는 `AuditManager`와 `Persister`를 연결하는 역할을 합니다 (육각형 아키텍처의 애플리케이션 서비스 계층).
 
-```
+```swift
 import Foundation
 
 class ApplicationService {
@@ -795,7 +795,7 @@ class ApplicationService {
 
 * 이 리팩토링을 통해 `AuditManager`의 테스트는 더 이상 목 객체를 사용하지 않고, 가상의 `FileContent` 상태를 입력으로 제공하고 `FileUpdate` 객체를 출력으로 검증하는 출력 기반 테스트가 됩니다.
 
-```
+```swift
 import XCTest
 
 final class AuditManagerTests: XCTestCase {
@@ -867,7 +867,7 @@ final class AuditManagerTests: XCTestCase {
 
 * 데이터베이스에 접근 권한 수준을 확인하기 위해 `addRecord`에서 데이터베이스 인스턴스를 받습니다.
 
-```
+```swift
 func addRecord(
   files: [FileContent],
   visitorName: String,

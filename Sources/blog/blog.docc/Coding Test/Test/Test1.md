@@ -147,7 +147,7 @@
 
 `gifts` 데이터는 다루기 까다롭기 때문에 약간 다듬어서 `(String, String)`의 튜플로 변경합니다.
 
-```
+```swift
 import Foundation
 
 func solution(_ friends:[String], _ gifts:[String]) -> Int {
@@ -209,7 +209,7 @@ func solution(_ friends:[String], _ gifts:[String]) -> Int {
 
 튜플을 Key로 사용할 수 없으므로 `Hashable`을 요구 사항으로 갖는 모델 `Gift`를 만듭니다.
 
-```
+```swift
 struct Gift: Hashable {
     let sender: String
     let receiver: String
@@ -234,7 +234,7 @@ struct Gift: Hashable {
 
 선물 교환 행동을 `exchanges`라고 하고 다음과 같이 구현합니다.
 
-```
+```swift
 import Foundation
 
 struct Gift: Hashable {

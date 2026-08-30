@@ -10,7 +10,7 @@
 
 이 주제는 예제로 가장 잘 설명되므로 이전 장의 CRM 시스템을 통해서 목을 통해 어떻게 개선될 수 있는지 보게 될 것입니다.
 
-```
+```swift
 final class UserController {
   private let database: Database
   private let eventDispatcher: EventDispatcher
@@ -55,7 +55,7 @@ final class UserController {
 
 `EventDispatcher`는 도메인 이벤트를 받아서 외부 시스템 호출로 바꿔주는 역할입니다.
 
-```
+```swift
 final class EventDispatcher {
   private let messageBus: MessageBus
   private let domainLogger: DomainLogger
@@ -86,7 +86,7 @@ final class EventDispatcher {
 
 마지막으로, 다음 통합 테스트는 모든 외부 프로세스 의존성(관리형 및 비관리형 모두)을 거치게 됩니다.
 
-```
+```swift
 func changing_email_from_corporate_to_non_corporate() {
   // Arrange
   let db = InMemoryDatabase()
@@ -137,7 +137,7 @@ func changing_email_from_corporate_to_non_corporate() {
 
 예시의 `messageBusMock`의 문제는 `MessageBus` 인터페이스가 시스템의 가장자리에 위치하지 않는다는 것입니다.
 
-```
+```swift
 protocol MessageBus {
   func sendEmailChangedMessage(userId: Int, newEmail: String)
 }
@@ -172,7 +172,7 @@ final class MessageBusImpl: MessageBus {
 
 `MessageBus`를 더 이상 모의화하지 않기 때문에, 이 인터페이스는 삭제될 수 있으며 그 사용은 `MessageBus` 구현체로 대체될 수 있습니다.
 
-```
+```swift
 func changing_email_from_corporate_to_non_corporate() {
   let busMock = BusMock()
   let messageBus = MessageBus(busMock)
@@ -204,7 +204,7 @@ func changing_email_from_corporate_to_non_corporate() {
 
 시스템 가장자리에 있는 클래스의 경우 스파이가 목보다 우수합니다.
 
-```
+```swift
 protocol Bus {
   func send(_ message: String)
 }
@@ -233,7 +233,7 @@ class BusSpy: Bus {
 
 다음은 통합 테스트의 새 버전입니다.
 
-```
+```swift
 func changing_email_from_corporate_to_non_corporate() {
   let busSpy = BusSpy()
   let messageBus = MessageBus(busSpy)
@@ -324,21 +324,21 @@ func changing_email_from_corporate_to_non_corporate() {
 
 테스트 중인 시스템이 다음과 같은 메시지를 보내는지 확인하는 것만으로는 충분하지 않습니다.
 
-```
+```swift
 XCTAssertTrue(messageBusMock.sentMessages.contains("Type: USER EMAIL CHANGED; Id: \(user.userId); NewEmail: new@gmail.com"))
-🔹```
+```
 
 이 메시지가 정확히 한 번 전송되었는지 또한 확인해야 합니다.
 
 대부분의 라이브러리에서는 목에서 다른 호출이 수행되지 않는지 명시적으로 확인할 수도 있습니다. 
 
-```
+```swift
 XCTAssertEqual(messageBusMock.sentMessages.count, 1) 
 ```
 
 BusSpy를 사용하면 다음과 같이 더 간결하게 작성할 수 있습니다.
 
-```
+```swift
 busSpy.shouldSendNumberOfMessages(1)
   .withEmailChangedMessage(userId: user.userId, newEmail: "new@gmail.com")
 ```

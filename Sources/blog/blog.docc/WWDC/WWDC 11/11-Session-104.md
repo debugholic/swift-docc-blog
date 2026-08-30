@@ -45,7 +45,7 @@
 
 다음은 가로 방향 무한 스크롤 뷰 코드입니다:
 
-```
+```objectivec
 @implementation InfiniteScrollView
 
 // 무한 스크롤의 느낌을 내기 위해 주기적으로 콘텐츠를 최신 상태로 유지합니다.
@@ -117,7 +117,7 @@
 
 구현(이 코드는 `loadView()/viewDidLoad()`에 추가할 수 있습니다):
 
-```
+```objectivec
 UIScrollView *scrollView = [self scrollView]:
 UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action: @selector (handleSwipeUp:)];
 swipeUp.direction = UISwipeGestureRecognizerDirectionUp;
@@ -130,7 +130,7 @@ swipeUp.direction = UISwipeGestureRecognizerDirectionUp;
 
 이 구현에서는 제스처가 스와이프가 아닌지를 확인해야 하므로 스크롤 뷰 팬 제스처가 트리거될 때까지 기다리게 됩니다. 그러나 우리는 전체 화면이 아닌 스크롤 뷰의 하단에 대해서만 이 동작을 원합니다. 따라서 대상 영역을 제한할 수 있습니다:
 
-```
+```objectivec
 - (BOOL) gestureRecognizer: (UIGestureRecognizer *)gestureRecognizer
         shouldReceiveTouch: (UITouch *) touch
 {
@@ -157,7 +157,7 @@ swipeUp.direction = UISwipeGestureRecognizerDirectionUp;
 
 방법(⚠️ 작은 콘텐츠의 경우에만 해당):
 
-```
+```objectivec
 - (void)scrollViewDidEndZooming: (UIScrollView *) sv
                        withView: (UIView *) view
                        atScale: (float)scale

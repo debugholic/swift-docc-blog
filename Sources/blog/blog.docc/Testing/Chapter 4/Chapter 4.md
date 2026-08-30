@@ -55,7 +55,7 @@
 
 테스트가 SUT가 제공하는 관찰 가능한 동작(observable behavior) 즉, 최종 결과를 검증하는지 확인해야 합니다.
 
-```
+```csharp
 public class Message
 {
   public string Header { get; set; }
@@ -94,7 +94,7 @@ MessageRenderer 클래스는 메시지 일부에 대한 실제 작업을 위임�
 
 이후 결과를 HTML 문서로 결합합니다. 예를 들어 BodyRenderer 는 다음과 같습니다.
 
-```
+```csharp
 public class BodyRenderer : IRenderer
 {
   public string Render(Message message)
@@ -106,7 +106,7 @@ public class BodyRenderer : IRenderer
 
 그리고 아래와 같은 테스트가 있습니다.
 
-```
+```csharp
 [Fact]
 public void MessageRenderer_uses_correct_sub_renderers()
 {
@@ -128,7 +128,7 @@ public void MessageRenderer_uses_correct_sub_renderers()
 
 이것을 리팩토링에 훨씬 더 내성 있는 코드로 변경하면 다음과 같습니다.
 
-```
+```csharp
 [Fact]
 public void Rendering_a_message()
 {
@@ -253,7 +253,7 @@ HTML 출력이 동일하게 유지되는 한 SUT에 어떤 변경을 하든 상�
 
 사소한 테스트는 너무 사소해서 깨지기 어려운 간단한 코드를 커버합니다. 예를 들어, Name 속성과 같은 한 줄짜리 코드입니다.
 
-```
+```csharp
 public class User
 {
   // One-liners like this are unlikely to contain bugs.
@@ -285,7 +285,7 @@ public void Test()
 
 취약한 테스트는 빠르게 실행되고 회귀를 포착할 가능성이 높지만, 많은 거짓 양성을 유발합니다. 즉, 기본 기능이 손상되었는지 여부와 상관없이 리팩토링 시 실패하는 테스트입니다.
 
-```
+```csharp
 public class UserRepository
 {
   public User GetById(int id)
@@ -309,7 +309,7 @@ public void GetById_executes_correct_SQL_code()
 
 UserRepository 클래스가 정확한 SQL 문을 생성하는지 확인하는 테스트를 예시로 보면, SQL 스크립트를 변경하면 기능이 여전히 작동하더라도 테스트가 실패합니다.
 
-```
+```sql
 SELECT * FROM dbo.[User] WHERE UserID = 5
 SELECT * FROM dbo.User WHERE UserID = 5
 SELECT UserID, Name, Email FROM dbo.[User] WHERE UserID = 5

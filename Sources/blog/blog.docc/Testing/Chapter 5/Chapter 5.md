@@ -39,7 +39,7 @@
 
 이는 SUT의 최종 결과가 아닌 구현 세부 사항(implementation details)을 검증하는 것이기 때문입니다.
 
-```
+```csharp
 [Fact]
 public void Creating_a_report()
 {
@@ -65,7 +65,7 @@ GetNumberOfUsers() 호출을 검증하는 것은 리포트 생성에 필요한 �
 
 때로는 테스트 더블이 미리 정의된 응답(스텁의 역할)을 제공하고, 동시에 특정 상호작용(목의 역할)이 발생했는지도 검증해야 하는 경우가 있습니다.
 
-```
+```csharp
 [Fact]
 public void Purchase_fails_when_not_enough_inventory()
 {
@@ -171,7 +171,7 @@ GetNumberOfUsers() 메서드는 데이터베이스 상태를 변경하지 않고
 
 ##### 5.2.2 구현 세부 사항 유출: 작업 유출에 대한 예시
 
-```
+```csharp
 public class User
 {
   public string Name { get; set; }
@@ -192,7 +192,7 @@ User 클래스는 Name 속성과 NormalizeName() 메서드를 public API로 가�
 
 NormalizeName()은 사용자 이름이 50자를 초과하지 않도록 잘라내는 불변 조건(invariant)을 유지하기 위한 내부 로직입니다.
 
-```
+```csharp
 public class UserController
 {
   public void RenameUser(int userId, string newName)
@@ -211,7 +211,7 @@ UserController (클라이언트 코드)가 RenameUser 메서드에서 NormalizeN
 
 @Image(source: 5-5.png)
 
-```
+```csharp
 public class User
 {
   private string _name;
@@ -266,7 +266,7 @@ User 클래스 내부에서 Name 속성 설정 시 NormalizeName()을 호출하�
 
 ##### 5.2.4 구현 세부 사항 유출: 상태 유출에 대한 예시
 
-```
+```csharp
 public class MessageRenderer : IRenderer
 {
   public IReadOnlyList<IRenderer> SubRenderers { get; }
@@ -367,7 +367,7 @@ API를 잘 설계하여 모든 구현 세부 사항을 private으로 만들면, 
 * 고객 구매 시나리오
   - 고객이 제품을 구매하고, 재고가 충분하면 재고가 감소하고 고객에게 이메일 영수증이 발송되며 확인 메시지가 반환됩니다.
 
-```
+```csharp
 public class CustomerController
 {
   public bool Purchase(int customerId, int productId, int quantity)
@@ -397,7 +397,7 @@ CustomerController는 Customer, Product, Store와 같은 도메인 클래스와 
 
 * 목의 올바른 사용 예시
 
-```
+```csharp
 [Fact]
 public void Successful_purchase()
 {
@@ -417,7 +417,7 @@ public void Successful_purchase()
 
 IEmailGateway에 대한 mock.Verify()는 시스템 외부 통신을 검증하므로 테스트 취약성으로 이어지지 않습니다.
 
-```
+```csharp
 [Fact]
 public void Purchase_succeeds_when_enough_inventory()
 {
