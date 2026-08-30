@@ -8,6 +8,7 @@ WWDC에서 소개된 iOS 및 macOS 개발에 대한 필수적인 내용들 위�
 
 ## Topics
 
+- <doc:WWDC-24>
 - <doc:WWDC-23>
 - <doc:WWDC-22>
 - <doc:WWDC-15>
