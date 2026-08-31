@@ -581,6 +581,13 @@ public static User Create(object[] data)
   - 성능
     + 외부 프로세스 종속성에 대한 호출 횟수로 정의됨
 
+@Row {
+  @Column {
+    @Image(source: 7-9.png)  
+  }
+  @Column {}
+}
+
 * 대부분의 프로젝트에서 세 번째 옵션(의사 결정 프로세스 분할)이 가장 현실적인 절충안입니다. 
 
 ##### 7.4.1 CanExecute/Execute 패턴 사용
