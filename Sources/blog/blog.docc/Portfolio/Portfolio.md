@@ -8,13 +8,11 @@
 
 ## Overview
 
-안녕하세요. 즐거운 iOS 개발자 김영훈입니다.
+안녕하세요. iOS 개발자 김영훈입니다.
 
 아이리버 R&D연구소에서 Astell&Kern 오디오 기기의 컴패니언 앱과 Android 기반 펌웨어를 개발하며 커리어를 시작했습니다. DLNA(UPnP) 스펙 구현, FFmpeg 포팅, Android Media Framework처럼 저수준 미디어와 프로토콜을 직접 다루는 일이 많았습니다.
 
 2019년부터는 해커스 모바일개발팀에서 교육 서비스 iOS 앱을 담당하고 있습니다. 레거시 Objective-C 앱의 Swift 전면 전환과 다수 앱의 리뉴얼 출시를 진행했고, 이후에는 공통 기능을 Swift Package로 모듈화하고 Tuist 기반 Micro Feature Architecture와 GitHub Actions CI/CD를 도입하며 앱 하나가 아니라 팀의 개발 환경 전체를 다루는 쪽으로 범위를 넓혀 왔습니다. 현재는 모바일개발1팀 팀장으로 일하고 있습니다.
-
-새로 나온 기술을 그때그때 따라가기보다, WWDC 세션과 서적을 정리하며 왜 그렇게 설계되었는지를 남겨 두는 편입니다. 이 블로그도 그 기록의 일부입니다.
 
 ## 핵심 역량
 
@@ -96,7 +94,7 @@
             - 서버 및 로컬 데이터 기반
             - 인앱 결제
     }
-    @Column { ![그림보카](그림보카.png) }
+    @Column { ![그림보카](GrimVoca.png) }
 }
 
 @Row {
@@ -108,7 +106,7 @@
             - 서버 및 로컬 데이터 기반
             - 인앱 결제
     }
-    @Column { ![기출보카](기출보카.png) }
+    @Column { ![기출보카](GichulVoca.png) }
 }
 
 @Row {
@@ -119,7 +117,7 @@
             - Swift 및 UIKit
             - 서버 및 로컬 데이터 기반
     }
-    @Column { ![일본어](일본어.png) }
+    @Column { ![일본어](Japanese.png) }
 }
 
 @Row {
@@ -131,7 +129,7 @@
             - 서버 및 로컬 데이터 기반
             - 인앱 결제
     }
-    @Column { ![빅플](빅플.png) }
+    @Column { ![빅플](BigPle.png) }
 }
 
 @Row {
@@ -142,7 +140,7 @@
             - Swift 및 UIKit
             - 로컬 데이터 기반
     }
-    @Column { ![보카2nd](보카2nd.png) }
+    @Column { ![보카2nd](Voca2nd.png) }
 }
 
 @Row {
@@ -152,7 +150,7 @@
             - Objective-C 소스코드를 Swift로 전체 리팩토링 작업
             - UIKit Auto Layout 적용
     }
-    @Column { ![어드밴스드](텝스어드밴스드.png) }
+    @Column { ![어드밴스드](TepsAdvanced.png) }
 }
 
 @Row {
@@ -162,7 +160,7 @@
             - Objective-C 소스코드를 Swift로 전체 리팩토링 작업
             - UIKit Auto Layout 적용
     }
-    @Column { ![인터미디엇](텝스인터미디엇.png) }
+    @Column { ![인터미디엇](TepsIntermediate.png) }
 }
 
 * **해커스 어학원 앱 리뉴얼 개발**
@@ -259,7 +257,7 @@
 
 ## 학습과 기록
 
-업무 밖에서는 이 블로그에 학습 내용을 정리하고 있습니다. Swift-DocC로 블로그를 구성할 수 있는지 실험하는 것 자체도 이 저장소의 목적 중 하나입니다.
+새 API를 쓰는 법보다 왜 그렇게 설계되었는지가 오래 남는다고 생각해서, WWDC 세션과 서적을 읽고 정리해 두고 있습니다. Swift-DocC로 블로그를 구성할 수 있는지 실험하는 것 자체도 이 저장소의 목적 중 하나입니다.
 
 - <doc:WWDC-Analysis> — 2007년 이후 WWDC 세션을 연도별로 정리합니다.
 - <doc:Testing> — *Unit Testing Principles, Practices, and Patterns* 학습 정리입니다.
