@@ -12,16 +12,17 @@
 
 아이리버 R&D연구소에서 Astell&Kern 오디오 기기의 컴패니언 앱과 Android 기반 펌웨어를 개발하며 커리어를 시작했습니다. DLNA(UPnP) 스펙 구현, FFmpeg 포팅, Android Media Framework처럼 저수준 미디어와 프로토콜을 직접 다루는 일이 많았습니다.
 
-2019년부터는 해커스 모바일개발팀에서 교육 서비스 iOS 앱을 담당하고 있습니다. 레거시 Objective-C 앱의 Swift 전면 전환과 다수 앱의 리뉴얼 출시를 진행했고, 이후에는 공통 기능을 Swift Package로 모듈화하고 Tuist 기반 Micro Feature Architecture와 GitHub Actions CI/CD를 도입하며 앱 하나가 아니라 팀의 개발 환경 전체를 다루는 쪽으로 범위를 넓혀 왔습니다. 현재는 모바일개발1팀 팀장으로 일하고 있습니다.
+2019년부터는 해커스 모바일개발팀에서 교육 서비스 iOS 앱을 담당하고 있습니다. 레거시 Objective-C 앱의 Swift 전면 전환과 다수 앱의 리뉴얼 출시를 진행했고, 이후에는 공통 기능을 모듈로 분리해 16개 앱에 적용하고 Tuist 기반 Micro Feature Architecture를 6개 앱에 전환했으며 GitHub Actions CI/CD를 구축했습니다. 앱 하나가 아니라 팀의 개발 환경 전체를 다루는 쪽으로 범위를 넓혀 온 셈입니다. 현재는 모바일개발1팀 팀장으로 일하고 있습니다.
 
 ## 핵심 역량
 
-- **레거시 코드 현대화** — Objective-C로 작성된 앱을 Swift로 전면 리팩토링하고 Auto Layout으로 전환, 다수의 앱을 리뉴얼하여 앱스토어에 재출시했습니다.
-- **공통 모듈 설계와 재사용** — 로그인, 학습 알람, Push 알림 등 여러 앱에 반복되던 기능을 Swift Package로 분리하고, Micro Feature Architecture 기반으로 고도화했습니다.
+- **레거시 코드 현대화** — ARC조차 제대로 적용되어 있지 않던 Objective-C 앱들을 Swift와 UIKit/Auto Layout 기반으로 전면 리팩토링하고, 다수의 앱을 리뉴얼하여 앱스토어에 재출시했습니다.
+- **공통 모듈 설계와 재사용** — 로그인, 학습 알람, Push 알림, 인앱 결제 등 여러 앱에 반복되던 기능을 CocoaPods로 묶어낸 뒤 Swift Package로 고도화했습니다. Facade 패턴으로 외부에는 최소한의 인터페이스만 노출하고 내부 구현과 의존성은 모듈 안에 감춰, 새 앱에 붙일 때 조립 비용을 줄였습니다. **현재 16개 앱에 적용**되어 있습니다.
+- **Web · Native 통합** — 핵심 플로우와 체류 시간이 긴 화면 상당수가 웹으로 구성된 환경에서 WKWebView 기반 통합을 다뤄왔습니다. 앱의 로그인 세션을 웹뷰로 넘겨 재로그인 없이 잇고, 네비게이션 정책을 판단해 웹뷰와 네이티브 화면을 갈라 열며, 스크립트를 주입해 문제 정답을 체크하거나 웹 문제 화면의 음원을 네이티브로 재생하는 등 경계를 넘나드는 기능을 구현했습니다.
 - **미디어 · 오디오 도메인** — DLNA(UPnP) 컨트롤러 구현, FFmpeg 포팅과 libavfilter 기반 EQ, 동영상 플레이어 SDK 연동 등 미디어 재생 전반을 다뤘습니다.
 - **플랫폼 경계를 넘는 개발** — iOS 네이티브뿐 아니라 Android 앱과 Android Framework 펌웨어, React Native 앱에 붙는 네이티브 모듈까지 필요한 쪽을 직접 구현했습니다.
-- **개발 환경과 프로세스 정비** — Tuist 기반 모듈 구조와 GitHub Actions CI/CD를 구축해 빌드와 배포 과정을 정리했습니다.
-- **팀 리딩** — iOS 파트장(2021.11~)을 거쳐 모바일개발1팀 팀장(2022.11~)으로 일하고 있습니다.
+- **개발 환경과 프로세스 정비** — Micro Feature Architecture의 필요성을 판단해 Tuist 기반 전환을 1년 반에 걸쳐 진행했고 **현재 6개 앱에 적용**되어 있습니다. 사내에 DevOps 조직이 없어 미뤄져 있던 CI/CD도 GitHub Actions로 직접 구축했습니다.
+- **팀 리딩** — iOS 파트장(2021.11~)을 거쳐 모바일개발1팀 팀장(2022.11~)으로 팀의 기술 방향과 일정을 함께 책임지고 있습니다.
 
 ## Profile
 
@@ -53,14 +54,17 @@
 
         **iOS**
         - UIKit, SwiftUI
+        - Combine, Swift Concurrency
+        - WKWebView (Web · Native 연동)
         - CoreData, CoreAudio
         - App Extension (Widget)
         - StoreKit 2, 인앱 결제
     }
     @Column {
         **아키텍처 · 도구**
-        - Swift Package Manager
+        - Swift Package Manager, CocoaPods
         - Tuist, Micro Feature Architecture
+        - Facade 기반 모듈 인터페이스 설계
         - GitHub Actions (CI/CD)
 
         **Android · 미디어**
@@ -126,6 +130,8 @@
             - 앱스토어 출시
             - 리뉴얼 앱 개발
             - Swift 및 UIKit
+            - WKWebView 기반 Web · Native 통합
+              (로그인 세션 전달, 네비게이션 정책 분기, 스크립트 주입)
             - 서버 및 로컬 데이터 기반
             - 인앱 결제
     }
@@ -166,6 +172,7 @@
 * **해커스 어학원 앱 리뉴얼 개발**
     - Tuist, Micro Feature Architecture
     - Swift 및 SwiftUI
+    - 체류 시간이 긴 화면을 WKWebView 로 구성, Web · Native 연동
 
 * **해커스 매일국어 앱 리팩토링 개발**
     - Tuist, Micro Feature Architecture
@@ -176,12 +183,14 @@
 ### 해커스 — 플랫폼 · 공통 모듈 · 인프라
 
 * **해커스 앱 공통 기능 모듈화 작업**
-    - Swift Package Manager 배포
+    - 여러 앱에 흩어져 있던 공통 기능을 CocoaPods 로 통합 후 Swift Package Manager 로 전환
     - 로그인, 해커스에 바란다, 학습 알람, Push 알림 등의 기능 모듈화
+    - 현재 16개 앱에 적용
 
 * **해커스 공통 모듈 SPM 고도화**
     - Micro Feature Architecture
-    - StoreKit 2.0
+    - Facade 패턴으로 외부 인터페이스를 최소화하고 내부 구현·의존성을 모듈 내부에 은닉
+    - Notification, StoreKit 2.0 등 앱마다 반복되던 초기화 보일러플레이트 제거
     - Swift 및 SwiftUI
 
 * **해커스 One 앱 동영상 플레이어 모듈 개발**
@@ -198,6 +207,7 @@
     - Swift 및 SwiftUI
 
 * **CI/CD 구축**
+    - 사내 DevOps 조직 부재로 미뤄져 있던 빌드·배포 자동화를 직접 구축
     - GitHub Actions, Relay Repository
     - YAML (with Claude Code)
 
