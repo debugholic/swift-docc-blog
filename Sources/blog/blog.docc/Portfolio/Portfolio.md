@@ -64,7 +64,6 @@
         **아키텍처 · 도구**
         - Swift Package Manager, CocoaPods
         - Tuist, Micro Feature Architecture
-        - Facade 기반 모듈 인터페이스 설계
         - GitHub Actions (CI/CD)
 
         **Android · 미디어**
@@ -190,7 +189,7 @@
 * **해커스 공통 모듈 SPM 고도화**
     - Micro Feature Architecture
     - Facade 패턴으로 외부 인터페이스를 최소화하고 내부 구현·의존성을 모듈 내부에 은닉
-    - Notification, StoreKit 2.0 등 앱마다 반복되던 초기화 보일러플레이트 제거
+    - Notification, StoreKit 2 등 앱마다 반복되던 초기화 보일러플레이트 제거
     - Swift 및 SwiftUI
 
 * **해커스 One 앱 동영상 플레이어 모듈 개발**
