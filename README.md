@@ -49,7 +49,7 @@ swift package --allow-writing-to-directory ./docs \
 
 ## 배포
 
-`develop` 브랜치에 푸시하면 GitHub Actions가 문서를 빌드해 GitHub Pages로 배포합니다.
+`main` 브랜치에 푸시하면 GitHub Actions가 문서를 빌드해 GitHub Pages로 배포합니다.
 워크플로는 [`.github/workflows/build-and-deployment.yml`](.github/workflows/build-and-deployment.yml)에 있습니다.
 
 ## 만든 사람
